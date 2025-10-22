@@ -192,20 +192,22 @@ top_regioes = regioes_validas.nlargest(10, 'domestico_t_ano')
 fig4 = go.Figure()
 
 if len(top_regioes) > 0:
-    tamanhos = (top_regioes['domestico_t_ano'] / 5000).clip(lower=8, upper=60)
+    # Calcular tamanhos proporcionais (8 a 60 pixels)
+    tamanhos = (top_regioes['domestico_t_ano'] / 5000).clip(lower=8, upper=60).tolist()
+    
     fig4.add_trace(go.Scatter(
-        x=top_regioes['populacao'],
-        y=top_regioes['domestico_t_ano'],
+        x=top_regioes['populacao'].tolist(),
+        y=top_regioes['domestico_t_ano'].tolist(),
         mode='markers+text',
         marker=dict(
             size=tamanhos,
-            color=top_regioes['domestico_t_ano'],
+            color=top_regioes['domestico_t_ano'].tolist(),
             colorscale='Viridis',
             showscale=True,
             colorbar=dict(title="t/ano"),
             line=dict(width=2, color='white')
         ),
-        text=top_regioes['NM_RGI'],
+        text=top_regioes['NM_RGI'].tolist(),
         textposition='top center',
         textfont=dict(size=9),
         hovertemplate='<b>%{text}</b><br>População: %{x:,.0f}<br>Resíduos: %{y:,.0f} t/ano<extra></extra>'
