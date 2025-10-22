@@ -231,24 +231,54 @@ fig2.update_layout(
 )
 
 # ---------------------------------------------------------------------------
-# GRÁFICO 3: Pizza - Distribuição de Risco
+# GRÁFICO 3: Pizza - Distribuição de Risco (mais legível)
 # ---------------------------------------------------------------------------
-risco_counts = df_risco['risco'].value_counts()
+# Padronizar a ordem das categorias e as cores (Crítico > Alto > Médio > Baixo)
+risk_order = ['CRÍTICO', 'ALTO', 'MÉDIO', 'BAIXO']
+color_map = {
+    'CRÍTICO': '#d32f2f',
+    'ALTO': '#f57c00',
+    'MÉDIO': '#fbc02d',
+    'BAIXO': '#388e3c'
+}
+
+# Normalizar rótulos para maiúsculas (mantendo acentos) e contar
+df_risco_norm = df_risco.copy()
+df_risco_norm['risco'] = df_risco_norm['risco'].astype(str).str.upper()
+risco_counts_raw = df_risco_norm['risco'].value_counts()
+risco_counts = risco_counts_raw.reindex(risk_order, fill_value=0)
+
+# Construir o gráfico com ordem e cores fixas
+labels_risco = risco_counts.index.tolist()
+values_risco = risco_counts.values.tolist()
+colors_risco = [color_map[l] for l in labels_risco]
+
+total_muns = int(df_risco_norm.shape[0])
 
 fig3 = go.Figure(data=[go.Pie(
-    labels=risco_counts.index,
-    values=risco_counts.values,
-    hole=0.4,
-    marker=dict(colors=['#d32f2f', '#f57c00', '#fbc02d', '#388e3c']),
-    textinfo='label+percent+value',
-    hovertemplate='<b>%{label}</b><br>Municípios: %{value}<br>%{percent}<extra></extra>'
+    labels=labels_risco,
+    values=values_risco,
+    hole=0.45,
+    marker=dict(colors=colors_risco),
+    textinfo='percent',
+    hovertemplate='<b>%{label}</b><br>Municípios: %{value} de {total_muns}<br>Participação: %{percent}<extra></extra>',
+    pull=[0.08 if l == 'CRÍTICO' else 0 for l in labels_risco]
 )])
 
 fig3.update_layout(
     title='⚠️ Distribuição de Municípios por Nível de Risco',
-    height=450,
+    height=460,
+    showlegend=True,
+    legend=dict(orientation='h', x=0.5, xanchor='center', y=-0.05, yanchor='top'),
     template='plotly_white',
-    annotations=[dict(text='Risco', x=0.5, y=0.5, font_size=20, showarrow=False)]
+    annotations=[
+        dict(text=f'Total<br>{total_muns}', x=0.5, y=0.5, font_size=16, showarrow=False),
+        dict(
+            text='Baixo < Médio < Alto < Crítico',
+            x=0.5, y=1.12, xref='paper', yref='paper', showarrow=False, font_size=11, xanchor='center',
+        )
+    ],
+    margin=dict(t=80, r=30, b=60, l=30)
 )
 
 # ---------------------------------------------------------------------------
