@@ -236,29 +236,62 @@ fig4.update_yaxes(tickformat=",.0f")
 # ---------------------------------------------------------------------------
 fig5 = make_subplots(
     rows=1, cols=2,
-    subplot_titles=('População por Bacia', 'População por Região (Top 5)'),
+    subplot_titles=(
+        '🌊 Bacias Hidrográficas (7 divisões naturais)',
+        '📍 Regiões Geográficas Imediatas - RGI (Top 5 de 24)'
+    ),
     specs=[[{'type': 'domain'}, {'type': 'domain'}]]
 )
 
+# Pizza 1: Bacias Hidrográficas
 fig5.add_trace(go.Pie(
     labels=df_bacias['bacia'],
     values=df_bacias['populacao'],
     name='Bacias',
-    marker=dict(colors=cores_bacias)
+    marker=dict(colors=cores_bacias),
+    textinfo='label+percent',
+    hovertemplate='<b>%{label}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>',
+    hole=0.3
 ), 1, 1)
 
+# Pizza 2: Top 5 Regiões Geográficas
 top5_regioes = df_regioes.nlargest(5, 'populacao')
 fig5.add_trace(go.Pie(
     labels=top5_regioes['NM_RGI'],
     values=top5_regioes['populacao'],
-    name='Regiões'
+    name='Regiões',
+    textinfo='label+percent',
+    hovertemplate='<b>%{label}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>',
+    hole=0.3
 ), 1, 2)
 
 fig5.update_layout(
     title_text='🗺️ Distribuição Populacional: Bacias vs Regiões',
-    height=400,
-    showlegend=True,
-    template='plotly_white'
+    height=500,
+    showlegend=False,
+    template='plotly_white',
+    annotations=[
+        # Anotação central da pizza 1
+        dict(text='Bacias<br>Hídricas', x=0.18, y=0.5, font_size=12, showarrow=False, xref='paper', yref='paper'),
+        # Anotação central da pizza 2
+        dict(text='Regiões<br>IBGE', x=0.82, y=0.5, font_size=12, showarrow=False, xref='paper', yref='paper'),
+        # Legenda explicativa
+        dict(
+            text='<b>💡 Entenda a comparação:</b><br>'
+                 '• <b>Bacias Hidrográficas</b>: Divisão por rios e recursos hídricos (7 áreas naturais)<br>'
+                 '• <b>Regiões Geográficas</b>: Divisão político-administrativa do IBGE (24 RGI em SC)',
+            x=0.5, y=-0.15,
+            font_size=11,
+            showarrow=False,
+            xref='paper', yref='paper',
+            xanchor='center',
+            align='left',
+            bgcolor='rgba(255,255,255,0.8)',
+            bordercolor='#ddd',
+            borderwidth=1,
+            borderpad=8
+        )
+    ]
 )
 
 # ---------------------------------------------------------------------------
