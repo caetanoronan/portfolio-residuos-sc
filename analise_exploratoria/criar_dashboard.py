@@ -232,85 +232,64 @@ fig4.update_xaxes(tickformat=",.0f")
 fig4.update_yaxes(tickformat=",.0f")
 
 # ---------------------------------------------------------------------------
-# GRÁFICO 5: Comparativo Bacias vs Regiões
+# GRÁFICO 5: Comparativo Bacias vs Regiões (versão barras)
 # ---------------------------------------------------------------------------
 fig5 = make_subplots(
     rows=1, cols=2,
     subplot_titles=(
-        '🌊 Bacias Hidrográficas (7 divisões naturais)',
-        '📍 Regiões Geográficas Imediatas - RGI (Top 5 de 24)'
+        '🌊 População por Bacia Hidrográfica',
+        '📍 População por Região (Top 5)'
     ),
-    specs=[[{'type': 'domain'}, {'type': 'domain'}]]
+    specs=[[{'type': 'xy'}, {'type': 'xy'}]]
 )
 
-# Pizza 1: Bacias Hidrográficas (legend group: Bacias)
-fig5.add_trace(go.Pie(
-    labels=df_bacias['bacia'],
-    values=df_bacias['populacao'],
-    name='Bacias',
-    marker=dict(colors=cores_bacias),
-    textinfo='label+percent',
-    hovertemplate='<b>%{label}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>',
-    hole=0.3,
-    legendgroup='Bacias',
-    legendgrouptitle_text='Bacias Hidrográficas'
-), 1, 1)
+# Dados e cores para Bacias
+total_bacias = df_bacias['populacao'].sum()
+df_bacias_sorted = df_bacias.copy().sort_values('populacao', ascending=True)
+share_bacias = (df_bacias_sorted['populacao'] / total_bacias).values
+# mapear cores preservando a cor original por bacia
+map_cor_bacia = {b: c for b, c in zip(df_bacias['bacia'], cores_bacias)}
+cores_bacias_sorted = [map_cor_bacia[b] for b in df_bacias_sorted['bacia']]
 
-# Pizza 2: Top 5 Regiões Geográficas (legend group: Regiões)
-top5_regioes = df_regioes.nlargest(5, 'populacao')
-labels_regioes_trunc = top5_regioes['NM_RGI'].apply(lambda s: s if len(str(s)) <= 16 else str(s)[:15] + '…')
-fig5.add_trace(go.Pie(
-    labels=labels_regioes_trunc,
-    values=top5_regioes['populacao'],
-    name='Regiões',
-    textinfo='label+percent',
-    customdata=top5_regioes['NM_RGI'].tolist(),
-    hovertemplate='<b>%{customdata}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>',
-    hole=0.3,
-    legendgroup='Regiões',
-    legendgrouptitle_text='Regiões (Top 5)'
-), 1, 2)
+fig5.add_trace(go.Bar(
+    y=df_bacias_sorted['bacia'],
+    x=df_bacias_sorted['populacao'],
+    orientation='h',
+    marker_color=cores_bacias_sorted,
+    text=[f"{v:,.0f} ({p:.1%})" for v, p in zip(df_bacias_sorted['populacao'], share_bacias)],
+    textposition='outside',
+    hovertemplate='<b>%{y}</b><br>População: %{x:,.0f}<br>Participação: %{customdata:.1%}<extra></extra>',
+    customdata=share_bacias
+), row=1, col=1)
+
+# Dados e barras para Regiões (Top 5)
+top5_regioes = df_regioes.nlargest(5, 'populacao').copy().sort_values('populacao', ascending=True)
+total_regioes_top5 = top5_regioes['populacao'].sum()
+share_regioes = (top5_regioes['populacao'] / total_regioes_top5).values
+
+fig5.add_trace(go.Bar(
+    y=top5_regioes['NM_RGI'],
+    x=top5_regioes['populacao'],
+    orientation='h',
+    marker_color='#90caf9',
+    text=[f"{v:,.0f} ({p:.1%})" for v, p in zip(top5_regioes['populacao'], share_regioes)],
+    textposition='outside',
+    hovertemplate='<b>%{y}</b><br>População: %{x:,.0f}<br>Participação (Top 5): %{customdata:.1%}<extra></extra>',
+    customdata=share_regioes
+), row=1, col=2)
 
 fig5.update_layout(
     title_text='🗺️ Distribuição Populacional: Bacias vs Regiões',
     height=520,
-    showlegend=True,
+    showlegend=False,
     template='plotly_white',
-    legend=dict(
-        orientation='h',
-        x=0.5,
-        xanchor='center',
-        y=-0.1,
-        yanchor='top',
-        traceorder='grouped',
-        tracegroupgap=18,
-        itemclick='toggle',
-        itemdoubleclick='toggleothers'
-    ),
-    annotations=[
-        # Anotação central da pizza 1
-        dict(text='Bacias<br>Hídricas', x=0.18, y=0.5, font_size=12, showarrow=False, xref='paper', yref='paper'),
-        # Anotação central da pizza 2
-        dict(text='Regiões<br>IBGE', x=0.82, y=0.5, font_size=12, showarrow=False, xref='paper', yref='paper'),
-        # Legenda explicativa
-        dict(
-            text='<b>💡 Entenda a comparação:</b><br>'
-                 '• <b>Bacias Hidrográficas</b>: Divisão por rios e recursos hídricos (7 áreas naturais)<br>'
-                 '• <b>Regiões Geográficas</b>: Divisão político-administrativa do IBGE (24 RGI em SC)',
-            x=0.5, y=-0.26,
-            font_size=11,
-            showarrow=False,
-            xref='paper', yref='paper',
-            xanchor='center',
-            align='left',
-            bgcolor='rgba(255,255,255,0.85)',
-            bordercolor='#ddd',
-            borderwidth=1,
-            borderpad=8
-        )
-    ],
-    margin=dict(t=80, r=30, b=120, l=30)
+    margin=dict(t=80, r=30, b=80, l=30),
 )
+
+fig5.update_xaxes(tickformat=",.0f", title_text='Habitantes', row=1, col=1)
+fig5.update_xaxes(tickformat=",.0f", title_text='Habitantes', row=1, col=2)
+fig5.update_yaxes(title_text='Bacia Hidrográfica', row=1, col=1)
+fig5.update_yaxes(title_text='Região (RGI)', row=1, col=2)
 
 # ---------------------------------------------------------------------------
 # GRÁFICO 6: Heatmap - Correlação
