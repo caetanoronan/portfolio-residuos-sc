@@ -61,7 +61,12 @@ print("\n2️⃣ Processando dados para visualizações...")
 
 # Top 15 municípios
 if pop_df is not None:
-    top_municipios = pop_df.nlargest(15, 'domestico_t_ano')
+    # Seleciona os 15 maiores e exibe em ordem crescente
+    top_municipios = (
+        pop_df
+        .nlargest(15, 'domestico_t_ano')
+        .sort_values('domestico_t_ano', ascending=True)
+    )
     
     # Estatísticas gerais
     total_pop = pop_df['populacao'].sum()
@@ -111,6 +116,7 @@ fig1.update_layout(
     title='🔵 Top 15 Municípios - Geração de Resíduos Domésticos',
     xaxis_title='Toneladas por Ano',
     yaxis_title='',
+    yaxis=dict(categoryorder='array', categoryarray=top_municipios['municipio'].tolist()),
     height=600,
     template='plotly_white',
     font=dict(size=12),
