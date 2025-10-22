@@ -183,27 +183,41 @@ fig3.update_layout(
 # ---------------------------------------------------------------------------
 # GRÁFICO 4: Top 10 Regiões (RGI)
 # ---------------------------------------------------------------------------
-top_regioes = df_regioes.nlargest(10, 'domestico_t_ano')
+# Garantir tipos numéricos e remover nulos
+df_regioes['populacao'] = pd.to_numeric(df_regioes['populacao'], errors='coerce')
+df_regioes['domestico_t_ano'] = pd.to_numeric(df_regioes['domestico_t_ano'], errors='coerce')
+regioes_validas = df_regioes.dropna(subset=['populacao', 'domestico_t_ano'])
+top_regioes = regioes_validas.nlargest(10, 'domestico_t_ano')
 
 fig4 = go.Figure()
 
-fig4.add_trace(go.Scatter(
-    x=top_regioes['populacao'],
-    y=top_regioes['domestico_t_ano'],
-    mode='markers+text',
-    marker=dict(
-        size=top_regioes['domestico_t_ano'] / 5000,
-        color=top_regioes['domestico_t_ano'],
-        colorscale='Viridis',
-        showscale=True,
-        colorbar=dict(title="t/ano"),
-        line=dict(width=2, color='white')
-    ),
-    text=top_regioes['NM_RGI'],
-    textposition='top center',
-    textfont=dict(size=9),
-    hovertemplate='<b>%{text}</b><br>População: %{x:,.0f}<br>Resíduos: %{y:,.0f} t/ano<extra></extra>'
-))
+if len(top_regioes) > 0:
+    tamanhos = (top_regioes['domestico_t_ano'] / 5000).clip(lower=8, upper=60)
+    fig4.add_trace(go.Scatter(
+        x=top_regioes['populacao'],
+        y=top_regioes['domestico_t_ano'],
+        mode='markers+text',
+        marker=dict(
+            size=tamanhos,
+            color=top_regioes['domestico_t_ano'],
+            colorscale='Viridis',
+            showscale=True,
+            colorbar=dict(title="t/ano"),
+            line=dict(width=2, color='white')
+        ),
+        text=top_regioes['NM_RGI'],
+        textposition='top center',
+        textfont=dict(size=9),
+        hovertemplate='<b>%{text}</b><br>População: %{x:,.0f}<br>Resíduos: %{y:,.0f} t/ano<extra></extra>'
+    ))
+else:
+    # Mensagem amigável quando não houver dados
+    fig4.add_annotation(
+        text="Sem dados para exibir",
+        xref="paper", yref="paper",
+        x=0.5, y=0.5, showarrow=False,
+        font=dict(size=16)
+    )
 
 fig4.update_layout(
     title='📍 Top 10 Regiões (RGI) - População vs Resíduos',
@@ -212,6 +226,8 @@ fig4.update_layout(
     height=500,
     template='plotly_white'
 )
+fig4.update_xaxes(tickformat=",.0f")
+fig4.update_yaxes(tickformat=",.0f")
 
 # ---------------------------------------------------------------------------
 # GRÁFICO 5: Comparativo Bacias vs Regiões
