@@ -156,6 +156,20 @@ total_por_bacia = (df_bacias_sorted2['domestico_t_ano'] + df_bacias_sorted2['rec
 y_dom_pct = (df_bacias_sorted2['domestico_t_ano'] / total_por_bacia * 100).fillna(0)
 y_rec_pct = (df_bacias_sorted2['reciclavel_t_ano'] / total_por_bacia * 100).fillna(0)
 
+# Anotações de total (exibidas apenas no modo Totais)
+annos_totais = [
+    dict(
+        text=f"Total: {v:,.0f} t/ano",
+        x=xb,
+        xref='x',
+        y=-0.18,
+        yref='paper',
+        showarrow=False,
+        font=dict(size=9, color='#444')
+    )
+    for xb, v in zip(x_bacias, df_bacias_sorted2['total_residuos'])
+]
+
 # Traces (default: Totais t/ano)
 fig2.add_trace(go.Bar(
     x=x_bacias,
@@ -193,12 +207,18 @@ fig2.update_layout(
                     label='Totais (t/ano)',
                     method='update',
                     args=[
-                        {'y': [y_dom_tot, y_rec_tot],
+                                                {'y': [y_dom_tot, y_rec_tot],
+                         'text': [None, None],
                          'hovertemplate': [
                              '<b>%{x}</b><br>Doméstico: %{y:,.0f} t/ano<extra></extra>',
                              '<b>%{x}</b><br>Reciclável: %{y:,.0f} t/ano<extra></extra>'
                          ]},
-                        {'yaxis': {'title': {'text': 'Toneladas por Ano'}}, 'barmode': 'group'}
+                        {
+                          'yaxis': {'title': {'text': 'Toneladas por Ano'}},
+                          'barmode': 'group',
+                                                    'shapes': [],
+                                                    'annotations': annos_totais
+                        }
                     ]
                 ),
                 dict(
@@ -206,11 +226,39 @@ fig2.update_layout(
                     method='update',
                     args=[
                         {'y': [y_dom_pc, y_rec_pc],
+                         'text': [None, None],
                          'hovertemplate': [
                              '<b>%{x}</b><br>Doméstico: %{y:,.2f} t/ano por 1.000 hab<extra></extra>',
                              '<b>%{x}</b><br>Reciclável: %{y:,.2f} t/ano por 1.000 hab<extra></extra>'
                          ]},
-                        {'yaxis': {'title': {'text': 't/ano por 1.000 habitantes'}}, 'barmode': 'group'}
+                        {
+                          'yaxis': {'title': {'text': 't/ano por 1.000 habitantes'}},
+                          'barmode': 'group',
+                          'shapes': [
+                              {
+                                'type': 'line', 'xref': 'paper', 'yref': 'y',
+                                'x0': 0, 'x1': 1, 'y0': float((df_bacias_sorted2['domestico_t_ano'].sum() / pop_bacias.sum())*1000), 'y1': float((df_bacias_sorted2['domestico_t_ano'].sum() / pop_bacias.sum())*1000),
+                                'line': {'color': '#1976d2', 'width': 2, 'dash': 'dash'}
+                              },
+                              {
+                                'type': 'line', 'xref': 'paper', 'yref': 'y',
+                                'x0': 0, 'x1': 1, 'y0': float((df_bacias_sorted2['reciclavel_t_ano'].sum() / pop_bacias.sum())*1000), 'y1': float((df_bacias_sorted2['reciclavel_t_ano'].sum() / pop_bacias.sum())*1000),
+                                'line': {'color': '#fbc02d', 'width': 2, 'dash': 'dot'}
+                              }
+                          ],
+                          'annotations': [
+                              {
+                                'text': 'Média Doméstico', 'xref': 'paper', 'yref': 'y', 'x': 1.01,
+                                'y': float((df_bacias_sorted2['domestico_t_ano'].sum() / pop_bacias.sum())*1000),
+                                'showarrow': False, 'font': {'size': 10, 'color': '#1976d2'}
+                              },
+                              {
+                                'text': 'Média Reciclável', 'xref': 'paper', 'yref': 'y', 'x': 1.01,
+                                'y': float((df_bacias_sorted2['reciclavel_t_ano'].sum() / pop_bacias.sum())*1000),
+                                'showarrow': False, 'font': {'size': 10, 'color': '#fbc02d'}
+                              }
+                          ]
+                        }
                     ]
                 ),
                 dict(
@@ -218,11 +266,13 @@ fig2.update_layout(
                     method='update',
                     args=[
                         {'y': [y_dom_pct, y_rec_pct],
+                         'text': [y_dom_pct.apply(lambda v: f"{v:.1f}%"), y_rec_pct.apply(lambda v: f"{v:.1f}%")],
+                         'textposition': ['outside','outside'],
                          'hovertemplate': [
                              '<b>%{x}</b><br>Doméstico: %{y:.1f}%<extra></extra>',
                              '<b>%{x}</b><br>Reciclável: %{y:.1f}%<extra></extra>'
                          ]},
-                        {'yaxis': {'title': {'text': 'Participação (%)'}}, 'barmode': 'stack'}
+                        {'yaxis': {'title': {'text': 'Participação (%)'}}, 'barmode': 'stack', 'shapes': [], 'annotations': []}
                     ]
                 ),
             ]
@@ -278,7 +328,24 @@ fig3.update_layout(
             x=0.5, y=1.12, xref='paper', yref='paper', showarrow=False, font_size=11, xanchor='center',
         )
     ],
-    margin=dict(t=80, r=30, b=60, l=30)
+    margin=dict(t=110, r=30, b=70, l=30),
+    updatemenus=[
+        dict(
+            type='buttons',
+            direction='right',
+            x=0.5, xanchor='center', y=1.16, yanchor='top',
+            buttons=[
+                dict(label='Exibir: Percentual', method='restyle', args=['textinfo', 'percent']),
+                dict(label='Exibir: Quantidade', method='restyle', args=['textinfo', 'label+value'])
+            ]
+        )
+    ]
+)
+
+# Nota metodológica (discreta)
+fig3.add_annotation(
+    text='Metodologia: classificação simplificada para visualização (proporções dos níveis de risco).',
+    x=0.5, y=-0.18, xref='paper', yref='paper', showarrow=False, font_size=10, xanchor='center'
 )
 
 # ---------------------------------------------------------------------------
@@ -368,23 +435,49 @@ fig5.add_trace(go.Bar(
     customdata=share_bacias
 ), row=1, col=1)
 
-# Dados e barras para Regiões (Top 5)
+# Dados e barras para Regiões (Top 5 e Top 8) com percentuais sobre o Estado
+total_estado_pop = float(df_regioes['populacao'].sum())
 top5_regioes = df_regioes.nlargest(5, 'populacao').copy().sort_values('populacao', ascending=True)
-total_regioes_top5 = top5_regioes['populacao'].sum()
-share_regioes = (top5_regioes['populacao'] / total_regioes_top5).values
+top8_regioes = df_regioes.nlargest(8, 'populacao').copy().sort_values('populacao', ascending=True)
 
+# Paleta categórica para regiões
+paleta_regioes = px.colors.qualitative.Set2
+cores_top5 = [paleta_regioes[i % len(paleta_regioes)] for i in range(len(top5_regioes))]
+cores_top8 = [paleta_regioes[i % len(paleta_regioes)] for i in range(len(top8_regioes))]
+
+share_regioes5_estado = (top5_regioes['populacao'] / total_estado_pop).values
+share_regioes8_estado = (top8_regioes['populacao'] / total_estado_pop).values
+
+# Trace Top 5 (visível por padrão)
 fig5.add_trace(go.Bar(
     y=top5_regioes['NM_RGI'],
     x=top5_regioes['populacao'],
     orientation='h',
-    marker_color='#90caf9',
-    text=[f"{v:,.0f} ({p:.1%})" for v, p in zip(top5_regioes['populacao'], share_regioes)],
+    marker_color=cores_top5,
+    text=[f"{v:,.0f} ({p:.1%} do estado)" for v, p in zip(top5_regioes['populacao'], share_regioes5_estado)],
     texttemplate='%{text}',
     textposition='auto',
     textfont=dict(size=10),
     constraintext='both',
-    hovertemplate='<b>%{y}</b><br>População: %{x:,.0f}<br>Participação (Top 5): %{customdata:.1%}<extra></extra>',
-    customdata=share_regioes
+    hovertemplate='<b>%{y}</b><br>População: %{x:,.0f}<br>Participação no Estado: %{customdata:.1%}<extra></extra>',
+    customdata=share_regioes5_estado,
+    visible=True
+), row=1, col=2)
+
+# Trace Top 8 (inicialmente oculto)
+fig5.add_trace(go.Bar(
+    y=top8_regioes['NM_RGI'],
+    x=top8_regioes['populacao'],
+    orientation='h',
+    marker_color=cores_top8,
+    text=[f"{v:,.0f} ({p:.1%} do estado)" for v, p in zip(top8_regioes['populacao'], share_regioes8_estado)],
+    texttemplate='%{text}',
+    textposition='auto',
+    textfont=dict(size=10),
+    constraintext='both',
+    hovertemplate='<b>%{y}</b><br>População: %{x:,.0f}<br>Participação no Estado: %{customdata:.1%}<extra></extra>',
+    customdata=share_regioes8_estado,
+    visible=False
 ), row=1, col=2)
 
 fig5.update_layout(
@@ -392,13 +485,77 @@ fig5.update_layout(
     height=500,
     showlegend=False,
     template='plotly_white',
-    margin=dict(t=80, r=30, b=60, l=30),
+    margin=dict(t=110, r=30, b=60, l=30),
+    updatemenus=[
+        dict(
+            type='buttons',
+            direction='right',
+            x=0.5, xanchor='center', y=1.16, yanchor='top',
+            buttons=[
+                dict(
+                    label='Regiões: Top 5',
+                    method='update',
+                    args=[
+                        {'visible': [True, True, False]},
+                        {}
+                    ]
+                ),
+                dict(
+                    label='Regiões: Top 8',
+                    method='update',
+                    args=[
+                        {'visible': [True, False, True]},
+                        {}
+                    ]
+                ),
+            ]
+        )
+    ]
 )
 
 fig5.update_xaxes(tickformat=",.0f", title_text='Habitantes', automargin=True, tickfont=dict(size=10), row=1, col=1)
 fig5.update_xaxes(tickformat=",.0f", title_text='Habitantes', automargin=True, tickfont=dict(size=10), row=1, col=2)
 fig5.update_yaxes(title_text='Bacia Hidrográfica', automargin=True, tickfont=dict(size=10), row=1, col=1)
 fig5.update_yaxes(title_text='Região (RGI)', automargin=True, tickfont=dict(size=10), row=1, col=2)
+
+# Versão alternativa (Pies) para o Gráfico 5
+cov_top8 = float(top8_regioes['populacao'].sum() / total_estado_pop)
+fig5_pie = make_subplots(
+    rows=1, cols=2,
+    specs=[[{'type': 'domain'}, {'type': 'domain'}]],
+    subplot_titles=(
+        '🌊 Bacias por População',
+        '📍 Regiões (Top 8) por População'
+    )
+)
+
+fig5_pie.add_trace(go.Pie(
+    labels=df_bacias['bacia'],
+    values=df_bacias['populacao'],
+    name='Bacias',
+    marker=dict(colors=cores_bacias),
+    textinfo='label+percent',
+    hovertemplate='<b>%{label}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>'
+), 1, 1)
+
+fig5_pie.add_trace(go.Pie(
+    labels=top8_regioes['NM_RGI'],
+    values=top8_regioes['populacao'],
+    name='Regiões Top 8',
+    marker=dict(colors=cores_top8),
+    textinfo='label+percent',
+    hovertemplate='<b>%{label}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>'
+), 1, 2)
+
+fig5_pie.update_layout(
+    title_text='🗺️ Distribuição Populacional: Bacias vs Regiões (Pizzas)',
+    height=500,
+    showlegend=False,
+    template='plotly_white',
+    annotations=[
+        dict(text=f'Top 8 cobre {cov_top8:.1%} do estado', x=0.82, y=0.05, showarrow=False, font_size=11, xref='paper', yref='paper')
+    ]
+)
 
 # ---------------------------------------------------------------------------
 # GRÁFICO 6: Heatmap - Correlação
@@ -591,8 +748,13 @@ html_content = f"""
         </div>
         
         <div class="chart-container">
-            <div id="chart5"></div>
-        </div>
+                <div style="display:flex; justify-content:center; gap:10px; margin-bottom:10px;">
+                    <button id="btnBars" class="back-button" style="padding:6px 14px;">Barras</button>
+                    <button id="btnPies" class="back-button" style="padding:6px 14px;">Pizzas</button>
+                </div>
+                <div id="chart5" style="display:block;"></div>
+                <div id="chart5_pie" style="display:none;"></div>
+            </div>
         
         <div class="chart-container">
             <div id="chart6"></div>
@@ -624,13 +786,27 @@ html_content = f"""
         var chart4 = {fig4.to_json()};
         Plotly.newPlot('chart4', chart4.data, chart4.layout, {{responsive: true}});
         
-        // Gráfico 5
+    // Gráfico 5
         var chart5 = {fig5.to_json()};
         Plotly.newPlot('chart5', chart5.data, chart5.layout, {{responsive: true}});
+        
+    // Gráfico 5 (Pies alternativo)
+    var chart5_pie = {fig5_pie.to_json()};
+    Plotly.newPlot('chart5_pie', chart5_pie.data, chart5_pie.layout, {{responsive: true}});
         
         // Gráfico 6
         var chart6 = {fig6.to_json()};
         Plotly.newPlot('chart6', chart6.data, chart6.layout, {{responsive: true}});
+        
+        // Toggle Barras x Pizzas
+        document.getElementById('btnBars').addEventListener('click', function() {{
+            document.getElementById('chart5').style.display = 'block';
+            document.getElementById('chart5_pie').style.display = 'none';
+        }});
+        document.getElementById('btnPies').addEventListener('click', function() {{
+            document.getElementById('chart5').style.display = 'none';
+            document.getElementById('chart5_pie').style.display = 'block';
+        }});
     </script>
 </body>
 </html>
