@@ -131,32 +131,103 @@ fig2 = go.Figure()
 cores_bacias = ['#1976d2', '#388e3c', '#7b1fa2', '#0097a7', 
                 '#00796b', '#f57c00', '#5d4037', '#757575']
 
+"""
+Gráfico 2: Geração de resíduos por Bacia Hidrográfica
+- Melhoria de leitura: ordenar por total, remover rótulos fixos e adicionar botões de modo (Totais / por 1.000 hab / %).
+"""
+
+# Ordenar bacias por total de resíduos (doméstico + reciclável)
+df_bacias_sorted2 = df_bacias.copy()
+df_bacias_sorted2['total_residuos'] = df_bacias_sorted2['domestico_t_ano'] + df_bacias_sorted2['reciclavel_t_ano']
+df_bacias_sorted2 = df_bacias_sorted2.sort_values('total_residuos', ascending=False)
+
+# Preparar séries para os 3 modos
+x_bacias = df_bacias_sorted2['bacia']
+y_dom_tot = df_bacias_sorted2['domestico_t_ano']
+y_rec_tot = df_bacias_sorted2['reciclavel_t_ano']
+
+# Por 1.000 habitantes (evita divisão por zero)
+pop_bacias = df_bacias_sorted2['populacao'].replace(0, pd.NA)
+y_dom_pc = (df_bacias_sorted2['domestico_t_ano'] / pop_bacias * 1000).fillna(0)
+y_rec_pc = (df_bacias_sorted2['reciclavel_t_ano'] / pop_bacias * 1000).fillna(0)
+
+# Percentual dentro de cada bacia
+total_por_bacia = (df_bacias_sorted2['domestico_t_ano'] + df_bacias_sorted2['reciclavel_t_ano']).replace(0, pd.NA)
+y_dom_pct = (df_bacias_sorted2['domestico_t_ano'] / total_por_bacia * 100).fillna(0)
+y_rec_pct = (df_bacias_sorted2['reciclavel_t_ano'] / total_por_bacia * 100).fillna(0)
+
+# Traces (default: Totais t/ano)
 fig2.add_trace(go.Bar(
-    x=df_bacias['bacia'],
-    y=df_bacias['domestico_t_ano'],
+    x=x_bacias,
+    y=y_dom_tot,
     name='Doméstico',
-    marker_color='#034e7b',
-    text=df_bacias['domestico_t_ano'].apply(lambda x: f'{x:,.0f}'),
-    textposition='outside'
+    marker_color='#1976d2',
+    hovertemplate='<b>%{x}</b><br>Doméstico: %{y:,.0f} t/ano<extra></extra>'
 ))
 
 fig2.add_trace(go.Bar(
-    x=df_bacias['bacia'],
-    y=df_bacias['reciclavel_t_ano'],
+    x=x_bacias,
+    y=y_rec_tot,
     name='Reciclável',
     marker_color='#fbc02d',
-    text=df_bacias['reciclavel_t_ano'].apply(lambda x: f'{x:,.0f}'),
-    textposition='outside'
+    hovertemplate='<b>%{x}</b><br>Reciclável: %{y:,.0f} t/ano<extra></extra>'
 ))
 
 fig2.update_layout(
     title='🌊 Geração de Resíduos por Bacia Hidrográfica',
     xaxis_title='Bacia Hidrográfica',
     yaxis_title='Toneladas por Ano',
-    height=500,
+    height=520,
     template='plotly_white',
     barmode='group',
-    xaxis_tickangle=-45
+    bargap=0.2,
+    bargroupgap=0.12,
+    xaxis_tickangle=-30,
+    updatemenus=[
+        dict(
+            type='buttons',
+            direction='right',
+            x=0.5, xanchor='center', y=1.15, yanchor='top',
+            buttons=[
+                dict(
+                    label='Totais (t/ano)',
+                    method='update',
+                    args=[
+                        {'y': [y_dom_tot, y_rec_tot],
+                         'hovertemplate': [
+                             '<b>%{x}</b><br>Doméstico: %{y:,.0f} t/ano<extra></extra>',
+                             '<b>%{x}</b><br>Reciclável: %{y:,.0f} t/ano<extra></extra>'
+                         ]},
+                        {'yaxis': {'title': {'text': 'Toneladas por Ano'}}, 'barmode': 'group'}
+                    ]
+                ),
+                dict(
+                    label='Por 1.000 hab',
+                    method='update',
+                    args=[
+                        {'y': [y_dom_pc, y_rec_pc],
+                         'hovertemplate': [
+                             '<b>%{x}</b><br>Doméstico: %{y:,.2f} t/ano por 1.000 hab<extra></extra>',
+                             '<b>%{x}</b><br>Reciclável: %{y:,.2f} t/ano por 1.000 hab<extra></extra>'
+                         ]},
+                        {'yaxis': {'title': {'text': 't/ano por 1.000 habitantes'}}, 'barmode': 'group'}
+                    ]
+                ),
+                dict(
+                    label='% na bacia',
+                    method='update',
+                    args=[
+                        {'y': [y_dom_pct, y_rec_pct],
+                         'hovertemplate': [
+                             '<b>%{x}</b><br>Doméstico: %{y:.1f}%<extra></extra>',
+                             '<b>%{x}</b><br>Reciclável: %{y:.1f}%<extra></extra>'
+                         ]},
+                        {'yaxis': {'title': {'text': 'Participação (%)'}}, 'barmode': 'stack'}
+                    ]
+                ),
+            ]
+        )
+    ]
 )
 
 # ---------------------------------------------------------------------------
