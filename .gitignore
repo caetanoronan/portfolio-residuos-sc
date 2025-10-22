@@ -18,6 +18,9 @@ env/
 *.cpg
 *.qix
 
+# HTML grande (mapa interativo)
+analise_exploratoria/outputs/interactive_waste_map.html
+
 # Imagens grandes
 *.png
 *.jpg
