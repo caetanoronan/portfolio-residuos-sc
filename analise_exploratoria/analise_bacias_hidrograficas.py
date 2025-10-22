@@ -179,7 +179,7 @@ if pop_df is not None:
         'Outras Bacias': '#757575'
     }
     
-    # Adicionar municípios com marcadores de risco
+    # Adicionar municípios com marcadores coloridos por BACIA
     for _, row in muni_wgs.iterrows():
         if pd.notna(row.get('domestico_t_ano')):
             centroid = row['geometry'].centroid
@@ -190,8 +190,9 @@ if pop_df is not None:
                 <h3 style="margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid {cor_bacia};">
                     📍 {row.get('NM_MUN', 'N/A')}
                 </h3>
-                <div style="background: #e1f5fe; padding: 8px; margin: 5px 0; border-left: 4px solid {cor_bacia}; border-radius: 3px;">
-                    <strong>🌊 Bacia:</strong> {row['bacia']}
+                <div style="background: {cor_bacia}22; padding: 8px; margin: 5px 0; border-left: 4px solid {cor_bacia}; border-radius: 3px;">
+                    <strong style="color: {cor_bacia};">🌊 Bacia:</strong> 
+                    <span style="font-weight: bold; color: {cor_bacia};">{row['bacia']}</span>
                 </div>
                 <div style="background: {row['cor_risco']}22; padding: 8px; margin: 5px 0; border-left: 4px solid {row['cor_risco']}; border-radius: 3px;">
                     <strong style="color: {row['cor_risco']};">⚠️ Risco:</strong> 
@@ -215,15 +216,16 @@ if pop_df is not None:
             """
             
             # Tamanho do marcador proporcional ao risco
-            radius = {'CRÍTICO': 8, 'ALTO': 6, 'MÉDIO': 4, 'BAIXO': 3}.get(row['risco'], 3)
+            radius = {'CRÍTICO': 10, 'ALTO': 8, 'MÉDIO': 6, 'BAIXO': 5}.get(row['risco'], 5)
             
+            # COR DO MARCADOR = COR DA BACIA (não mais cor do risco!)
             folium.CircleMarker(
                 location=[centroid.y, centroid.x],
                 radius=radius,
-                color=row['cor_risco'],
+                color=cor_bacia,
                 fill=True,
-                fillColor=row['cor_risco'],
-                fillOpacity=0.7,
+                fillColor=cor_bacia,
+                fillOpacity=0.8,
                 weight=2,
                 popup=folium.Popup(popup_html, max_width=350)
             ).add_to(m)
