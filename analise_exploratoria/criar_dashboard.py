@@ -26,8 +26,8 @@ df_risco = pd.read_csv(r'outputs\analise_risco_municipios.csv')
 # Carregar setores para análise municipal completa
 gdf = gpd.read_file(r'SC_setores_CD2022.gpkg')
 
-# Buscar população municipal
-print("   Buscando população via API IBGE...")
+# Buscar população municipal APENAS DE SANTA CATARINA
+print("   Buscando população via API IBGE (apenas SC)...")
 try:
     url = "https://servicodados.ibge.gov.br/api/v3/agregados/4714/periodos/2022/variaveis/93?localidades=N6[all]"
     r = requests.get(url, timeout=30)
@@ -39,7 +39,8 @@ try:
             codigo = str(loc['localidade']['id']).zfill(7)
             nome = loc['localidade']['nome']
             pop = list(loc['serie'].values())[0] if loc['serie'] else None
-            if pop:
+            # FILTRAR APENAS SANTA CATARINA (códigos começam com 42)
+            if pop and codigo.startswith('42'):
                 rows.append({
                     'codigo_ibge': codigo,
                     'municipio': nome,
@@ -48,7 +49,7 @@ try:
     pop_df = pd.DataFrame(rows)
     pop_df['domestico_t_ano'] = pop_df['populacao'] * 0.95 * 365 / 1000
     pop_df['reciclavel_t_ano'] = pop_df['domestico_t_ano'] * 0.10
-    print(f"   ✓ {len(pop_df)} municípios carregados")
+    print(f"   ✓ {len(pop_df)} municípios de SC carregados")
 except Exception as e:
     print(f"   ⚠️ Erro: {e}")
     pop_df = None
