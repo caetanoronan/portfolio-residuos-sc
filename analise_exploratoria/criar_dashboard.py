@@ -243,7 +243,7 @@ fig5 = make_subplots(
     specs=[[{'type': 'domain'}, {'type': 'domain'}]]
 )
 
-# Pizza 1: Bacias Hidrográficas
+# Pizza 1: Bacias Hidrográficas (legend group: Bacias)
 fig5.add_trace(go.Pie(
     labels=df_bacias['bacia'],
     values=df_bacias['populacao'],
@@ -251,25 +251,42 @@ fig5.add_trace(go.Pie(
     marker=dict(colors=cores_bacias),
     textinfo='label+percent',
     hovertemplate='<b>%{label}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>',
-    hole=0.3
+    hole=0.3,
+    legendgroup='Bacias',
+    legendgrouptitle_text='Bacias Hidrográficas'
 ), 1, 1)
 
-# Pizza 2: Top 5 Regiões Geográficas
+# Pizza 2: Top 5 Regiões Geográficas (legend group: Regiões)
 top5_regioes = df_regioes.nlargest(5, 'populacao')
+labels_regioes_trunc = top5_regioes['NM_RGI'].apply(lambda s: s if len(str(s)) <= 16 else str(s)[:15] + '…')
 fig5.add_trace(go.Pie(
-    labels=top5_regioes['NM_RGI'],
+    labels=labels_regioes_trunc,
     values=top5_regioes['populacao'],
     name='Regiões',
     textinfo='label+percent',
-    hovertemplate='<b>%{label}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>',
-    hole=0.3
+    customdata=top5_regioes['NM_RGI'].tolist(),
+    hovertemplate='<b>%{customdata}</b><br>População: %{value:,.0f}<br>%{percent}<extra></extra>',
+    hole=0.3,
+    legendgroup='Regiões',
+    legendgrouptitle_text='Regiões (Top 5)'
 ), 1, 2)
 
 fig5.update_layout(
     title_text='🗺️ Distribuição Populacional: Bacias vs Regiões',
-    height=500,
-    showlegend=False,
+    height=520,
+    showlegend=True,
     template='plotly_white',
+    legend=dict(
+        orientation='h',
+        x=0.5,
+        xanchor='center',
+        y=-0.1,
+        yanchor='top',
+        traceorder='grouped',
+        tracegroupgap=18,
+        itemclick='toggle',
+        itemdoubleclick='toggleothers'
+    ),
     annotations=[
         # Anotação central da pizza 1
         dict(text='Bacias<br>Hídricas', x=0.18, y=0.5, font_size=12, showarrow=False, xref='paper', yref='paper'),
@@ -280,18 +297,19 @@ fig5.update_layout(
             text='<b>💡 Entenda a comparação:</b><br>'
                  '• <b>Bacias Hidrográficas</b>: Divisão por rios e recursos hídricos (7 áreas naturais)<br>'
                  '• <b>Regiões Geográficas</b>: Divisão político-administrativa do IBGE (24 RGI em SC)',
-            x=0.5, y=-0.15,
+            x=0.5, y=-0.26,
             font_size=11,
             showarrow=False,
             xref='paper', yref='paper',
             xanchor='center',
             align='left',
-            bgcolor='rgba(255,255,255,0.8)',
+            bgcolor='rgba(255,255,255,0.85)',
             bordercolor='#ddd',
             borderwidth=1,
             borderpad=8
         )
-    ]
+    ],
+    margin=dict(t=80, r=30, b=120, l=30)
 )
 
 # ---------------------------------------------------------------------------
