@@ -240,7 +240,9 @@ fig5 = make_subplots(
         '🌊 População por Bacia Hidrográfica',
         '📍 População por Região (Top 5)'
     ),
-    specs=[[{'type': 'xy'}, {'type': 'xy'}]]
+    specs=[[{'type': 'xy'}, {'type': 'xy'}]],
+    column_widths=[0.48, 0.48],
+    horizontal_spacing=0.12
 )
 
 # Dados e cores para Bacias
@@ -257,7 +259,10 @@ fig5.add_trace(go.Bar(
     orientation='h',
     marker_color=cores_bacias_sorted,
     text=[f"{v:,.0f} ({p:.1%})" for v, p in zip(df_bacias_sorted['populacao'], share_bacias)],
-    textposition='outside',
+    texttemplate='%{text}',
+    textposition='auto',
+    textfont=dict(size=10),
+    constraintext='both',
     hovertemplate='<b>%{y}</b><br>População: %{x:,.0f}<br>Participação: %{customdata:.1%}<extra></extra>',
     customdata=share_bacias
 ), row=1, col=1)
@@ -273,23 +278,26 @@ fig5.add_trace(go.Bar(
     orientation='h',
     marker_color='#90caf9',
     text=[f"{v:,.0f} ({p:.1%})" for v, p in zip(top5_regioes['populacao'], share_regioes)],
-    textposition='outside',
+    texttemplate='%{text}',
+    textposition='auto',
+    textfont=dict(size=10),
+    constraintext='both',
     hovertemplate='<b>%{y}</b><br>População: %{x:,.0f}<br>Participação (Top 5): %{customdata:.1%}<extra></extra>',
     customdata=share_regioes
 ), row=1, col=2)
 
 fig5.update_layout(
     title_text='🗺️ Distribuição Populacional: Bacias vs Regiões',
-    height=520,
+    height=500,
     showlegend=False,
     template='plotly_white',
-    margin=dict(t=80, r=30, b=80, l=30),
+    margin=dict(t=80, r=30, b=60, l=30),
 )
 
-fig5.update_xaxes(tickformat=",.0f", title_text='Habitantes', row=1, col=1)
-fig5.update_xaxes(tickformat=",.0f", title_text='Habitantes', row=1, col=2)
-fig5.update_yaxes(title_text='Bacia Hidrográfica', row=1, col=1)
-fig5.update_yaxes(title_text='Região (RGI)', row=1, col=2)
+fig5.update_xaxes(tickformat=",.0f", title_text='Habitantes', automargin=True, tickfont=dict(size=10), row=1, col=1)
+fig5.update_xaxes(tickformat=",.0f", title_text='Habitantes', automargin=True, tickfont=dict(size=10), row=1, col=2)
+fig5.update_yaxes(title_text='Bacia Hidrográfica', automargin=True, tickfont=dict(size=10), row=1, col=1)
+fig5.update_yaxes(title_text='Região (RGI)', automargin=True, tickfont=dict(size=10), row=1, col=2)
 
 # ---------------------------------------------------------------------------
 # GRÁFICO 6: Heatmap - Correlação
