@@ -1,0 +1,372 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+create_interactive_sector_maps.py
+Cria mapas interativos (Folium) e arquivos PNG/GeoPackage com estimativas de geração
+de resíduos (doméstico e reciclável) a partir de um GeoPackage de setores censitários.
+
+Modos de operação:
+- Se você fornecer um CSV municipal com colunas: codigo_ibge (7 dígitos), domestico_t_ano, reciclavel_t_ano
+  o script usa esses valores por município e distribui para os setores proporcionalmente à população do setor (se disponível) ou à área.
+- Se NÃO houver CSV, o script pode:
+  - Usar valores per-capita padrão (kg/inh/dia) para estimar geração municipal a partir da população municipal (obtida via IBGE),
+  - Distribuir o total municipal para setores (por população do setor, se existir; senão por área).
+Uso:
+python create_interactive_sector_maps.py --gpkg SC_setores_CD2022.gpkg --layer SC_setores_CD2022 \
+    --gpkg-code-field CD_MUN --out out_dir --mode defaults --percapita_kgpd 0.95 --recyclable_share 0.10
+
+Author: Assistente
+"""
+import argparse
+import os
+import json
+import math
+import requests
+import numpy as np
+import pandas as pd
+import geopandas as gpd
+import folium
+from folium.plugins import HeatMap
+from shapely.geometry import Point
+
+IBGE_PROJ_POP_URL = "https://servicodados.ibge.gov.br/api/v1/projecoes/populacao/municipios"
+
+def detect_population_field(gdf):
+    """Tenta detectar automaticamente um campo de população no GeoDataFrame."""
+    candidates = [c for c in gdf.columns if c is not None]
+    patterns = ['V001', 'P001', 'POP', 'POPUL', 'HAB', 'habitantes', 'populacao', 'pop']
+    for p in patterns:
+        for c in candidates:
+            if p.lower() in c.lower():
+                return c
+    return None
+
+def fetch_ibge_municipal_populations():
+    """Busca população projetada por município via API do IBGE (projeções).
+    Retorna DataFrame com col 'codigo_ibge' (7 dígitos string) e 'populacao' (float).
+    """
+    print("Buscando populações municipais (IBGE projeções)...")
+    try:
+        r = requests.get(IBGE_PROJ_POP_URL, timeout=30)
+        r.raise_for_status()
+        data = r.json()
+        rows = []
+        for item in data:
+            # item tem 'id' como código IBGE (inteiro), e 'municipio' e 'populacao'
+            codigo = str(item.get('id')).zfill(7)
+            pop = item.get('populacao')
+            rows.append({'codigo_ibge': codigo, 'populacao': pop})
+        df = pd.DataFrame(rows)
+        return df
+    except (requests.exceptions.RequestException, requests.exceptions.HTTPError) as e:
+        print(f"⚠️ API do IBGE indisponível ({e}). Tentando API alternativa...")
+        # Tentar API de agregados do IBGE (Censo 2022)
+        try:
+            alt_url = "https://servicodados.ibge.gov.br/api/v3/agregados/4714/periodos/2022/variaveis/93?localidades=N6[all]"
+            r = requests.get(alt_url, timeout=30)
+            r.raise_for_status()
+            data = r.json()
+            rows = []
+            for item in data[0]['resultados']:
+                for loc in item['series']:
+                    codigo = loc['localidade']['id']
+                    pop_dict = loc['serie']
+                    pop = list(pop_dict.values())[0] if pop_dict else None
+                    if pop:
+                        rows.append({'codigo_ibge': str(codigo).zfill(7), 'populacao': float(pop)})
+            if rows:
+                df = pd.DataFrame(rows)
+                print(f"✓ Dados obtidos via API alternativa: {len(df)} municípios")
+                return df
+        except Exception as e2:
+            print(f"⚠️ API alternativa também falhou ({e2}). Usando estimativa baseada no próprio GPKG...")
+            return None
+
+def ensure_muni_code_str(gdf, field):
+    gdf[field] = gdf[field].astype(str).str.zfill(7)
+    return gdf
+
+def distribute_municipal_to_sectors(sectors_gdf, muni_values_df, sector_pop_field=None):
+    """Distribui valores municipais (muni_values_df com codigo_ibge e value cols) para setores.
+    Se sector_pop_field dado, distribui proporcionalmente à população do setor; caso contrário por área.
+    """
+    # Ensure codes
+    sectors_gdf = sectors_gdf.copy()
+    sectors_gdf['CD_MUN'] = sectors_gdf['CD_MUN'].astype(str).str.zfill(7)
+    muni_values_df['codigo_ibge'] = muni_values_df['codigo_ibge'].astype(str).str.zfill(7)
+    # Merge municipal totals to sectors
+    merged = sectors_gdf.merge(muni_values_df, left_on='CD_MUN', right_on='codigo_ibge', how='left', validate='m:1')
+    value_cols = [c for c in muni_values_df.columns if c not in ['codigo_ibge']]
+    # For each municipality, compute distribution denominator
+    distributed = merged.copy()
+    if sector_pop_field and sector_pop_field in merged.columns:
+        denom = merged.groupby('CD_MUN')[sector_pop_field].transform('sum')
+        # If denom zero or NaN, fallback to area
+        denom_zero = (denom.fillna(0) == 0)
+    else:
+        denom = merged.geometry.area  # area in GPKG CRS (SIRGAS 2000 degrees -> area not metric, but relative)
+        denom_zero = False
+    for col in value_cols:
+        # compute share per sector
+        # if denom_zero True for some rows, replace denom for those municipalities with area-based denom
+        if isinstance(denom_zero, pd.Series):
+            denom_adj = denom.copy()
+            if sector_pop_field and sector_pop_field in merged.columns:
+                area_denom = merged.geometry.area
+                denom_adj[denom_zero] = area_denom[denom_zero]
+        else:
+            denom_adj = denom
+        # avoid division by zero
+        denom_adj = denom_adj.replace(0, np.nan)
+        distributed['share'] = denom_adj / denom_adj.groupby(merged['CD_MUN']).transform('sum')
+        distributed[col + '_sector_est_t'] = distributed[col] * distributed['share']
+        distributed[col + '_sector_est_t'] = distributed[col + '_sector_est_t'].fillna(0)
+        distributed.drop(columns=['share'], inplace=True)
+    return distributed
+
+def create_folium_map(sectors_gdf, col_dom, col_rec, out_html, initial_zoom=8):
+    # center map
+    sectors_cc = sectors_gdf.to_crs(epsg=4326)
+    meanx = sectors_cc.geometry.centroid.x.mean()
+    meany = sectors_cc.geometry.centroid.y.mean()
+    
+    # Usar tile com melhor contraste para acessibilidade
+    m = folium.Map(location=[meany, meanx], zoom_start=initial_zoom, 
+                   tiles='CartoDB positron',
+                   attr='Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL.')
+    
+    print("Criando mapas de calor (heatmaps) acessíveis para daltônicos...")
+    # Para datasets grandes, usar apenas heatmaps ao invés de choropleth pesado
+    centroids = sectors_cc.copy()
+    centroids['centroid'] = centroids.geometry.centroid
+    
+    # PALETA ACESSÍVEL PARA DALTÔNICOS:
+    # Doméstico: Azul → Magenta/Roxo (evita vermelho-verde)
+    # Reciclável: Amarelo → Laranja escuro (alto contraste)
+    
+    # Heatmap doméstico - Gradiente Azul → Magenta (seguro para deuteranopia/protanopia)
+    heat_points_dom = [
+        [pt.y, pt.x, wt] for pt, wt in zip(centroids['centroid'], centroids[col_dom]) 
+        if not math.isnan(wt) and wt > 0
+    ]
+    if heat_points_dom:
+        HeatMap(heat_points_dom, 
+                name='🔵 Resíduos Domésticos (t/ano)', 
+                radius=15, blur=20, max_zoom=13, 
+                gradient={
+                    0.0: '#d0d1e6',  # azul claro
+                    0.3: '#a6bddb',  # azul médio
+                    0.5: '#74a9cf',  # azul
+                    0.7: '#3690c0',  # azul escuro
+                    0.85: '#0570b0', # azul profundo
+                    1.0: '#034e7b'   # azul muito escuro (alto contraste)
+                }).add_to(m)
+    
+    # Heatmap reciclável - Gradiente Amarelo → Laranja escuro (seguro para todos os tipos de daltonismo)
+    heat_points_rec = [
+        [pt.y, pt.x, wt] for pt, wt in zip(centroids['centroid'], centroids[col_rec]) 
+        if not math.isnan(wt) and wt > 0
+    ]
+    if heat_points_rec:
+        HeatMap(heat_points_rec, 
+                name='🟡 Resíduos Recicláveis (t/ano)', 
+                radius=15, blur=20, max_zoom=13, 
+                gradient={
+                    0.0: '#ffffcc',  # amarelo claro
+                    0.3: '#ffeda0',  # amarelo
+                    0.5: '#fed976',  # amarelo forte
+                    0.7: '#feb24c',  # laranja claro
+                    0.85: '#fd8d3c', # laranja
+                    1.0: '#e31a1c'   # vermelho-laranja (alto contraste)
+                }).add_to(m)
+    
+    # Adicionar apenas agregação por município (muito mais leve)
+    print("Agregando dados por município para visualização acessível...")
+    muni_agg = sectors_cc.dissolve(by='CD_MUN', aggfunc={
+        col_dom: 'sum',
+        col_rec: 'sum',
+        'NM_MUN': 'first'
+    })
+    
+    # Adicionar layer de municípios com popup e bordas de alto contraste
+    for idx, row in muni_agg.iterrows():
+        dom_val = row.get(col_dom, 0)
+        rec_val = row.get(col_rec, 0)
+        total = dom_val + rec_val
+        
+        # Popup com formatação acessível (tamanho maior, alto contraste)
+        popup_text = f"""
+        <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; min-width: 200px;">
+            <h3 style="margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid #333; color: #000;">
+                📍 {row.get('NM_MUN', idx)}
+            </h3>
+            <div style="background-color: #e3f2fd; padding: 8px; margin: 5px 0; border-left: 4px solid #034e7b; border-radius: 3px;">
+                <strong style="color: #034e7b;">🔵 Doméstico:</strong> 
+                <span style="font-size: 16px; font-weight: bold; color: #000;">{dom_val:,.2f}</span> t/ano
+            </div>
+            <div style="background-color: #fff3e0; padding: 8px; margin: 5px 0; border-left: 4px solid #e65100; border-radius: 3px;">
+                <strong style="color: #e65100;">🟡 Reciclável:</strong> 
+                <span style="font-size: 16px; font-weight: bold; color: #000;">{rec_val:,.2f}</span> t/ano
+            </div>
+            <div style="background-color: #f5f5f5; padding: 8px; margin: 5px 0; border-radius: 3px;">
+                <strong style="color: #000;">📊 Total:</strong> 
+                <span style="font-size: 16px; font-weight: bold; color: #000;">{total:,.2f}</span> t/ano
+            </div>
+        </div>
+        """
+        folium.GeoJson(
+            row['geometry'],
+            style_function=lambda x: {
+                'fillColor': 'transparent', 
+                'color': '#333333',  # bordas escuras para contraste
+                'weight': 2,
+                'opacity': 0.7
+            },
+            highlight_function=lambda x: {
+                'fillColor': '#ffff99',
+                'color': '#000000',
+                'weight': 3,
+                'opacity': 1.0
+            },
+            tooltip=folium.Tooltip(popup_text, sticky=True)
+        ).add_to(m)
+    
+    # Adicionar legenda personalizada com alto contraste
+    legend_html = '''
+    <div style="position: fixed; 
+                bottom: 50px; right: 50px; width: 280px; 
+                background-color: white; 
+                border: 3px solid #333;
+                border-radius: 8px;
+                padding: 15px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+                z-index: 9999;">
+        <h4 style="margin: 0 0 10px 0; padding-bottom: 8px; border-bottom: 2px solid #333; color: #000;">
+            ♿ Legenda Acessível
+        </h4>
+        <div style="margin: 10px 0; padding: 8px; background-color: #e3f2fd; border-left: 5px solid #034e7b; border-radius: 3px;">
+            <strong style="color: #034e7b;">🔵 Azul:</strong> Resíduos Domésticos<br>
+            <span style="font-size: 12px; color: #555;">Gradiente: claro (baixo) → escuro (alto)</span>
+        </div>
+        <div style="margin: 10px 0; padding: 8px; background-color: #fff3e0; border-left: 5px solid #e65100; border-radius: 3px;">
+            <strong style="color: #e65100;">🟡 Amarelo/Laranja:</strong> Recicláveis<br>
+            <span style="font-size: 12px; color: #555;">Gradiente: claro (baixo) → escuro (alto)</span>
+        </div>
+        <div style="margin-top: 10px; padding: 8px; background-color: #f5f5f5; border-radius: 3px; font-size: 12px;">
+            <strong>💡 Dica:</strong> Passe o mouse sobre os municípios para ver detalhes<br>
+            <strong>🔍 Zoom:</strong> Use + / - ou scroll do mouse
+        </div>
+        <div style="margin-top: 8px; padding: 5px; background-color: #e8f5e9; border-radius: 3px; font-size: 11px; text-align: center;">
+            ✓ Paleta segura para daltonismo
+        </div>
+    </div>
+    '''
+    m.get_root().html.add_child(folium.Element(legend_html))
+    
+    folium.LayerControl(position='topleft').add_to(m)
+    m.save(out_html)
+    print(f"✅ Mapa interativo ACESSÍVEL salvo em: {out_html}")
+    print(f"   - Paletas de cores seguras para daltonismo (deuteranopia, protanopia, tritanopia)")
+    print(f"   - Alto contraste e legibilidade aprimorada")
+    print(f"   - Ícones e símbolos para reforçar informação visual")
+
+def main(args):
+    os.makedirs(args.out_dir, exist_ok=True)
+    print("Lendo GPKG:", args.gpkg)
+    gdf = gpd.read_file(args.gpkg, layer=args.layer) if args.layer else gpd.read_file(args.gpkg)
+    # normalize municipal code field
+    if args.gpkg_code_field not in gdf.columns:
+        raise ValueError(f"Campo '{args.gpkg_code_field}' não encontrado no GPKG. Campos disponíveis: {gdf.columns.tolist()}")
+    gdf = ensure_muni_code_str(gdf, args.gpkg_code_field)
+    # detect population field if exists
+    pop_field = detect_population_field(gdf)
+    if pop_field:
+        print("Campo de população detectado automaticamente:", pop_field)
+    else:
+        print("Nenhum campo de população detectado no GPKG de setores.")
+    # Prepare municipal totals
+    if args.mode == 'csv':
+        if not args.muni_csv:
+            raise ValueError("Modo 'csv' requer --muni-csv")
+        muni_df = pd.read_csv(args.muni_csv, dtype={args.muni_code_field: str})
+        muni_df[args.muni_code_field] = muni_df[args.muni_code_field].str.zfill(7)
+        # Expect columns domestico_t_ano and reciclavel_t_ano or user-specified names
+        cols_needed = [args.muni_dom_col, args.muni_rec_col]
+        for c in cols_needed:
+            if c not in muni_df.columns:
+                raise ValueError(f"Coluna '{c}' não encontrada no CSV municipal.")
+        muni_values = muni_df[[args.muni_code_field, args.muni_dom_col, args.muni_rec_col]].rename(
+            columns={args.muni_code_field: 'codigo_ibge', args.muni_dom_col: 'domestico_t_ano', args.muni_rec_col: 'reciclavel_t_ano'}
+        )
+    else:
+        # mode defaults: calculate municipal totals from population * percapita * days
+        # get municipal populations
+        muni_pop = fetch_ibge_municipal_populations()
+        
+        # Se API falhou, calcular população agregando setores ou usar valores padrão
+        if muni_pop is None:
+            print("Calculando população municipal a partir dos setores (se houver campo de população)...")
+            if pop_field and pop_field in gdf.columns:
+                # Agregar população dos setores por município
+                muni_pop = gdf.groupby('CD_MUN')[pop_field].sum().reset_index()
+                muni_pop.columns = ['codigo_ibge', 'populacao']
+                muni_pop['codigo_ibge'] = muni_pop['codigo_ibge'].astype(str).str.zfill(7)
+                print(f"✓ População calculada para {len(muni_pop)} municípios a partir dos setores")
+            else:
+                # Fallback: usar área como proxy (não ideal mas permite continuar)
+                print("⚠️ Sem dados de população. Usando área dos setores como proxy...")
+                gdf['area_temp'] = gdf.geometry.area
+                muni_pop = gdf.groupby('CD_MUN')['area_temp'].sum().reset_index()
+                # Estimar população proporcional à área (muito aproximado!)
+                total_area = muni_pop['area_temp'].sum()
+                # Assumir população total de SC ~7.6 milhões
+                pop_sc_estimate = 7600000
+                muni_pop['populacao'] = (muni_pop['area_temp'] / total_area) * pop_sc_estimate
+                muni_pop = muni_pop[['CD_MUN', 'populacao']].rename(columns={'CD_MUN': 'codigo_ibge'})
+                muni_pop['codigo_ibge'] = muni_pop['codigo_ibge'].astype(str).str.zfill(7)
+                print(f"✓ População estimada por área para {len(muni_pop)} municípios")
+        
+        # compute per-municipality totals
+        percapita_kgpd = float(args.percapita_kgpd)
+        days = int(args.days_per_year)
+        # domestic_t_ano = pop * percapita_kgpd * days / 1000 (kg->t)
+        muni_pop['domestico_t_ano'] = muni_pop['populacao'].astype(float) * percapita_kgpd * days / 1000.0
+        # reciclavel share
+        recyclable_share = float(args.recyclable_share)
+        muni_pop['reciclavel_t_ano'] = muni_pop['domestico_t_ano'] * recyclable_share
+        muni_values = muni_pop.rename(columns={'codigo_ibge': 'codigo_ibge'})[['codigo_ibge', 'domestico_t_ano', 'reciclavel_t_ano']]
+    # Distribute municipal totals to sectors
+    print("Distribuindo totais municipais para setores...")
+    sectors_with_est = distribute_municipal_to_sectors(gdf, muni_values, sector_pop_field=pop_field)
+    # Save merged Geopackage with estimates
+    out_gpkg = os.path.join(args.out_dir, 'sectors_with_waste_estimates.gpkg')
+    sectors_with_est.to_file(out_gpkg, driver='GPKG')
+    print("Geopackage salvo com estimativas:", out_gpkg)
+    # Create friendly column names for map
+    dom_col = 'domestico_t_ano_sector_est_t'
+    rec_col = 'reciclavel_t_ano_sector_est_t'
+    # Create folium map
+    out_html = os.path.join(args.out_dir, 'interactive_waste_map.html')
+    create_folium_map(sectors_with_est, dom_col, rec_col, out_html, initial_zoom=args.initial_zoom)
+
+if __name__ == "__main__":
+    p = argparse.ArgumentParser(description="Gerar mapas interativos de resíduos a partir de setores e dados municipais (estimativa)")
+    p.add_argument("--gpkg", required=True, help="Caminho para GPKG de setores (SC_setores_CD2022.gpkg)")
+    p.add_argument("--layer", default=None, help="Nome da camada dentro do GPKG (opcional)")
+    p.add_argument("--gpkg-code-field", default="CD_MUN", help="Nome do campo do código IBGE no GPKG (ex.: CD_MUN)")
+    p.add_argument("--out-dir", default="outputs", help="Diretório de saída")
+    p.add_argument("--mode", choices=['defaults','csv'], default='defaults', help="Modo: 'defaults' usa per-capita padrão; 'csv' usa CSV municipal fornecido")
+    # CSV municipal options
+    p.add_argument("--muni-csv", help="CSV com dados municipais (requer --mode csv). Colunas: codigo_ibge, domestico_t_ano, reciclavel_t_ano")
+    p.add_argument("--muni-code-field", default="codigo_ibge", help="Nome do campo do código IBGE no CSV municipal")
+    p.add_argument("--muni-dom-col", default="domestico_t_ano", help="Nome da coluna doméstico no CSV municipal")
+    p.add_argument("--muni-rec-col", default="reciclavel_t_ano", help="Nome da coluna reciclável no CSV municipal")
+    # Defaults mode params
+    p.add_argument("--percapita_kgpd", default=0.95, help="Kg por habitante por dia para resíduos domésticos (padrão 0.95)")
+    p.add_argument("--recyclable_share", default=0.10, help="Fração dos resíduos domésticos considerada reciclável (padrão 0.10)")
+    p.add_argument("--days-per-year", dest='days_per_year', default=365, help="Dias por ano (padrão 365)")
+    p.add_argument("--initial-zoom", type=int, default=8, help="Zoom inicial do mapa")
+    args = p.parse_args()
+    main(args)

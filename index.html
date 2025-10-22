@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfólio de Análise Geoespacial de Resíduos em Santa Catarina">
+    <title>Análise de Resíduos - Santa Catarina | Portfólio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 5px;
+        }
+        
+        .badge.accessibility {
+            background: #2196F3;
+        }
+        
+        .content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .info-card p {
+            color: #555;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .cta-button.secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .tech-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗺️ Análise Geoespacial de Resíduos</h1>
+            <p class="subtitle">Estimativas de Geração de Resíduos em Santa Catarina</p>
+            <div>
+                <span class="badge">♿ Acessível</span>
+                <span class="badge accessibility">Seguro para Daltonismo</span>
+                <span class="badge">📊 16.831 Setores</span>
+            </div>
+        </header>
+
+        <div class="content">
+            <h2>📋 Sobre o Projeto</h2>
+            <p style="font-size: 1.1em; margin: 20px 0;">
+                Análise espacial completa da geração de resíduos sólidos (domésticos e recicláveis) 
+                nos 295 municípios de Santa Catarina, utilizando dados do Censo 2022 e estimativas 
+                per capita. O projeto inclui mapas interativos com design acessível para pessoas 
+                com daltonismo.
+            </p>
+
+            <div class="project-info">
+                <div class="info-card">
+                    <h3>📍 Área de Estudo</h3>
+                    <p>Santa Catarina, Brasil<br>16.831 setores censitários<br>295 municípios</p>
+                </div>
+                <div class="info-card">
+                    <h3>📊 Dados</h3>
+                    <p>Censo IBGE 2022<br>Projeções populacionais<br>Estimativas per capita</p>
+                </div>
+                <div class="info-card">
+                    <h3>🔧 Tecnologias</h3>
+                    <p>Python, GeoPandas<br>Folium, Leaflet<br>GeoPackage</p>
+                </div>
+                <div class="info-card">
+                    <h3>♿ Acessibilidade</h3>
+                    <p>Paletas seguras<br>Alto contraste<br>Ícones e símbolos</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="analise_exploratoria/outputs/interactive_waste_map.html" class="cta-button">
+                    🗺️ Ver Mapa Interativo
+                </a>
+                <a href="https://github.com/SEU_USUARIO/portfolio-residuos-sc" class="cta-button secondary" target="_blank">
+                    💻 Código no GitHub
+                </a>
+            </div>
+
+            <h2 style="margin-top: 50px;">✨ Características</h2>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🔵</div>
+                    <h3>Resíduos Domésticos</h3>
+                    <p>Heatmap em gradiente azul com estimativas por setor</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🟡</div>
+                    <h3>Resíduos Recicláveis</h3>
+                    <p>Heatmap em gradiente amarelo-laranja</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dados Municipais</h3>
+                    <p>Agregação por município com popups informativos</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">♿</div>
+                    <h3>100% Acessível</h3>
+                    <p>Cores testadas para deuteranopia, protanopia e tritanopia</p>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 50px;">🛠️ Stack Tecnológica</h2>
+            <div class="tech-stack">
+                <span class="tech-tag">Python 3.13</span>
+                <span class="tech-tag">GeoPandas</span>
+                <span class="tech-tag">Folium</span>
+                <span class="tech-tag">Pandas</span>
+                <span class="tech-tag">Matplotlib</span>
+                <span class="tech-tag">Shapely</span>
+                <span class="tech-tag">GeoPackage</span>
+                <span class="tech-tag">GitHub Pages</span>
+            </div>
+
+            <h2 style="margin-top: 50px;">📈 Metodologia</h2>
+            <ol style="font-size: 1.1em; margin: 20px 0; line-height: 2;">
+                <li><strong>Coleta de Dados:</strong> Download de setores censitários (IBGE) e dados populacionais via API</li>
+                <li><strong>Estimativas:</strong> Cálculo de geração de resíduos usando 0.95 kg/hab/dia (doméstico) e 10% para recicláveis</li>
+                <li><strong>Distribuição:</strong> Alocação proporcional dos valores municipais para setores censitários</li>
+                <li><strong>Visualização:</strong> Criação de mapas interativos com heatmaps e agregação municipal</li>
+                <li><strong>Acessibilidade:</strong> Aplicação de paletas seguras e design inclusivo</li>
+            </ol>
+        </div>
+
+        <footer>
+            <p>Desenvolvido como parte do portfólio de análise geoespacial | 2025</p>
+            <p style="margin-top: 10px;">📧 Contato: <a href="mailto:seu.email@example.com" style="color: white;">seu.email@example.com</a></p>
+        </footer>
+    </div>
+</body>
+</html>

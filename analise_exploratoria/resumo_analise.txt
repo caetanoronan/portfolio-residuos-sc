@@ -1,0 +1,38 @@
+RESUMO DA ANÁLISE EXPLORATÓRIA
+========================================
+Arquivo: SC_setores_CD2022.gpkg
+Feições: 16831
+Atributos: 30
+SRC: EPSG:4674
+
+COLUNAS:
+- CD_SETOR
+- SITUACAO
+- CD_SIT
+- CD_TIPO
+- AREA_KM2
+- CD_REGIAO
+- NM_REGIAO
+- CD_UF
+- NM_UF
+- CD_MUN
+- NM_MUN
+- CD_DIST
+- NM_DIST
+- CD_SUBDIST
+- NM_SUBDIST
+- CD_BAIRRO
+- NM_BAIRRO
+- CD_NU
+- NM_NU
+- CD_FCU
+- NM_FCU
+- CD_AGLOM
+- NM_AGLOM
+- CD_RGINT
+- NM_RGINT
+- CD_RGI
+- NM_RGI
+- CD_CONCURB
+- NM_CONCURB
+- geometry
