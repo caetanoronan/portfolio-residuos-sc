@@ -37,7 +37,13 @@ m = folium.Map(
     tiles='CartoDB positron',
     min_zoom=6,      # Limite de afastamento
     max_zoom=13,     # Limite de aproximação
-    max_bounds=True  # Restringe aos limites
+    max_bounds=True, # Restringe aos limites
+    zoom_control=True,
+    scrollWheelZoom=False,  # Desabilita zoom com scroll (melhor para mobile)
+    dragging=True,
+    tap=True,
+    tap_tolerance=15,  # Mais tolerante para touch
+    world_copy_jump=False
 )
 
 # Cores por bacia
@@ -58,25 +64,25 @@ for _, bacia_row in bacias_geom.iterrows():
     cor = cores_bacias.get(bacia_row['bacia'], '#999999')
     
     popup_html = f"""
-    <div style="font-family: Arial; font-size: 14px; min-width: 300px;">
-        <h3 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid {cor}; color: {cor};">
+    <div style="font-family: Arial; font-size: 13px; min-width: 280px; max-width: 320px;">
+        <h3 style="margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 3px solid {cor}; color: {cor}; font-size: 16px;">
             🌊 {bacia_row['bacia']}
         </h3>
-        <div style="background: #e3f2fd; padding: 10px; margin: 8px 0; border-left: 5px solid #1976d2; border-radius: 4px;">
-            <strong>👥 População Total:</strong><br>
-            <span style="font-size: 18px; font-weight: bold; color: #1976d2;">
+        <div style="background: #e3f2fd; padding: 8px; margin: 6px 0; border-left: 4px solid #1976d2; border-radius: 3px;">
+            <strong style="font-size: 12px;">👥 População Total:</strong><br>
+            <span style="font-size: 16px; font-weight: bold; color: #1976d2;">
                 {bacia_row['populacao']:,.0f} habitantes
             </span>
         </div>
-        <div style="background: #e8f5e9; padding: 10px; margin: 8px 0; border-left: 5px solid #388e3c; border-radius: 4px;">
-            <strong>🗑️ Resíduos Domésticos:</strong><br>
-            <span style="font-size: 18px; font-weight: bold; color: #388e3c;">
+        <div style="background: #e8f5e9; padding: 8px; margin: 6px 0; border-left: 4px solid #388e3c; border-radius: 3px;">
+            <strong style="font-size: 12px;">🗑️ Resíduos Domésticos:</strong><br>
+            <span style="font-size: 16px; font-weight: bold; color: #388e3c;">
                 {bacia_row['domestico_t_ano']:,.0f} t/ano
             </span>
         </div>
-        <div style="background: #fff3e0; padding: 10px; margin: 8px 0; border-left: 5px solid #f57c00; border-radius: 4px;">
-            <strong>♻️ Resíduos Recicláveis:</strong><br>
-            <span style="font-size: 18px; font-weight: bold; color: #f57c00;">
+        <div style="background: #fff3e0; padding: 8px; margin: 6px 0; border-left: 4px solid #f57c00; border-radius: 3px;">
+            <strong style="font-size: 12px;">♻️ Resíduos Recicláveis:</strong><br>
+            <span style="font-size: 16px; font-weight: bold; color: #f57c00;">
                 {bacia_row['reciclavel_t_ano']:,.0f} t/ano
             </span>
         </div>
@@ -101,35 +107,70 @@ for _, bacia_row in bacias_geom.iterrows():
         popup=folium.Popup(popup_html, max_width=400)
     ).add_to(m)
 
-# Adicionar legenda
+# Adicionar legenda responsiva
 print("📋 Adicionando legenda...")
 legend_html = '''
-<div style="position: fixed; bottom: 50px; right: 50px; z-index: 1000; 
-     background: white; padding: 20px; border-radius: 10px; 
+<style>
+    @media (max-width: 768px) {
+        .legend-mobile {
+            bottom: 10px !important;
+            right: 10px !important;
+            left: 10px !important;
+            padding: 12px !important;
+            font-size: 11px !important;
+            max-height: 40vh;
+            overflow-y: auto;
+        }
+        .legend-mobile h4 {
+            font-size: 14px !important;
+            margin-bottom: 10px !important;
+        }
+        .legend-mobile .bacia-item {
+            margin: 5px 0 !important;
+        }
+        .legend-mobile .color-box {
+            width: 20px !important;
+            height: 15px !important;
+        }
+        .legend-mobile .bacia-name {
+            font-size: 11px !important;
+        }
+    }
+</style>
+<div class="legend-mobile" style="position: fixed; bottom: 50px; right: 50px; z-index: 1000; 
+     background: white; padding: 15px; border-radius: 10px; 
      box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid #1976d2;">
-    <h4 style="margin: 0 0 15px 0; color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 8px;">
+    <h4 style="margin: 0 0 12px 0; color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 6px; font-size: 15px;">
         🌊 Bacias Hidrográficas
     </h4>
 '''
 
 for bacia, cor in cores_bacias.items():
     legend_html += f'''
-    <div style="margin: 8px 0; display: flex; align-items: center;">
-        <div style="width: 30px; height: 20px; background: {cor}; 
-             border: 2px solid white; margin-right: 10px; border-radius: 3px;"></div>
-        <span style="font-size: 13px; color: #333;">{bacia}</span>
+    <div class="bacia-item" style="margin: 6px 0; display: flex; align-items: center;">
+        <div class="color-box" style="width: 25px; height: 18px; background: {cor}; 
+             border: 2px solid white; margin-right: 8px; border-radius: 3px; flex-shrink: 0;"></div>
+        <span class="bacia-name" style="font-size: 12px; color: #333;">{bacia}</span>
     </div>
     '''
 
 legend_html += '''
-    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #e0e0e0; font-size: 11px; color: #666;">
-        🔍 Zoom: 6-13 níveis<br>
-        📍 Clique para detalhes
+    <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 10px; color: #666;">
+        🔍 Zoom: 6-13<br>
+        📍 Toque para detalhes
     </div>
 </div>
 '''
 
 m.get_root().html.add_child(folium.Element(legend_html))
+
+# Adicionar meta viewport para mobile
+viewport_meta = '''
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+'''
+m.get_root().header.add_child(folium.Element(viewport_meta))
 
 # Salvar
 print("💾 Salvando mapa...")

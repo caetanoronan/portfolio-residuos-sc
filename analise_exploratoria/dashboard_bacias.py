@@ -612,7 +612,7 @@ html_content = f"""
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Dashboard - Análise por Bacias Hidrográficas | Santa Catarina</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
@@ -625,8 +625,16 @@ html_content = f"""
         body {{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
+            padding: 10px;
             color: #333;
+            -webkit-overflow-scrolling: touch;
+        }}
+        
+        /* Mobile First */
+        @media (min-width: 768px) {{
+            body {{
+                padding: 20px;
+            }}
         }}
         
         .container {{
@@ -641,32 +649,54 @@ html_content = f"""
         header {{
             background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
             color: white;
-            padding: 40px;
+            padding: 20px;
             text-align: center;
         }}
         
         header h1 {{
-            font-size: 42px;
+            font-size: 24px;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            line-height: 1.3;
         }}
         
         header p {{
-            font-size: 18px;
+            font-size: 14px;
             opacity: 0.95;
+        }}
+        
+        /* Desktop */
+        @media (min-width: 768px) {{
+            header {{
+                padding: 40px;
+            }}
+            header h1 {{
+                font-size: 42px;
+            }}
+            header p {{
+                font-size: 18px;
+            }}
         }}
         
         .stats-grid {{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            padding: 15px;
             background: #f8f9fa;
+        }}
+        
+        @media (min-width: 768px) {{
+            .stats-grid {{
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                padding: 30px;
+            }}
         }}
         
         .stat-card {{
             background: white;
-            padding: 25px;
+            padding: 15px;
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -674,28 +704,54 @@ html_content = f"""
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }}
         
-        .stat-card:hover {{
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        @media (min-width: 768px) {{
+            .stat-card {{
+                padding: 25px;
+            }}
+            .stat-card:hover {{
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            }}
         }}
         
         .stat-card .icon {{
-            font-size: 40px;
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }}
+        
+        @media (min-width: 768px) {{
+            .stat-card .icon {{
+                font-size: 40px;
+                margin-bottom: 10px;
+            }}
         }}
         
         .stat-card .value {{
-            font-size: 32px;
+            font-size: 24px;
             font-weight: bold;
             color: #1976d2;
-            margin: 10px 0;
+            margin: 8px 0;
+        }}
+        
+        @media (min-width: 768px) {{
+            .stat-card .value {{
+                font-size: 32px;
+                margin: 10px 0;
+            }}
         }}
         
         .stat-card .label {{
-            font-size: 14px;
+            font-size: 11px;
             color: #666;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+        }}
+        
+        @media (min-width: 768px) {{
+            .stat-card .label {{
+                font-size: 14px;
+                letter-spacing: 1px;
+            }}
         }}
         
         .risk-card {{
@@ -707,8 +763,14 @@ html_content = f"""
         }}
         
         .chart-container {{
-            padding: 40px;
+            padding: 15px;
             border-bottom: 1px solid #e0e0e0;
+        }}
+        
+        @media (min-width: 768px) {{
+            .chart-container {{
+                padding: 40px;
+            }}
         }}
         
         .chart-container:last-child {{
@@ -716,11 +778,21 @@ html_content = f"""
         }}
         
         .chart-title {{
-            font-size: 24px;
+            font-size: 18px;
             color: #1976d2;
-            margin-bottom: 20px;
-            padding-left: 15px;
-            border-left: 5px solid #1976d2;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #1976d2;
+            line-height: 1.4;
+        }}
+        
+        @media (min-width: 768px) {{
+            .chart-title {{
+                font-size: 24px;
+                margin-bottom: 20px;
+                padding-left: 15px;
+                border-left: 5px solid #1976d2;
+            }}
         }}
         
         .chart {{
@@ -768,16 +840,25 @@ html_content = f"""
             display: inline-block;
             background: #1976d2;
             color: white;
-            padding: 15px 30px;
+            padding: 12px 20px;
             border-radius: 25px;
             text-decoration: none;
             font-weight: bold;
-            margin: 20px;
+            margin: 10px 5px;
             transition: background 0.3s ease;
+            font-size: 14px;
+            touch-action: manipulation;
         }}
         
-        .map-link:hover {{
-            background: #0d47a1;
+        @media (min-width: 768px) {{
+            .map-link {{
+                padding: 15px 30px;
+                margin: 20px;
+                font-size: 16px;
+            }}
+            .map-link:hover {{
+                background: #0d47a1;
+            }}
         }}
     </style>
 </head>
@@ -915,29 +996,55 @@ html_content = f"""
     </div>
     
     <script>
+        // Configuração mobile-friendly para Plotly
+        var config = {{
+            responsive: true,
+            displayModeBar: true,
+            modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'resetScale2d', 'toggleSpikelines'],
+            displaylogo: false,
+            toImageButtonOptions: {{
+                format: 'png',
+                filename: 'grafico_bacias_sc',
+                height: 800,
+                width: 1200,
+                scale: 2
+            }},
+            scrollZoom: false
+        }};
+        
         // Gráfico 1
         var fig1 = {fig1.to_json()};
-        Plotly.newPlot('chart1', fig1.data, fig1.layout, {{responsive: true}});
+        Plotly.newPlot('chart1', fig1.data, fig1.layout, config);
         
         // Gráfico 2
         var fig2 = {fig2.to_json()};
-        Plotly.newPlot('chart2', fig2.data, fig2.layout, {{responsive: true}});
+        Plotly.newPlot('chart2', fig2.data, fig2.layout, config);
         
         // Gráfico 3
         var fig3 = {fig3.to_json()};
-        Plotly.newPlot('chart3', fig3.data, fig3.layout, {{responsive: true}});
+        Plotly.newPlot('chart3', fig3.data, fig3.layout, config);
         
         // Gráfico 4
         var fig4 = {fig4.to_json()};
-        Plotly.newPlot('chart4', fig4.data, fig4.layout, {{responsive: true}});
+        Plotly.newPlot('chart4', fig4.data, fig4.layout, config);
         
         // Gráfico 5
         var fig5 = {fig5.to_json()};
-        Plotly.newPlot('chart5', fig5.data, fig5.layout, {{responsive: true}});
+        Plotly.newPlot('chart5', fig5.data, fig5.layout, config);
         
         // Gráfico 6
         var fig6 = {fig6.to_json()};
-        Plotly.newPlot('chart6', fig6.data, fig6.layout, {{responsive: true}});
+        Plotly.newPlot('chart6', fig6.data, fig6.layout, config);
+        
+        // Ajuste automático de tamanho para mobile
+        window.addEventListener('resize', function() {{
+            Plotly.Plots.resize('chart1');
+            Plotly.Plots.resize('chart2');
+            Plotly.Plots.resize('chart3');
+            Plotly.Plots.resize('chart4');
+            Plotly.Plots.resize('chart5');
+            Plotly.Plots.resize('chart6');
+        }});
     </script>
 </body>
 </html>
