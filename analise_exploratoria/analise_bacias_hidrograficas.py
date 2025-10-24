@@ -9,7 +9,6 @@ Inclui:
 import os
 import geopandas as gpd
 import folium
-from folium.plugins import HeatMap
 import pandas as pd
 import requests
 import zipfile
@@ -97,7 +96,7 @@ print("🌊 ANÁLISE DE RESÍDUOS POR BACIAS HIDROGRÁFICAS")
 print("="*70)
 
 print("\n1️⃣ Carregando dados dos setores censitários...")
-gdf = gpd.read_file(r'SC_setores_CD2022.gpkg')
+gdf = gpd.read_file(r'analise_exploratoria\SC_setores_CD2022.gpkg')
 print(f"   ✓ {len(gdf):,} setores carregados")
 
 print("\n2️⃣ Obtendo informações de bacias hidrográficas...")
@@ -116,10 +115,10 @@ if pop_df is not None:
     
     print("\n4️⃣ Agregando por município...")
     gdf['CD_MUN_str'] = gdf['CD_MUN'].astype(str).str.zfill(7)
-    muni_gdf = gdf.groupby('CD_MUN_str').agg({
-        'NM_MUN': 'first',
-        'geometry': 'first'
-    }).reset_index()
+    
+    # Dissolver TODOS os setores de cada município para criar polígonos COMPLETOS
+    print("   🔄 Dissolvendo setores censitários por município...")
+    muni_gdf = gdf.dissolve(by='CD_MUN_str', aggfunc='first').reset_index()
     muni_gdf = gpd.GeoDataFrame(muni_gdf, geometry='geometry', crs=gdf.crs)
     muni_gdf = muni_gdf.merge(pop_df, left_on='CD_MUN_str', right_on='codigo_ibge', how='left')
     
@@ -161,13 +160,28 @@ if pop_df is not None:
             print(f"{'🔴' if nivel=='CRÍTICO' else '🟠' if nivel=='ALTO' else '🟡' if nivel=='MÉDIO' else '🟢'} "
                   f"{nivel}: {count} municípios")
     
-    print("\n7️⃣ Criando mapa interativo de bacias e riscos...")
-    muni_wgs = muni_gdf.to_crs(epsg=4326)
-    center = [muni_wgs.geometry.centroid.y.mean(), muni_wgs.geometry.centroid.x.mean()]
+    print("\n7️⃣ Criando mapa interativo com POLÍGONOS DAS BACIAS...")
+    
+    # Dissolver os municípios por bacia para criar os polígonos das bacias
+    print("   📐 Criando geometrias das bacias hidrográficas...")
+    bacias_geom = muni_gdf.dissolve(by='bacia', aggfunc='sum').reset_index()
+    bacias_geom = bacias_geom.to_crs(epsg=4326)
+    
+    # Juntar com as estatísticas agregadas
+    bacias_geom = bacias_geom.merge(bacias_agg[['bacia', 'populacao', 'domestico_t_ano', 'reciclavel_t_ano']], 
+                                     on='bacia', how='left', suffixes=('_old', ''))
+    
+    # Remover colunas duplicadas
+    cols_to_drop = [c for c in bacias_geom.columns if c.endswith('_old')]
+    if cols_to_drop:
+        bacias_geom = bacias_geom.drop(columns=cols_to_drop)
+    
+    # Calcular centro do mapa
+    center = [bacias_geom.geometry.centroid.y.mean(), bacias_geom.geometry.centroid.x.mean()]
     
     m = folium.Map(location=center, zoom_start=7, tiles='CartoDB positron')
     
-    # Cores por bacia
+    # Cores por bacia (degradê de azuis e verdes)
     cores_bacias = {
         'Bacia do Itajaí': '#1976d2',
         'Bacia do Tubarão': '#388e3c',
@@ -179,104 +193,92 @@ if pop_df is not None:
         'Outras Bacias': '#757575'
     }
     
-    # Adicionar municípios com marcadores coloridos por BACIA
-    for _, row in muni_wgs.iterrows():
-        if pd.notna(row.get('domestico_t_ano')):
-            centroid = row['geometry'].centroid
-            cor_bacia = cores_bacias.get(row['bacia'], '#999999')
-            
-            popup_html = f"""
-            <div style="font-family: Arial; font-size: 13px; min-width: 280px;">
-                <h3 style="margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid {cor_bacia};">
-                    📍 {row.get('NM_MUN', 'N/A')}
-                </h3>
-                <div style="background: {cor_bacia}22; padding: 8px; margin: 5px 0; border-left: 4px solid {cor_bacia}; border-radius: 3px;">
-                    <strong style="color: {cor_bacia};">🌊 Bacia:</strong> 
-                    <span style="font-weight: bold; color: {cor_bacia};">{row['bacia']}</span>
-                </div>
-                <div style="background: {row['cor_risco']}22; padding: 8px; margin: 5px 0; border-left: 4px solid {row['cor_risco']}; border-radius: 3px;">
-                    <strong style="color: {row['cor_risco']};">⚠️ Risco:</strong> 
-                    <span style="font-weight: bold; color: {row['cor_risco']};">{row['risco']}</span>
-                </div>
-                <div style="background: #e3f2fd; padding: 6px; margin: 3px 0; border-radius: 3px;">
-                    <strong>🔵 Doméstico:</strong> {row.get('domestico_t_ano', 0):,.0f} t/ano
-                </div>
-                <div style="background: #fff3e0; padding: 6px; margin: 3px 0; border-radius: 3px;">
-                    <strong>🟡 Reciclável:</strong> {row.get('reciclavel_t_ano', 0):,.0f} t/ano
-                </div>
-                <div style="background: #f5f5f5; padding: 6px; margin: 3px 0; border-radius: 3px;">
-                    <strong>👥 População:</strong> {row.get('populacao', 0):,.0f} hab
-                </div>
-                <div style="margin-top: 10px; padding: 8px; background: #fff9c4; border-radius: 3px; font-size: 11px;">
-                    <strong>💡 Recomendação:</strong><br>
-                    {'Prioridade para gestão adequada e monitoramento rigoroso' if row['risco'] in ['CRÍTICO', 'ALTO'] 
-                     else 'Manter boas práticas de gestão de resíduos'}
-                </div>
+    # Adicionar POLÍGONOS das bacias coloridos
+    print("   🎨 Adicionando polígonos coloridos das bacias...")
+    for _, bacia_row in bacias_geom.iterrows():
+        cor = cores_bacias.get(bacia_row['bacia'], '#999999')
+        
+        popup_html = f"""
+        <div style="font-family: Arial; font-size: 14px; min-width: 300px;">
+            <h3 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid {cor}; color: {cor};">
+                🌊 {bacia_row['bacia']}
+            </h3>
+            <div style="background: #e3f2fd; padding: 10px; margin: 8px 0; border-left: 5px solid #1976d2; border-radius: 4px;">
+                <strong>👥 População Total:</strong><br>
+                <span style="font-size: 18px; font-weight: bold; color: #1976d2;">
+                    {bacia_row['populacao']:,.0f} habitantes
+                </span>
             </div>
-            """
-            
-            # Tamanho do marcador proporcional ao risco
-            radius = {'CRÍTICO': 10, 'ALTO': 8, 'MÉDIO': 6, 'BAIXO': 5}.get(row['risco'], 5)
-            
-            # COR DO MARCADOR = COR DA BACIA (não mais cor do risco!)
-            folium.CircleMarker(
-                location=[centroid.y, centroid.x],
-                radius=radius,
-                color=cor_bacia,
-                fill=True,
-                fillColor=cor_bacia,
-                fillOpacity=0.8,
-                weight=2,
-                popup=folium.Popup(popup_html, max_width=350)
-            ).add_to(m)
+            <div style="background: #e8f5e9; padding: 10px; margin: 8px 0; border-left: 5px solid #388e3c; border-radius: 4px;">
+                <strong>🗑️ Resíduos Domésticos:</strong><br>
+                <span style="font-size: 18px; font-weight: bold; color: #388e3c;">
+                    {bacia_row['domestico_t_ano']:,.0f} t/ano
+                </span>
+            </div>
+            <div style="background: #fff3e0; padding: 10px; margin: 8px 0; border-left: 5px solid #f57c00; border-radius: 4px;">
+                <strong>♻️ Resíduos Recicláveis:</strong><br>
+                <span style="font-size: 18px; font-weight: bold; color: #f57c00;">
+                    {bacia_row['reciclavel_t_ano']:,.0f} t/ano
+                </span>
+            </div>
+            <div style="background: #f3e5f5; padding: 10px; margin: 8px 0; border-left: 5px solid {cor}; border-radius: 4px;">
+                <strong>� Per Capita:</strong><br>
+                <span style="font-size: 16px; font-weight: bold; color: {cor};">
+                    {(bacia_row['domestico_t_ano'] / bacia_row['populacao'] * 1000):.1f} kg/hab/ano
+                </span>
+            </div>
+        </div>
+        """
+        
+        folium.GeoJson(
+            bacia_row['geometry'],
+            style_function=lambda x, cor=cor: {
+                'fillColor': cor,
+                'color': '#ffffff',  # Borda branca para contraste
+                'weight': 4,  # Borda mais grossa
+                'fillOpacity': 0.6,  # Mais opaco para melhor visibilidade
+                'opacity': 1.0,  # Borda totalmente visível
+                'dashArray': None
+            },
+            highlight_function=lambda x: {
+                'weight': 6,
+                'fillOpacity': 0.8,
+                'color': '#ffff00'  # Borda amarela no hover
+            },
+            popup=folium.Popup(popup_html, max_width=400),
+            tooltip=folium.Tooltip(f"<b style='font-size: 14px;'>{bacia_row['bacia']}</b>", permanent=False)
+        ).add_to(m)
     
-    # Heatmaps
-    centroids = muni_wgs.copy()
-    centroids['centroid'] = centroids.geometry.centroid
-    
-    heat_dom = [[pt.y, pt.x, wt] for pt, wt in zip(centroids['centroid'], centroids['domestico_t_ano']) 
-                if pd.notna(wt) and wt > 0]
-    if heat_dom:
-        HeatMap(heat_dom, name='🔵 Resíduos Domésticos', radius=25, blur=30, 
-                gradient={0.0: '#d0d1e6', 0.5: '#74a9cf', 1.0: '#034e7b'}).add_to(m)
-    
-    # Legenda
-    legend_bacias = "<br>".join([f'<span style="color: {cor};">●</span> {bacia}' 
+    # Legenda personalizada para as bacias
+    print("   📋 Adicionando legenda...")
+    legend_bacias = "<br>".join([f'<span style="background-color: {cor}; padding: 2px 8px; border-radius: 3px; color: white; font-weight: bold;">■</span> {bacia}' 
                                  for bacia, cor in cores_bacias.items()])
     
     legend_html = f'''
-    <div style="position: fixed; bottom: 50px; right: 50px; width: 320px; background: white; 
-                border: 3px solid #333; border-radius: 10px; padding: 15px; z-index: 9999;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.3); max-height: 70vh; overflow-y: auto;">
-        <h4 style="margin: 0 0 10px 0; border-bottom: 2px solid #333;">🌊 Bacias Hidrográficas</h4>
-        <div style="font-size: 11px; line-height: 1.6; margin: 10px 0;">
+    <div style="position: fixed; bottom: 50px; right: 50px; width: 340px; background: white; 
+                border: 3px solid #333; border-radius: 10px; padding: 18px; z-index: 9999;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.4); max-height: 75vh; overflow-y: auto;">
+        <h3 style="margin: 0 0 15px 0; border-bottom: 3px solid #1976d2; padding-bottom: 8px; color: #1976d2;">
+            🌊 Bacias Hidrográficas de SC
+        </h3>
+        <div style="font-size: 13px; line-height: 2.2; margin: 12px 0;">
             {legend_bacias}
         </div>
-        <div style="margin: 15px 0 8px 0; padding-top: 10px; border-top: 1px solid #ddd;">
-            <h4 style="margin: 0 0 8px 0;">⚠️ Níveis de Risco:</h4>
-            <div style="font-size: 11px; line-height: 1.8;">
-                <span style="color: #d32f2f;">●</span> CRÍTICO (>200k t/ano)<br>
-                <span style="color: #f57c00;">●</span> ALTO (100-200k t/ano)<br>
-                <span style="color: #fbc02d;">●</span> MÉDIO (50-100k t/ano)<br>
-                <span style="color: #388e3c;">●</span> BAIXO (<50k t/ano)
-            </div>
+        <div style="margin-top: 15px; padding: 12px; background: #e8f5e9; border-left: 4px solid #388e3c; border-radius: 5px; font-size: 11px;">
+            <strong>💡 Como usar o mapa:</strong><br>
+            • Clique nos polígonos para ver detalhes da bacia<br>
+            • Cores representam as diferentes bacias hidrográficas<br>
+            • Polígonos mostram os limites territoriais das bacias
         </div>
-        <div style="margin-top: 10px; padding: 8px; background: #e3f2fd; border-radius: 5px; font-size: 10px;">
-            <strong>💡 Critérios de Risco:</strong><br>
-            Volume de resíduos + População<br>
-            Potencial impacto em corpos d'água
-        </div>
-        <div style="margin-top: 8px; font-size: 9px; text-align: center; color: #666;">
-            ✓ Análise para gestão ambiental<br>
-            📍 {len(muni_gdf)} municípios | {len(bacias_dict)} bacias
+        <div style="margin-top: 12px; font-size: 10px; text-align: center; color: #666; padding-top: 10px; border-top: 1px solid #ddd;">
+            📊 {len(bacias_geom)} bacias hidrográficas<br>
+            📍 {len(muni_gdf)} municípios de Santa Catarina
         </div>
     </div>
     '''
     m.get_root().html.add_child(folium.Element(legend_html))
     
-    folium.LayerControl(position='topleft').add_to(m)
-    
-    output_path = r'outputs\mapa_bacias_hidrograficas.html'
+    output_path = r'analise_exploratoria\outputs\mapa_bacias_hidrograficas.html'
     m.save(output_path)
     
     file_size = os.path.getsize(output_path) / (1024 * 1024)
@@ -285,10 +287,10 @@ if pop_df is not None:
     print(f"📁 Salvo em: {output_path}")
     
     # Salvar CSVs
-    csv_bacias = r'outputs\resumo_por_bacia.csv'
+    csv_bacias = r'analise_exploratoria\outputs\resumo_por_bacia.csv'
     bacias_agg.to_csv(csv_bacias, index=False, encoding='utf-8-sig')
     
-    csv_risco = r'outputs\analise_risco_municipios.csv'
+    csv_risco = r'analise_exploratoria\outputs\analise_risco_municipios.csv'
     muni_gdf[['NM_MUN', 'bacia', 'populacao', 'domestico_t_ano', 'reciclavel_t_ano', 'risco']].to_csv(
         csv_risco, index=False, encoding='utf-8-sig'
     )

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Técnico - Análise de Resíduos por Bacias Hidrográficas de Santa Catarina</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #1976d2;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #1976d2;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .author {
+            font-size: 1.2em;
+            color: #333;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        .date {
+            color: #888;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            font-size: 1.8em;
+            color: #1976d2;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .section h3 {
+            font-size: 1.4em;
+            color: #2196f3;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        .section h4 {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .section p {
+            text-align: justify;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+        
+        .highlight-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .warning-box {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .success-box {
+            background: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+        
+        .formula {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: #1976d2;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #e3f2fd;
+        }
+        
+        .references {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+        
+        .references h2 {
+            color: #d32f2f;
+        }
+        
+        .ref-item {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            text-indent: -20px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .badge-python {
+            background: #3776ab;
+            color: white;
+        }
+        
+        .badge-gis {
+            background: #009688;
+            color: white;
+        }
+        
+        .badge-viz {
+            background: #ff6f00;
+            color: white;
+        }
+        
+        .badge-ai {
+            background: #9c27b0;
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card p {
+            font-size: 1.1em;
+            text-align: center;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            color: #666;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- CABEÇALHO -->
+        <div class="header">
+            <h1>📊 Relatório Técnico</h1>
+            <div class="subtitle">Análise de Geração de Resíduos Sólidos Domésticos por Bacias Hidrográficas do Estado de Santa Catarina</div>
+            <div class="author">👤 Autor: Ronan Armando Caetano</div>
+            <div class="date">📅 Data: Outubro de 2025</div>
+        </div>
+
+        <!-- RESUMO EXECUTIVO -->
+        <div class="section">
+            <h2>📋 Resumo Executivo</h2>
+            <p>
+                Este relatório apresenta uma análise técnica detalhada sobre a geração de resíduos sólidos domésticos no estado de Santa Catarina, 
+                utilizando dados do Censo Demográfico 2022 do IBGE agregados por bacias hidrográficas. O estudo abrange 295 municípios catarinenses, 
+                distribuídos em 8 bacias hidrográficas principais, totalizando uma população de aproximadamente 7,6 milhões de habitantes.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>7.610.361</h3>
+                    <p>População Total Analisada</p>
+                </div>
+                <div class="stat-card">
+                    <h3>295</h3>
+                    <p>Municípios Classificados</p>
+                </div>
+                <div class="stat-card">
+                    <h3>8</h3>
+                    <p>Bacias Hidrográficas</p>
+                </div>
+                <div class="stat-card">
+                    <h3>2.638.892</h3>
+                    <p>Toneladas/ano de Resíduos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- OBJETIVOS -->
+        <div class="section">
+            <h2>🎯 Objetivos</h2>
+            <h3>Objetivo Geral</h3>
+            <p>
+                Realizar uma análise exploratória da geração de resíduos sólidos domésticos em Santa Catarina, 
+                utilizando o recorte territorial de bacias hidrográficas para subsidiar políticas públicas de gestão 
+                ambiental e planejamento territorial integrado.
+            </p>
+
+            <h3>Objetivos Específicos</h3>
+            <ul>
+                <li>Quantificar a geração de resíduos sólidos domésticos por bacia hidrográfica;</li>
+                <li>Identificar as bacias com maior volume absoluto de geração de resíduos;</li>
+                <li>Analisar a distribuição populacional e sua correlação com a geração de resíduos;</li>
+                <li>Classificar os municípios quanto ao nível de risco ambiental baseado no volume de resíduos;</li>
+                <li>Criar visualizações interativas para facilitar a tomada de decisão por gestores públicos;</li>
+                <li>Desenvolver um dashboard web acessível para divulgação científica e transparência de dados.</li>
+            </ul>
+        </div>
+
+        <!-- METODOLOGIA -->
+        <div class="section">
+            <h2>🔬 Metodologia</h2>
+            
+            <h3>1. Fonte de Dados</h3>
+            <p>
+                Os dados utilizados nesta análise são provenientes do <strong>Censo Demográfico 2022</strong> realizado pelo 
+                Instituto Brasileiro de Geografia e Estatística (IBGE), especificamente da base de setores censitários de Santa Catarina.
+            </p>
+            
+            <div class="highlight-box">
+                <strong>📦 Arquivo Base:</strong> SC_setores_CD2022.gpkg<br>
+                <strong>📍 Formato:</strong> GeoPackage (padrão OGC)<br>
+                <strong>🗺️ Sistema de Coordenadas:</strong> SIRGAS 2000 / UTM Zone 22S (EPSG:31982)<br>
+                <strong>📊 Registros:</strong> 16.831 setores censitários<br>
+                <strong>📅 Ano de Referência:</strong> 2022
+            </div>
+
+            <h3>2. Classificação de Bacias Hidrográficas</h3>
+            <p>
+                Os municípios de Santa Catarina foram agrupados em 8 bacias hidrográficas principais, 
+                seguindo a classificação da Agência Nacional de Águas (ANA) e do Sistema Nacional de Informações 
+                sobre Recursos Hídricos (SNIRH):
+            </p>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bacia Hidrográfica</th>
+                            <th>População</th>
+                            <th>Resíduos (t/ano)</th>
+                            <th>% Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Outras Bacias</strong></td>
+                            <td>3.586.011</td>
+                            <td>1.243.449</td>
+                            <td>47,1%</td>
+                        </tr>
+                        <tr>
+                            <td>Bacia Litorânea Central</td>
+                            <td>1.129.756</td>
+                            <td>391.743</td>
+                            <td>14,8%</td>
+                        </tr>
+                        <tr>
+                            <td>Bacia do Itajaí</td>
+                            <td>859.149</td>
+                            <td>297.910</td>
+                            <td>11,3%</td>
+                        </tr>
+                        <tr>
+                            <td>Bacia Litorânea Norte</td>
+                            <td>714.274</td>
+                            <td>247.675</td>
+                            <td>9,4%</td>
+                        </tr>
+                        <tr>
+                            <td>Bacia do Uruguai</td>
+                            <td>468.550</td>
+                            <td>162.470</td>
+                            <td>6,2%</td>
+                        </tr>
+                        <tr>
+                            <td>Bacia do Tubarão</td>
+                            <td>455.538</td>
+                            <td>157.958</td>
+                            <td>6,0%</td>
+                        </tr>
+                        <tr>
+                            <td>Bacia do Canoas</td>
+                            <td>227.852</td>
+                            <td>79.008</td>
+                            <td>3,0%</td>
+                        </tr>
+                        <tr>
+                            <td>Bacia do Rio do Peixe</td>
+                            <td>169.231</td>
+                            <td>58.681</td>
+                            <td>2,2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>3. Cálculo de Geração de Resíduos</h3>
+            <p>
+                A estimativa de geração de resíduos sólidos domésticos foi realizada utilizando uma taxa per capita 
+                uniforme, baseada na média estadual de geração de resíduos domésticos em Santa Catarina.
+            </p>
+
+            <div class="formula">
+<strong>Fórmula Aplicada:</strong>
+
+Resíduos Domésticos (t/ano) = População × Taxa per capita (kg/hab/dia) × 365 dias ÷ 1000
+
+<strong>Parâmetros:</strong>
+- Taxa per capita: 0,95 kg/hab/dia
+- Taxa de reciclagem: 10% do total doméstico
+- Geração per capita anual: 346,75 kg/hab/ano
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Limitação Metodológica:</strong> A análise utiliza uma taxa uniforme de geração per capita 
+                (0,95 kg/hab/dia) aplicada a todo o estado. Isso significa que todas as bacias apresentam a mesma 
+                geração per capita de <strong>346,75 kg/hab/ano</strong>. Esta simplificação não captura variações 
+                regionais reais relacionadas a fatores socioeconômicos, padrões de consumo urbano/rural, e níveis 
+                de desenvolvimento municipal. Estudos futuros devem incorporar dados primários de coleta municipal 
+                para refinar as estimativas.
+            </div>
+
+            <h3>4. Classificação de Risco Ambiental</h3>
+            <p>
+                Os municípios foram classificados em 4 níveis de risco ambiental baseado no volume anual de 
+                geração de resíduos domésticos:
+            </p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nível de Risco</th>
+                            <th>Critério (t/ano)</th>
+                            <th>Municípios</th>
+                            <th>Interpretação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #ffebee;">
+                            <td><strong>🔴 CRÍTICO</strong></td>
+                            <td>&gt; 100.000</td>
+                            <td>1</td>
+                            <td>Requer infraestrutura de grande porte e gestão especializada</td>
+                        </tr>
+                        <tr style="background: #fff3e0;">
+                            <td><strong>🟠 ALTO</strong></td>
+                            <td>50.000 - 100.000</td>
+                            <td>2</td>
+                            <td>Necessita de sistemas avançados de tratamento e destinação</td>
+                        </tr>
+                        <tr style="background: #fff9c4;">
+                            <td><strong>🟡 MÉDIO</strong></td>
+                            <td>10.000 - 50.000</td>
+                            <td>7</td>
+                            <td>Requer planejamento de médio prazo para expansão</td>
+                        </tr>
+                        <tr style="background: #e8f5e9;">
+                            <td><strong>🟢 BAIXO</strong></td>
+                            <td>&lt; 10.000</td>
+                            <td>285</td>
+                            <td>Gestão simplificada, potencial para consórcios intermunicipais</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>5. Processamento Geoespacial</h3>
+            <p>
+                O processamento dos dados geoespaciais seguiu as seguintes etapas:
+            </p>
+            
+            <ol>
+                <li><strong>Agregação de Setores Censitários:</strong> Os 16.831 setores censitários foram agregados 
+                por código municipal (CD_MUN) utilizando dissolução geométrica, gerando polígonos municipais completos;</li>
+                
+                <li><strong>Dissolução por Bacia:</strong> Os polígonos municipais foram dissolvidos novamente pelo 
+                atributo 'bacia', criando geometrias únicas para cada bacia hidrográfica com bordas visíveis;</li>
+                
+                <li><strong>Conversão de Coordenadas:</strong> As geometrias foram reprojetadas de UTM (EPSG:31982) 
+                para WGS84 (EPSG:4326) para compatibilidade com bibliotecas de mapeamento web;</li>
+                
+                <li><strong>Geração de Mapas Interativos:</strong> Utilização da biblioteca Folium para criar mapas 
+                coropléticos com polígonos coloridos, tooltips informativos e popups com estatísticas detalhadas.</li>
+            </ol>
+
+            <div class="code-block">
+# Exemplo de código Python utilizado para dissolução de geometrias
+import geopandas as gpd
+
+# Dissolução por município
+muni_gdf = gdf.dissolve(by='CD_MUN_str', aggfunc='first')
+
+# Dissolução por bacia hidrográfica
+bacias_geom = muni_gdf.dissolve(by='bacia', aggfunc='sum')
+
+# Conversão para WGS84
+bacias_geom = bacias_geom.to_crs(epsg=4326)
+            </div>
+        </div>
+
+        <!-- RESULTADOS -->
+        <div class="section">
+            <h2>📊 Principais Resultados</h2>
+
+            <h3>1. Ranking de Bacias por Volume de Resíduos</h3>
+            <p>
+                A categoria "Outras Bacias" concentra 47,1% da população estadual e gera 1.243.449 toneladas/ano 
+                de resíduos, representando quase metade do total estadual. Esta categoria agrupa bacias menores 
+                e áreas de transição não classificadas nas 7 bacias principais.
+            </p>
+
+            <h3>2. Distribuição Populacional</h3>
+            <p>
+                A análise populacional revela forte concentração nas bacias litorâneas, refletindo o padrão histórico 
+                de ocupação do território catarinense. As três maiores bacias em população (Outras Bacias, Litorânea 
+                Central e Itajaí) concentram 72,8% dos habitantes do estado.
+            </p>
+
+            <h3>3. Análise de Risco Municipal</h3>
+            <div class="success-box">
+                <strong>✅ Ponto Positivo:</strong> 96,6% dos municípios (285 de 295) foram classificados como 
+                <strong>BAIXO RISCO</strong>, indicando que a maioria possui volumes gerenciáveis de resíduos 
+                que podem ser tratados através de consórcios intermunicipais e soluções simplificadas.
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Atenção Especial:</strong> Os 3 municípios classificados como risco CRÍTICO ou ALTO 
+                (1 + 2) concentram grandes centros urbanos e requerem investimentos significativos em infraestrutura 
+                de tratamento, aterros sanitários modernos e programas robustos de coleta seletiva.
+            </div>
+
+            <h3>4. Correlação População vs Resíduos</h3>
+            <p>
+                Como esperado pela metodologia uniforme aplicada, existe uma correlação perfeita (R² ≈ 1,0) entre 
+                população e geração de resíduos. Cada habitante contribui com aproximadamente 346,75 kg/ano de 
+                resíduos domésticos, independente da bacia hidrográfica.
+            </p>
+        </div>
+
+        <!-- FERRAMENTAS E TECNOLOGIAS -->
+        <div class="section">
+            <h2>🛠️ Ferramentas e Tecnologias Utilizadas</h2>
+
+            <h3>Linguagens de Programação</h3>
+            <p>
+                <span class="badge badge-python">Python 3.13</span>
+            </p>
+
+            <h3>Bibliotecas Python para Análise de Dados</h3>
+            <ul>
+                <li><span class="badge badge-python">Pandas 2.2.x</span> - Manipulação e análise de dados tabulares</li>
+                <li><span class="badge badge-python">NumPy 1.26.x</span> - Computação numérica e operações matriciais</li>
+            </ul>
+
+            <h3>Bibliotecas Python para Geoespacial (GIS)</h3>
+            <ul>
+                <li><span class="badge badge-gis">GeoPandas 0.14.x</span> - Análise de dados geoespaciais vetoriais</li>
+                <li><span class="badge badge-gis">Shapely 2.0.x</span> - Manipulação e análise de geometrias</li>
+                <li><span class="badge badge-gis">Fiona 1.9.x</span> - Leitura e escrita de formatos geoespaciais</li>
+                <li><span class="badge badge-gis">Folium 0.15.x</span> - Criação de mapas interativos web</li>
+            </ul>
+
+            <h3>Bibliotecas Python para Visualização</h3>
+            <ul>
+                <li><span class="badge badge-viz">Plotly 5.18.x</span> - Gráficos interativos e dashboards</li>
+                <li><span class="badge badge-viz">Matplotlib 3.8.x</span> - Visualizações estáticas base</li>
+            </ul>
+
+            <h3>Ferramentas de Desenvolvimento</h3>
+            <ul>
+                <li><span class="badge badge-python">Visual Studio Code</span> - Ambiente de desenvolvimento integrado</li>
+                <li><span class="badge badge-python">Git/GitHub</span> - Controle de versão e publicação via GitHub Pages</li>
+                <li><span class="badge badge-python">pip/venv</span> - Gerenciamento de pacotes e ambientes virtuais Python</li>
+            </ul>
+
+            <h3>Inteligência Artificial Assistiva</h3>
+            <div class="highlight-box">
+                <p><span class="badge badge-ai">GitHub Copilot</span></p>
+                <p>
+                    Durante o desenvolvimento deste projeto, foram utilizados recursos de inteligência artificial 
+                    através do <strong>GitHub Copilot</strong> para auxiliar nas seguintes atividades:
+                </p>
+                <ul>
+                    <li><strong>Desenvolvimento de Código:</strong> Sugestões de sintaxe, autocompletar funções e otimização de algoritmos Python;</li>
+                    <li><strong>Depuração:</strong> Identificação e correção de erros no processamento geoespacial e manipulação de DataFrames;</li>
+                    <li><strong>Documentação:</strong> Geração de docstrings, comentários e documentação técnica;</li>
+                    <li><strong>Otimização:</strong> Sugestões de melhorias de performance no processamento de 16.831 setores censitários;</li>
+                    <li><strong>Visualização:</strong> Criação de layouts responsivos e personalização de gráficos Plotly interativos.</li>
+                </ul>
+                <p>
+                    <strong>Nota Ética:</strong> A IA foi utilizada como ferramenta assistiva para aumentar a produtividade 
+                    e qualidade do código. Todas as decisões metodológicas, análises estatísticas e interpretações dos 
+                    resultados foram realizadas pelo autor com responsabilidade técnica e científica.
+                </p>
+            </div>
+        </div>
+
+        <!-- PRODUTOS GERADOS -->
+        <div class="section">
+            <h2>📦 Produtos Gerados</h2>
+            
+            <h3>1. Arquivos de Dados</h3>
+            <ul>
+                <li><strong>resumo_por_bacia.csv</strong> - Estatísticas agregadas por bacia hidrográfica (8 registros)</li>
+                <li><strong>analise_risco_municipios.csv</strong> - Classificação de risco de todos os 295 municípios</li>
+                <li><strong>sectors_with_waste_estimates.gpkg</strong> - GeoPackage com setores censitários enriquecidos</li>
+            </ul>
+
+            <h3>2. Visualizações Interativas</h3>
+            <ul>
+                <li><strong>mapa_bacias_hidrograficas.html</strong> - Mapa coroplético com polígonos das bacias (4,17 MB)</li>
+                <li><strong>dashboard_bacias.html</strong> - Dashboard com 6 gráficos interativos Plotly (0,07 MB)</li>
+                <li><strong>relatorio_tecnico.html</strong> - Este relatório técnico completo</li>
+            </ul>
+
+            <h3>3. Scripts Python</h3>
+            <ul>
+                <li><strong>analise_bacias_hidrograficas.py</strong> - Pipeline completo de análise e geração de mapas</li>
+                <li><strong>dashboard_bacias.py</strong> - Geração do dashboard interativo com visualizações otimizadas</li>
+            </ul>
+        </div>
+
+        <!-- LIMITAÇÕES -->
+        <div class="section">
+            <h2>⚠️ Limitações do Estudo</h2>
+            
+            <ol>
+                <li>
+                    <strong>Taxa Per Capita Uniforme:</strong> A utilização de uma taxa única de 0,95 kg/hab/dia 
+                    não captura variações regionais reais em padrões de consumo e geração de resíduos.
+                </li>
+                
+                <li>
+                    <strong>Dados Estimados:</strong> Os valores de geração de resíduos são estimativas baseadas em 
+                    população, não representando dados reais de coleta municipal.
+                </li>
+                
+                <li>
+                    <strong>Agregação "Outras Bacias":</strong> Esta categoria agrupa múltiplas bacias menores, 
+                    podendo mascarar particularidades regionais importantes.
+                </li>
+                
+                <li>
+                    <strong>Ausência de Dados Temporais:</strong> A análise é estática (ano 2022) e não permite 
+                    avaliação de tendências temporais ou projeções futuras.
+                </li>
+                
+                <li>
+                    <strong>Foco em Resíduos Domésticos:</strong> Não contempla resíduos comerciais, industriais, 
+                    de construção civil ou de serviços de saúde.
+                </li>
+            </ol>
+        </div>
+
+        <!-- CONCLUSÕES -->
+        <div class="section">
+            <h2>🎯 Conclusões</h2>
+            
+            <p>
+                Este estudo apresentou uma análise exploratória robusta da geração de resíduos sólidos domésticos 
+                em Santa Catarina, utilizando o recorte inovador de bacias hidrográficas. Os principais achados incluem:
+            </p>
+
+            <div class="success-box">
+                <h4>✅ Principais Contribuições:</h4>
+                <ul>
+                    <li>Quantificação da geração de resíduos por bacia hidrográfica, revelando concentração nas áreas litorâneas;</li>
+                    <li>Classificação de risco de 295 municípios, identificando apenas 3 em situação crítica/alta;</li>
+                    <li>Criação de ferramentas de visualização interativa acessíveis para gestores públicos;</li>
+                    <li>Documentação metodológica transparente com código aberto disponível no GitHub.</li>
+                </ul>
+            </div>
+
+            <p>
+                O uso de bacias hidrográficas como unidade de análise territorial representa uma abordagem integrada 
+                que facilita o planejamento de políticas ambientais, considerando os recursos hídricos como elementos 
+                estruturadores do território.
+            </p>
+        </div>
+
+        <!-- RECOMENDAÇÕES -->
+        <div class="section">
+            <h2>💡 Recomendações para Estudos Futuros</h2>
+            
+            <ol>
+                <li>
+                    <strong>Incorporar Dados Reais de Coleta:</strong> Estabelecer parceria com prefeituras e empresas 
+                    de coleta para validar as estimativas com dados operacionais reais.
+                </li>
+                
+                <li>
+                    <strong>Análise Temporal:</strong> Incluir séries históricas de censos anteriores (2010, 2000) 
+                    para avaliar tendências e projetar cenários futuros.
+                </li>
+                
+                <li>
+                    <strong>Variáveis Socioeconômicas:</strong> Incorporar índices de renda, escolaridade e PIB municipal 
+                    para modelar a geração per capita de forma mais realista.
+                </li>
+                
+                <li>
+                    <strong>Análise de Destinação Final:</strong> Mapear aterros sanitários, lixões e programas de 
+                    coleta seletiva existentes para avaliar adequação da infraestrutura.
+                </li>
+                
+                <li>
+                    <strong>Modelagem Preditiva:</strong> Desenvolver modelos de machine learning para prever a 
+                    geração de resíduos baseado em múltiplas variáveis ambientais e socioeconômicas.
+                </li>
+                
+                <li>
+                    <strong>Análise de Custo-Benefício:</strong> Estimar custos de coleta, transporte e destinação 
+                    para subsidiar consórcios intermunicipais.
+                </li>
+            </ol>
+        </div>
+
+        <!-- REFERÊNCIAS -->
+        <div class="references">
+            <h2>📚 Referências</h2>
+
+            <h3>Dados e Fontes Oficiais</h3>
+            <div class="ref-item">
+                <strong>IBGE - Instituto Brasileiro de Geografia e Estatística.</strong> Censo Demográfico 2022: 
+                Base de Setores Censitários de Santa Catarina. Rio de Janeiro: IBGE, 2023. Disponível em: 
+                https://www.ibge.gov.br/estatisticas/sociais/populacao/22827-censo-demografico-2022.html
+            </div>
+
+            <div class="ref-item">
+                <strong>ANA - Agência Nacional de Águas e Saneamento Básico.</strong> Divisão Hidrográfica Nacional. 
+                Brasília: ANA, 2023. Disponível em: https://www.gov.br/ana/pt-br
+            </div>
+
+            <h3>Software e Bibliotecas</h3>
+            
+            <div class="ref-item">
+                <strong>Python Software Foundation.</strong> Python Programming Language, Version 3.13. 
+                Disponível em: https://www.python.org/
+            </div>
+
+            <div class="ref-item">
+                <strong>McKinney, W.</strong> pandas: powerful Python data analysis toolkit. Version 2.2. 
+                Disponível em: https://pandas.pydata.org/
+            </div>
+
+            <div class="ref-item">
+                <strong>Jordahl, K. et al.</strong> GeoPandas: Python tools for geographic data. Version 0.14. 
+                Disponível em: https://geopandas.org/
+            </div>
+
+            <div class="ref-item">
+                <strong>Gillies, S. et al.</strong> Shapely: manipulation and analysis of geometric objects. Version 2.0. 
+                Disponível em: https://shapely.readthedocs.io/
+            </div>
+
+            <div class="ref-item">
+                <strong>Gillies, S. et al.</strong> Fiona: Python wrapper for vector data access functions from the OGR library. 
+                Version 1.9. Disponível em: https://fiona.readthedocs.io/
+            </div>
+
+            <div class="ref-item">
+                <strong>Python Folium.</strong> Folium: Python Data, Leaflet.js Maps. Version 0.15. 
+                Disponível em: https://python-visualization.github.io/folium/
+            </div>
+
+            <div class="ref-item">
+                <strong>Plotly Technologies Inc.</strong> Plotly Python Graphing Library. Version 5.18. 
+                Disponível em: https://plotly.com/python/
+            </div>
+
+            <div class="ref-item">
+                <strong>Hunter, J. D.</strong> Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 
+                v. 9, n. 3, p. 90-95, 2007. Disponível em: https://matplotlib.org/
+            </div>
+
+            <div class="ref-item">
+                <strong>Harris, C. R. et al.</strong> Array programming with NumPy. Nature, v. 585, p. 357-362, 2020. 
+                Disponível em: https://numpy.org/
+            </div>
+
+            <h3>Ferramentas de Desenvolvimento</h3>
+            
+            <div class="ref-item">
+                <strong>Microsoft Corporation.</strong> Visual Studio Code. Version 1.x. 
+                Disponível em: https://code.visualstudio.com/
+            </div>
+
+            <div class="ref-item">
+                <strong>GitHub, Inc.</strong> GitHub: Where the world builds software. 
+                Disponível em: https://github.com/
+            </div>
+
+            <div class="ref-item">
+                <strong>GitHub, Inc.</strong> GitHub Pages: Websites for you and your projects. 
+                Disponível em: https://pages.github.com/
+            </div>
+
+            <h3>Inteligência Artificial</h3>
+            
+            <div class="ref-item">
+                <strong>GitHub, Inc.</strong> GitHub Copilot: Your AI pair programmer. 2024. 
+                Disponível em: https://github.com/features/copilot
+            </div>
+
+            <div class="ref-item">
+                <strong>OpenAI.</strong> GPT-4 Technical Report. arXiv preprint arXiv:2303.08774, 2023. 
+                Nota: GitHub Copilot utiliza modelos baseados em GPT para assistência de código.
+            </div>
+
+            <h3>Normas e Legislação</h3>
+            
+            <div class="ref-item">
+                <strong>BRASIL.</strong> Lei nº 12.305, de 2 de agosto de 2010. Institui a Política Nacional de 
+                Resíduos Sólidos. Brasília: Diário Oficial da União, 2010.
+            </div>
+
+            <div class="ref-item">
+                <strong>BRASIL.</strong> Lei nº 9.433, de 8 de janeiro de 1997. Institui a Política Nacional de 
+                Recursos Hídricos. Brasília: Diário Oficial da União, 1997.
+            </div>
+
+            <h3>Padrões Técnicos</h3>
+            
+            <div class="ref-item">
+                <strong>OGC - Open Geospatial Consortium.</strong> GeoPackage Encoding Standard. Version 1.3. 
+                OGC Document 12-128r18, 2021. Disponível em: https://www.geopackage.org/
+            </div>
+
+            <div class="ref-item">
+                <strong>EPSG - European Petroleum Survey Group.</strong> EPSG Geodetic Parameter Dataset. 
+                Disponível em: https://epsg.org/
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p><strong>📧 Contato:</strong> Ronan Armando Caetano</p>
+            <p><strong>🔗 GitHub:</strong> <a href="https://github.com/caetanoronan/portfolio-residuos-sc" target="_blank">github.com/caetanoronan/portfolio-residuos-sc</a></p>
+            <p><strong>📅 Última Atualização:</strong> Outubro de 2025</p>
+            <p style="margin-top: 20px; font-size: 0.9em; color: #999;">
+                Este relatório foi gerado como parte do projeto de análise de resíduos sólidos de Santa Catarina.<br>
+                Todos os dados, código-fonte e visualizações estão disponíveis publicamente no GitHub sob licença aberta.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
