@@ -80,7 +80,8 @@ fig1.update_layout(
     paper_bgcolor='white',
     height=500,
     margin=dict(l=20, r=120, t=80, b=60),
-    hoverlabel=dict(bgcolor="white", font_size=13)
+    hoverlabel=dict(bgcolor="white", font_size=13),
+    autosize=True
 )
 
 # ==============================================
@@ -149,6 +150,7 @@ fig2.update_layout(
     margin=dict(l=200, r=200, t=80, b=80),
     hoverlabel=dict(bgcolor="white", font_size=13),
     uniformtext=dict(mode='hide', minsize=8),
+    autosize=True,
     annotations=[
         dict(
             text="<i>Barras mostram população absoluta | Rótulos incluem habitantes (k) e % do estado total</i>",
@@ -234,6 +236,7 @@ fig3.update_layout(
     height=550,
     margin=dict(l=80, r=250, t=100, b=80),  # Margem direita maior para legenda
     hoverlabel=dict(bgcolor="white", font_size=13),
+    autosize=True,
     legend=dict(
         title=dict(
             text='<b>Bacias Hidrográficas</b>',
@@ -359,6 +362,7 @@ fig4.update_layout(
     margin=dict(l=20, r=120, t=100, b=60),
     bargap=0.15,  # Espaço entre grupos de barras
     bargroupgap=0.05,  # Espaço entre barras dentro do grupo
+    autosize=True,
     legend=dict(
         title=dict(text='<b>Classificação</b>', font=dict(size=12)),
         orientation='h',
@@ -453,6 +457,7 @@ fig5.update_layout(
     plot_bgcolor='#f8f9fa',
     paper_bgcolor='white',
     margin=dict(l=220, r=180, t=100, b=60),
+    autosize=True,
     annotations=[
         dict(
             text="<i>Ordenadas do menor para o maior | Cores consistentes com outros gráficos</i>",
@@ -585,7 +590,8 @@ fig6.update_layout(
     paper_bgcolor='white',
     plot_bgcolor='#f8f9fa',
     margin=dict(l=180, r=120, t=100, b=60),
-    showlegend=False
+    showlegend=False,
+    autosize=True
 )
 
 # ==============================================
@@ -798,8 +804,24 @@ html_content = f"""
         .chart {{
             background: white;
             border-radius: 10px;
-            padding: 20px;
+            padding: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            width: 100%;
+            overflow-x: hidden;
+        }}
+        
+        @media (min-width: 768px) {{
+            .chart {{
+                padding: 20px;
+            }}
+        }}
+        
+        .chart .js-plotly-plot {{
+            width: 100% !important;
+        }}
+        
+        .chart .plotly {{
+            width: 100% !important;
         }}
         
         .info-box {{
@@ -1012,29 +1034,32 @@ html_content = f"""
             scrollZoom: false
         }};
         
+        // Configuração responsiva
+        var responsiveConfig = {{...config, responsive: true}};
+        
         // Gráfico 1
         var fig1 = {fig1.to_json()};
-        Plotly.newPlot('chart1', fig1.data, fig1.layout, config);
+        Plotly.newPlot('chart1', fig1.data, fig1.layout, responsiveConfig);
         
         // Gráfico 2
         var fig2 = {fig2.to_json()};
-        Plotly.newPlot('chart2', fig2.data, fig2.layout, config);
+        Plotly.newPlot('chart2', fig2.data, fig2.layout, responsiveConfig);
         
         // Gráfico 3
         var fig3 = {fig3.to_json()};
-        Plotly.newPlot('chart3', fig3.data, fig3.layout, config);
+        Plotly.newPlot('chart3', fig3.data, fig3.layout, responsiveConfig);
         
         // Gráfico 4
         var fig4 = {fig4.to_json()};
-        Plotly.newPlot('chart4', fig4.data, fig4.layout, config);
+        Plotly.newPlot('chart4', fig4.data, fig4.layout, responsiveConfig);
         
         // Gráfico 5
         var fig5 = {fig5.to_json()};
-        Plotly.newPlot('chart5', fig5.data, fig5.layout, config);
+        Plotly.newPlot('chart5', fig5.data, fig5.layout, responsiveConfig);
         
         // Gráfico 6
         var fig6 = {fig6.to_json()};
-        Plotly.newPlot('chart6', fig6.data, fig6.layout, config);
+        Plotly.newPlot('chart6', fig6.data, fig6.layout, responsiveConfig);
         
         // Ajuste automático de tamanho para mobile
         window.addEventListener('resize', function() {{
