@@ -806,22 +806,40 @@ html_content = f"""
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            width: 100%;
-            overflow-x: hidden;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto;
+            overflow-y: hidden;
         }}
         
         @media (min-width: 768px) {{
             .chart {{
                 padding: 20px;
+                overflow-x: hidden;
             }}
         }}
         
-        .chart .js-plotly-plot {{
+        /* Força gráficos Plotly a serem 100% responsivos */
+        .chart .js-plotly-plot,
+        .chart .plotly,
+        .chart .main-svg,
+        .chart svg {{
             width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
         }}
         
-        .chart .plotly {{
+        /* Containers dos gráficos */
+        #chart1, #chart2, #chart3, #chart4, #chart5, #chart6 {{
             width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto;
+        }}
+        
+        @media (max-width: 768px) {{
+            #chart1, #chart2, #chart3, #chart4, #chart5, #chart6 {{
+                min-height: 400px;
+            }}
         }}
         
         .info-box {{
@@ -1034,35 +1052,58 @@ html_content = f"""
             scrollZoom: false
         }};
         
+        // Detectar mobile
+        var isMobile = window.innerWidth <= 768;
+        
         // Configuração responsiva
         var responsiveConfig = {{...config, responsive: true}};
         
+        // Função para ajustar margens em mobile
+        function adjustLayoutForMobile(layout) {{
+            if (isMobile) {{
+                return {{
+                    ...layout,
+                    margin: {{l: 40, r: 40, t: 60, b: 50}},
+                    font: {{size: 10}},
+                    autosize: true
+                }};
+            }}
+            return layout;
+        }}
+        
         // Gráfico 1
         var fig1 = {fig1.to_json()};
+        fig1.layout = adjustLayoutForMobile(fig1.layout);
         Plotly.newPlot('chart1', fig1.data, fig1.layout, responsiveConfig);
         
         // Gráfico 2
         var fig2 = {fig2.to_json()};
+        fig2.layout = adjustLayoutForMobile(fig2.layout);
         Plotly.newPlot('chart2', fig2.data, fig2.layout, responsiveConfig);
         
         // Gráfico 3
         var fig3 = {fig3.to_json()};
+        fig3.layout = adjustLayoutForMobile(fig3.layout);
         Plotly.newPlot('chart3', fig3.data, fig3.layout, responsiveConfig);
         
         // Gráfico 4
         var fig4 = {fig4.to_json()};
+        fig4.layout = adjustLayoutForMobile(fig4.layout);
         Plotly.newPlot('chart4', fig4.data, fig4.layout, responsiveConfig);
         
         // Gráfico 5
         var fig5 = {fig5.to_json()};
+        fig5.layout = adjustLayoutForMobile(fig5.layout);
         Plotly.newPlot('chart5', fig5.data, fig5.layout, responsiveConfig);
         
         // Gráfico 6
         var fig6 = {fig6.to_json()};
+        fig6.layout = adjustLayoutForMobile(fig6.layout);
         Plotly.newPlot('chart6', fig6.data, fig6.layout, responsiveConfig);
         
         // Ajuste automático de tamanho para mobile
         window.addEventListener('resize', function() {{
+            isMobile = window.innerWidth <= 768;
             Plotly.Plots.resize('chart1');
             Plotly.Plots.resize('chart2');
             Plotly.Plots.resize('chart3');
