@@ -96,7 +96,7 @@ print("🌊 ANÁLISE DE RESÍDUOS POR BACIAS HIDROGRÁFICAS")
 print("="*70)
 
 print("\n1️⃣ Carregando dados dos setores censitários...")
-gdf = gpd.read_file(r'analise_exploratoria\SC_setores_CD2022.gpkg')
+gdf = gpd.read_file(r'SC_setores_CD2022.gpkg')
 print(f"   ✓ {len(gdf):,} setores carregados")
 
 print("\n2️⃣ Obtendo informações de bacias hidrográficas...")
@@ -179,7 +179,14 @@ if pop_df is not None:
     # Calcular centro do mapa
     center = [bacias_geom.geometry.centroid.y.mean(), bacias_geom.geometry.centroid.x.mean()]
     
-    m = folium.Map(location=center, zoom_start=7, tiles='CartoDB positron')
+    m = folium.Map(
+        location=center, 
+        zoom_start=7, 
+        tiles='CartoDB positron',
+        min_zoom=6,      # Limite de afastamento (não deixa zoom muito distante)
+        max_zoom=13,     # Limite de aproximação (não deixa zoom muito próximo)
+        max_bounds=True  # Restringe o mapa aos limites de SC
+    )
     
     # Cores por bacia (degradê de azuis e verdes)
     cores_bacias = {
@@ -278,7 +285,7 @@ if pop_df is not None:
     '''
     m.get_root().html.add_child(folium.Element(legend_html))
     
-    output_path = r'analise_exploratoria\outputs\mapa_bacias_hidrograficas.html'
+    output_path = r'outputs\mapa_bacias_hidrograficas.html'
     m.save(output_path)
     
     file_size = os.path.getsize(output_path) / (1024 * 1024)
@@ -287,10 +294,10 @@ if pop_df is not None:
     print(f"📁 Salvo em: {output_path}")
     
     # Salvar CSVs
-    csv_bacias = r'analise_exploratoria\outputs\resumo_por_bacia.csv'
+    csv_bacias = r'outputs\resumo_por_bacia.csv'
     bacias_agg.to_csv(csv_bacias, index=False, encoding='utf-8-sig')
     
-    csv_risco = r'analise_exploratoria\outputs\analise_risco_municipios.csv'
+    csv_risco = r'outputs\analise_risco_municipios.csv'
     muni_gdf[['NM_MUN', 'bacia', 'populacao', 'domestico_t_ano', 'reciclavel_t_ano', 'risco']].to_csv(
         csv_risco, index=False, encoding='utf-8-sig'
     )
