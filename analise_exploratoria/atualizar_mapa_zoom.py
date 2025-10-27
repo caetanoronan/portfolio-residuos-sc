@@ -19,8 +19,34 @@ gdf = gpd.read_file('outputs/sectors_with_waste_estimates.gpkg')
 
 # Dissolver por bacia
 print("🔄 Criando geometrias das bacias...")
-muni_gdf = gdf.dissolve(by='CD_MUN', aggfunc='first')
-muni_gdf = muni_gdf.merge(bacias_csv, left_on='bacia', right_on='bacia', how='left')
+muni_gdf = gdf.dissolve(by='CD_MUN', aggfunc='first').reset_index()
+
+# Garantir coluna 'bacia' (fallback por nome do município)
+if 'bacia' not in muni_gdf.columns:
+    print("🧭 Coluna 'bacia' não encontrada nos dados. Atribuindo por nome do município...")
+    bacias_sc = {
+        'Bacia do Itajaí': ['Blumenau', 'Itajaí', 'Rio do Sul', 'Brusque', 'Ibirama'],
+        'Bacia do Tubarão': ['Tubarão', 'Criciúma', 'Araranguá', 'Içara'],
+        'Bacia do Uruguai': ['Chapecó', 'Concórdia', 'Joaçaba', 'Xanxerê', 'São Miguel do Oeste'],
+        'Bacia Litorânea Norte': ['Joinville', 'São Francisco do Sul', 'Araquari'],
+        'Bacia Litorânea Central': ['Florianópolis', 'São José', 'Palhoça', 'Biguaçu'],
+        'Bacia do Rio do Peixe': ['Videira', 'Caçador', 'Curitibanos'],
+        'Bacia do Canoas': ['Lages', 'São Joaquim', 'Campos Novos']
+    }
+
+    def atribuir_bacia(nome_mun: str) -> str:
+        if not isinstance(nome_mun, str):
+            return 'Outras Bacias'
+        for bacia, municipios in bacias_sc.items():
+            for mun in municipios:
+                if mun.lower() in nome_mun.lower():
+                    return bacia
+        return 'Outras Bacias'
+
+    col_nome = 'NM_MUN' if 'NM_MUN' in muni_gdf.columns else None
+    if col_nome is None:
+        raise KeyError("Não foi possível atribuir 'bacia': coluna 'NM_MUN' não encontrada no GeoPackage.")
+    muni_gdf['bacia'] = muni_gdf[col_nome].apply(atribuir_bacia)
 
 # Criar geometrias das bacias
 bacias_geom = muni_gdf.dissolve(by='bacia', aggfunc='sum')
@@ -62,6 +88,10 @@ cores_bacias = {
 print("🎨 Adicionando polígonos...")
 for _, bacia_row in bacias_geom.iterrows():
     cor = cores_bacias.get(bacia_row['bacia'], '#999999')
+    # Estilo diferenciado para grupos não contíguos (ajuda a leitura)
+    is_agrupada = bacia_row['bacia'] in ['Bacia Litorânea Norte', 'Bacia Litorânea Central', 'Outras Bacias']
+    fill_opacity = 0.35 if bacia_row['bacia'] == 'Outras Bacias' else (0.5 if is_agrupada else 0.6)
+    dash_array = '6,4' if bacia_row['bacia'] == 'Outras Bacias' else (None)
     
     popup_html = f"""
     <div style="font-family: Arial; font-size: 13px; min-width: 280px; max-width: 320px;">
@@ -97,11 +127,12 @@ for _, bacia_row in bacias_geom.iterrows():
     
     folium.GeoJson(
         bacia_row['geometry'],
-        style_function=lambda feature, cor=cor: {
+        style_function=lambda feature, cor=cor, fill_opacity=fill_opacity, dash_array=dash_array: {
             'fillColor': cor,
             'color': '#ffffff',
             'weight': 4,
-            'fillOpacity': 0.6
+            'fillOpacity': fill_opacity,
+            'dashArray': dash_array
         },
         tooltip=folium.Tooltip(bacia_row['bacia'], sticky=False),
         popup=folium.Popup(popup_html, max_width=400)
@@ -157,7 +188,10 @@ for bacia, cor in cores_bacias.items():
 legend_html += '''
     <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 10px; color: #666;">
         🔍 Zoom: 6-13<br>
-        📍 Toque para detalhes
+        📍 Toque para detalhes<br>
+        📝 Nota: Algumas categorias (Litorâneas e "Outras Bacias") agrupam diversas
+        microbacias costeiras e podem aparecer como áreas não contíguas com a mesma cor.
+        Isso é esperado e segue a agregação adotada neste estudo.
     </div>
 </div>
 '''
