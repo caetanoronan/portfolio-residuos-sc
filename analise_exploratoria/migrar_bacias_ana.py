@@ -169,16 +169,17 @@ def assign_ottobacia_to_bacia(otto: gpd.GeoDataFrame, ref: gpd.GeoDataFrame) -> 
     return otto_assigned
 
 def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFrame, otto_assigned: gpd.GeoDataFrame, sc_geom):
-    # Cores consistentes
+    # Cores ColorBrewer Set2 (8 cores qualitativas, colorblind-safe)
+    # Fonte: https://colorbrewer2.org/#type=qualitative&scheme=Set2&n=8
     cores_bacias = {
-        'Bacia do Itajaí': '#1976d2',
-        'Bacia do Tubarão': '#388e3c',
-        'Bacia do Uruguai': '#7b1fa2',
-        'Bacia Litorânea Norte': '#0097a7',
-        'Bacia Litorânea Central': '#00796b',
-        'Bacia do Rio do Peixe': '#f57c00',
-        'Bacia do Canoas': '#5d4037',
-        'Outras Bacias': '#757575'
+        'Bacia do Itajaí': '#66c2a5',        # Verde-azulado claro
+        'Bacia do Tubarão': '#fc8d62',       # Laranja suave
+        'Bacia do Uruguai': '#8da0cb',       # Azul-lavanda
+        'Bacia Litorânea Norte': '#e78ac3',  # Rosa suave
+        'Bacia Litorânea Central': '#a6d854', # Verde-lima
+        'Bacia do Rio do Peixe': '#ffd92f',  # Amarelo dourado
+        'Bacia do Canoas': '#e5c494',        # Bege-dourado
+        'Outras Bacias': '#b3b3b3'           # Cinza neutro
     }
     center = [bacias_official.geometry.centroid.y.mean(), bacias_official.geometry.centroid.x.mean()]
     m = folium.Map(location=center, zoom_start=7, tiles='CartoDB positron', min_zoom=6, max_zoom=13, max_bounds=True)
@@ -239,23 +240,27 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
         locateOptions={'enableHighAccuracy': True}
     ).add_to(m)
 
-    # Camadas
-    fg_macro = folium.FeatureGroup(name='Macro-bacias (dissolvidas)', show=True)
-    # NOTA: Camada de ottobacias individuais REMOVIDA para reduzir tamanho do arquivo
-    # (arquivo estava com 163 MB, acima do limite de 100 MB do GitHub)
-
-    # Borda do estado
+    # Borda do estado (camada base)
+    fg_limites = folium.FeatureGroup(name='🗺️ Limite de SC', show=True)
     try:
-        folium.GeoJson(sc_geom, name='Limite de SC', style_function=lambda f: {
-            'fillColor': 'transparent', 'color': '#111', 'weight': 2, 'dashArray': '4,3', 'fillOpacity': 0
-        }).add_to(m)
+        folium.GeoJson(sc_geom, style_function=lambda f: {
+            'fillColor': 'transparent', 'color': '#111', 'weight': 3, 'dashArray': '6,4', 'fillOpacity': 0
+        }).add_to(fg_limites)
     except Exception:
         pass
+    fg_limites.add_to(m)
 
+    # Criar FeatureGroup INDIVIDUAL para cada bacia (permite ligar/desligar separadamente)
+    bacias_layers = {}
+    
     for _, row in bacias_official.iterrows():
         bacia = row['bacia']
         cor = cores_bacias.get(bacia, '#999999')
         stats = resumo.loc[resumo['bacia'] == bacia].iloc[0] if (resumo['bacia'] == bacia).any() else None
+        
+        # Criar FeatureGroup específico para esta bacia
+        fg_bacia = folium.FeatureGroup(name=f'🌊 {bacia}', show=True)
+        
         popup_html = f"""
         <div style="font-family: Arial; font-size: 13px; min-width: 280px; max-width: 320px;">
             <h3 style="margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 3px solid {cor}; color: {cor}; font-size: 16px;">
@@ -271,8 +276,12 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
             style_function=lambda f, cor=cor: {'fillColor': cor, 'color': '#222222', 'weight': 2, 'fillOpacity': 0.6},
             tooltip=folium.Tooltip(bacia, sticky=False)
         )
-        gj.add_to(fg_macro)
+        gj.add_to(fg_bacia)
         folium.Popup(popup_html, max_width=400).add_to(gj)
+        
+        # Adicionar ao mapa
+        fg_bacia.add_to(m)
+        bacias_layers[bacia] = fg_bacia
 
     # Legenda responsiva e SEMPRE VISÍVEL
     legend_html = '''
@@ -397,8 +406,9 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
     </script>
     '''
     m.get_root().add_child(folium.Element(meta_inject_js))
-    fg_macro.add_to(m)
-    folium.LayerControl(collapsed=False).add_to(m)
+    
+    # LayerControl simples (mostra todas as bacias individuais)
+    folium.LayerControl(collapsed=False, position='topleft').add_to(m)
     
     # ADICIONAR LEGENDA POR ÚLTIMO para garantir que fique visível
     m.get_root().html.add_child(folium.Element(legend_html))

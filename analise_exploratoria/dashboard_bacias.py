@@ -1,15 +1,36 @@
 """
 Dashboard Interativo - Análise de Resíduos por Bacias Hidrográficas de Santa Catarina
 Visualizações: Ranking, Distribuição, Per Capita, Risco e Comparações
+OTIMIZADO para MOBILE com ColorBrewer palettes
 """
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
 
+# Configuração global para mobile
+def get_mobile_layout_config():
+    """Retorna configuração de layout otimizada para mobile"""
+    return dict(
+        autosize=True,
+        margin=dict(l=10, r=10, t=60, b=40),  # Margens reduzidas para mobile
+        font=dict(size=10),  # Fonte menor por padrão
+        title_font=dict(size=16),  # Títulos menores
+        hoverlabel=dict(font_size=11),
+        showlegend=True,
+        legend=dict(
+            orientation="h",  # Legenda horizontal
+            yanchor="bottom",
+            y=-0.3,
+            xanchor="center",
+            x=0.5,
+            font=dict(size=9)
+        )
+    )
+
 # Carregar dados
-df_bacias = pd.read_csv(r'outputs\resumo_por_bacia.csv')
-df_municipios = pd.read_csv(r'outputs\analise_risco_municipios.csv')
+df_bacias = pd.read_csv(r'analise_exploratoria\outputs\resumo_por_bacia.csv')
+df_municipios = pd.read_csv(r'analise_exploratoria\outputs\analise_risco_municipios.csv')
 
 # Calcular métricas adicionais
 df_bacias['domestico_per_capita'] = (df_bacias['domestico_t_ano'] / df_bacias['populacao']) * 1000  # kg/hab/ano
@@ -19,16 +40,17 @@ df_bacias['percentual_residuos'] = (df_bacias['domestico_t_ano'] / df_bacias['do
 # Ordenar para visualizações
 df_bacias_sorted = df_bacias.sort_values('domestico_t_ano', ascending=True)
 
-# Paleta de cores por bacia
+# Paleta de cores ColorBrewer Set2 (8 cores qualitativas, colorblind-safe)
+# Fonte: https://colorbrewer2.org/#type=qualitative&scheme=Set2&n=8
 cores_bacias = {
-    'Bacia do Itajaí': '#1976d2',
-    'Bacia do Tubarão': '#388e3c',
-    'Bacia do Uruguai': '#7b1fa2',
-    'Bacia Litorânea Norte': '#0097a7',
-    'Bacia Litorânea Central': '#00796b',
-    'Bacia do Rio do Peixe': '#f57c00',
-    'Bacia do Canoas': '#5d4037',
-    'Outras Bacias': '#757575'
+    'Bacia do Itajaí': '#66c2a5',        # Verde-azulado claro
+    'Bacia do Tubarão': '#fc8d62',       # Laranja suave
+    'Bacia do Uruguai': '#8da0cb',       # Azul-lavanda
+    'Bacia Litorânea Norte': '#e78ac3',  # Rosa suave
+    'Bacia Litorânea Central': '#a6d854', # Verde-lima
+    'Bacia do Rio do Peixe': '#ffd92f',  # Amarelo dourado
+    'Bacia do Canoas': '#e5c494',        # Bege-dourado
+    'Outras Bacias': '#b3b3b3'           # Cinza neutro
 }
 
 df_bacias_sorted['cor'] = df_bacias_sorted['bacia'].map(cores_bacias)
@@ -60,27 +82,29 @@ fig1.add_trace(go.Bar(
 
 fig1.update_layout(
     title={
-        'text': '🏆 Ranking das Bacias Hidrográficas por Volume de Resíduos Domésticos',
-        'font': {'size': 22, 'color': '#1976d2', 'family': 'Arial Black'},
+        'text': '🏆 Ranking das Bacias por Volume de Resíduos',
+        'font': {'size': 18, 'color': '#1976d2', 'family': 'Arial, sans-serif'},
         'x': 0.5,
         'xanchor': 'center'
     },
-    xaxis_title='Volume de Resíduos Domésticos (toneladas/ano)',
+    xaxis_title='Volume (toneladas/ano)',
+    xaxis_title_font=dict(size=11),
     yaxis_title='',
     xaxis=dict(
         showgrid=True,
         gridcolor='#e0e0e0',
         tickformat=',',
-        title_font=dict(size=14)
+        title_font=dict(size=11),
+        tickfont=dict(size=10)
     ),
     yaxis=dict(
-        tickfont=dict(size=13, color='#333')
+        tickfont=dict(size=10, color='#333')
     ),
     plot_bgcolor='#f8f9fa',
     paper_bgcolor='white',
-    height=500,
-    margin=dict(l=20, r=120, t=80, b=60),
-    hoverlabel=dict(bgcolor="white", font_size=13),
+    height=450,  # Altura reduzida para mobile
+    margin=dict(l=15, r=90, t=70, b=50),  # Margens otimizadas
+    hoverlabel=dict(bgcolor="white", font_size=11),
     autosize=True
 )
 
@@ -1144,7 +1168,7 @@ html_content = f"""
 """
 
 # Salvar dashboard
-output_file = r'outputs\dashboard_bacias.html'
+output_file = r'analise_exploratoria\outputs\dashboard_bacias.html'
 with open(output_file, 'w', encoding='utf-8') as f:
     f.write(html_content)
 
