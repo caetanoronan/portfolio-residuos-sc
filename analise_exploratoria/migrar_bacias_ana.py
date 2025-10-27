@@ -19,6 +19,7 @@ import pandas as pd
 import geopandas as gpd
 from shapely.geometry import box
 import folium
+from folium import plugins
 
 BASE_DIR = os.path.dirname(__file__)
 DATA_DIR = os.path.join(BASE_DIR, 'data')
@@ -167,7 +168,7 @@ def assign_ottobacia_to_bacia(otto: gpd.GeoDataFrame, ref: gpd.GeoDataFrame) -> 
     otto_assigned['bacia'] = assigned
     return otto_assigned
 
-def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFrame):
+def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFrame, otto_assigned: gpd.GeoDataFrame, sc_geom):
     # Cores consistentes
     cores_bacias = {
         'Bacia do Itajaí': '#1976d2',
@@ -181,6 +182,75 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
     }
     center = [bacias_official.geometry.centroid.y.mean(), bacias_official.geometry.centroid.x.mean()]
     m = folium.Map(location=center, zoom_start=7, tiles='CartoDB positron', min_zoom=6, max_zoom=13, max_bounds=True)
+
+    # ===== PLUGINS PARA FUNCIONALIDADES EXTRAS =====
+    
+    # 1. MiniMap - Minimapa de navegação no canto inferior esquerdo
+    minimap = plugins.MiniMap(toggle_display=True, tile_layer='CartoDB positron', 
+                              position='bottomleft', width=150, height=150, zoom_level_offset=-5)
+    minimap.add_to(m)
+    
+    # 2. Fullscreen - Botão de tela cheia
+    plugins.Fullscreen(
+        position='topleft',
+        title='Tela Cheia',
+        title_cancel='Sair da Tela Cheia',
+        force_separate_button=True
+    ).add_to(m)
+    
+    # 3. MousePosition - Mostra coordenadas do mouse
+    plugins.MousePosition(
+        position='bottomleft',
+        separator=' | ',
+        prefix='Coordenadas:',
+        lat_formatter="function(num) {return L.Util.formatNum(num, 5) + ' º N';}",
+        lng_formatter="function(num) {return L.Util.formatNum(num, 5) + ' º E';}"
+    ).add_to(m)
+    
+    # 4. MeasureControl - Medir distâncias e áreas
+    plugins.MeasureControl(
+        position='topleft',
+        primary_length_unit='kilometers',
+        secondary_length_unit='meters',
+        primary_area_unit='sqkilometers',
+        secondary_area_unit='hectares',
+        active_color='red',
+        completed_color='blue'
+    ).add_to(m)
+    
+    # 5. Draw - Desenhar no mapa (linhas, polígonos, etc)
+    plugins.Draw(
+        export=True,
+        position='topleft',
+        draw_options={
+            'polyline': {'allowIntersection': False},
+            'polygon': {'allowIntersection': False},
+            'circle': False,
+            'rectangle': True,
+            'marker': True,
+            'circlemarker': False
+        }
+    ).add_to(m)
+    
+    # 6. LocateControl - Botão para encontrar localização do usuário
+    plugins.LocateControl(
+        position='topleft',
+        strings={'title': 'Ver minha localização'},
+        locateOptions={'enableHighAccuracy': True}
+    ).add_to(m)
+
+    # Camadas
+    fg_macro = folium.FeatureGroup(name='Macro-bacias (dissolvidas)', show=True)
+    # NOTA: Camada de ottobacias individuais REMOVIDA para reduzir tamanho do arquivo
+    # (arquivo estava com 163 MB, acima do limite de 100 MB do GitHub)
+
+    # Borda do estado
+    try:
+        folium.GeoJson(sc_geom, name='Limite de SC', style_function=lambda f: {
+            'fillColor': 'transparent', 'color': '#111', 'weight': 2, 'dashArray': '4,3', 'fillOpacity': 0
+        }).add_to(m)
+    except Exception:
+        pass
 
     for _, row in bacias_official.iterrows():
         bacia = row['bacia']
@@ -196,12 +266,126 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
             {f'<div style="background: #fff3e0; padding: 8px; margin: 6px 0; border-left: 4px solid #f57c00; border-radius: 3px;"><strong style="font-size: 12px;">♻️ Resíduos Recicláveis:</strong><br><span style="font-size: 16px; font-weight: bold; color: #f57c00;">{stats.reciclavel_t_ano:,.0f} t/ano</span></div>' if stats is not None else ''}
         </div>
         """
-        folium.GeoJson(
+        gj = folium.GeoJson(
             row['geometry'],
-            style_function=lambda f, cor=cor: {'fillColor': cor, 'color': '#ffffff', 'weight': 4, 'fillOpacity': 0.6},
-            tooltip=folium.Tooltip(bacia, sticky=False),
-            popup=folium.Popup(popup_html, max_width=400)
-        ).add_to(m)
+            style_function=lambda f, cor=cor: {'fillColor': cor, 'color': '#222222', 'weight': 2, 'fillOpacity': 0.6},
+            tooltip=folium.Tooltip(bacia, sticky=False)
+        )
+        gj.add_to(fg_macro)
+        folium.Popup(popup_html, max_width=400).add_to(gj)
+
+    # Legenda responsiva e SEMPRE VISÍVEL
+    legend_html = '''
+    <style>
+        .legend-bacias {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999 !important;
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            border: 3px solid #1976d2;
+            max-height: 85vh;
+            overflow-y: auto;
+            min-width: 280px;
+            max-width: 350px;
+        }
+        
+        @media (max-width: 768px) {
+            .legend-bacias {
+                bottom: 10px !important;
+                right: 10px !important;
+                left: 10px !important;
+                padding: 15px !important;
+                font-size: 11px !important;
+                max-height: 50vh;
+                min-width: auto;
+                max-width: none;
+            }
+            .legend-bacias h4 {
+                font-size: 14px !important;
+                margin-bottom: 10px !important;
+            }
+            .legend-bacias .bacia-item { 
+                margin: 5px 0 !important; 
+            }
+            .legend-bacias .color-box { 
+                width: 20px !important; 
+                height: 15px !important; 
+            }
+            .legend-bacias .bacia-name { 
+                font-size: 11px !important; 
+            }
+        }
+        
+        @media print {
+            .legend-bacias {
+                display: block !important;
+            }
+        }
+    </style>
+    <div class="legend-bacias">
+        <h4 style="margin: 0 0 15px 0; color: #1976d2; border-bottom: 3px solid #1976d2; padding-bottom: 8px; font-size: 16px; font-weight: bold;">
+            🌊 Bacias Hidrográficas de SC
+        </h4>
+    '''
+    for bacia, cor in cores_bacias.items():
+        legend_html += f'''
+        <div class="bacia-item" style="margin: 8px 0; display: flex; align-items: center;">
+            <div class="color-box" style="width: 28px; height: 20px; background: {cor}; 
+                 border: 2px solid #333; margin-right: 10px; border-radius: 4px; flex-shrink: 0; 
+                 box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
+            <span class="bacia-name" style="font-size: 13px; color: #333; font-weight: 500;">{bacia}</span>
+        </div>
+        '''
+    legend_html += '''
+        <div style="margin-top: 15px; padding: 10px; background: #e8f5e9; border-left: 4px solid #388e3c; 
+                    border-radius: 5px; font-size: 11px;">
+            <strong>💡 Como usar:</strong><br>
+            • Clique nas bacias para ver dados<br>
+            • Use os controles de camadas (canto superior direito)<br>
+            • Zoom: + / - ou scroll do mouse
+        </div>
+        <div style="margin-top: 12px; padding-top: 10px; border-top: 2px solid #e0e0e0; font-size: 10px; 
+                    color: #666; text-align: center;">
+            <strong>Fonte:</strong> ANA - Ottobacias (nível 05)<br>
+            Dissolvidas em 8 macro-bacias hidrográficas
+        </div>
+    </div>
+    '''
+
+    # Meta viewport para mobile
+    viewport_meta = '''
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    '''
+    meta_inject_js = '''
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var meta1 = document.createElement('meta');
+        meta1.name = 'viewport';
+        meta1.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+        document.head.appendChild(meta1);
+        var meta2 = document.createElement('meta');
+        meta2.name = 'mobile-web-app-capable';
+        meta2.content = 'yes';
+        document.head.appendChild(meta2);
+        var meta3 = document.createElement('meta');
+        meta3.name = 'apple-mobile-web-app-capable';
+        meta3.content = 'yes';
+        document.head.appendChild(meta3);
+    });
+    </script>
+    '''
+    m.get_root().add_child(folium.Element(meta_inject_js))
+    fg_macro.add_to(m)
+    folium.LayerControl(collapsed=False).add_to(m)
+    
+    # ADICIONAR LEGENDA POR ÚLTIMO para garantir que fique visível
+    m.get_root().html.add_child(folium.Element(legend_html))
 
     m.save(OUT_MAP)
 
@@ -216,16 +400,19 @@ if __name__ == '__main__':
         print(f"📁 Carregando Ottobacias locais: {os.path.basename(local_file)}")
         otto = load_local_ottobacias(local_file)
         if otto.crs is None:
+            # Assume WGS84 caso sem CRS
             otto.set_crs(epsg=4326, inplace=True)
-        else:
-            otto = otto.to_crs(4326)
     else:
         print('🌐 Baixando Ottobacias da ANA (ArcGIS REST)...')
         geojson = fetch_ottobacias_geojson(bbox)
         otto = geojson_to_gdf(geojson)
     # Clip por SC
     print('✂️  Recortando por SC...')
-    otto_sc = gpd.clip(otto, gpd.GeoDataFrame(geometry=[sc_geom], crs='EPSG:4326'))
+    # Para performance, reprojeta o limite de SC para o CRS das ottobacias e CLIPA os dados no CRS nativo
+    # Criar GeoDataFrame do limite de SC corretamente
+    sc_gdf = gpd.GeoDataFrame({'id': [1], 'geometry': [sc_geom]}, crs='EPSG:4326')
+    sc_in_otto = sc_gdf.to_crs(otto.crs or 'EPSG:4326')
+    otto_sc = gpd.clip(otto, sc_in_otto)
 
     print('🗺️  Construindo referência das 8 bacias (municípios)...')
     bacias_ref = build_bacias_ref_from_municipios()
@@ -233,13 +420,49 @@ if __name__ == '__main__':
     print('🔗 Atribuindo cada Ottobacia à bacia por maior sobreposição...')
     otto_assigned = assign_ottobacia_to_bacia(otto_sc, bacias_ref)
 
+    # Resumo ANA após atribuição
+    counts = otto_assigned['bacia'].value_counts().sort_index()
+    print('\n📋 Resumo (quantidade de ottobacias por macro-bacia):')
+    for b, c in counts.items():
+        print(f" - {b}: {c} unidades")
+
     print('🧩 Dissolvendo Ottobacias por bacia...')
     bacias_official = otto_assigned.dissolve(by='bacia', aggfunc='sum').reset_index()
+    
+    # Simplificação AGRESSIVA para reduzir peso do HTML drasticamente
+    # Tolerância de 1000m (1km) - suficiente para visualização em escala estadual
+    try:
+        bo_3857 = bacias_official.to_crs(3857)
+        bo_3857['geometry'] = bo_3857.geometry.simplify(1000, preserve_topology=True)  # 1km
+        bacias_official = bo_3857.to_crs(4326)
+        print(f'   ✓ Geometrias macro-bacias simplificadas (tolerância 1km)')
+    except Exception:
+        # Se algo falhar, ao menos garanta 4326 para o mapa
+        bacias_official = bacias_official.to_crs(4326)
+    
+    # Simplificar MUITO as ottobacias individuais também
+    try:
+        otto_3857 = otto_assigned.to_crs(3857)
+        otto_3857['geometry'] = otto_3857.geometry.simplify(500, preserve_topology=True)  # 500m
+        otto_assigned = otto_3857.to_crs(4326)
+        print(f'   ✓ Geometrias ottobacias simplificadas (tolerância 500m)')
+    except Exception:
+        otto_assigned = otto_assigned.to_crs(4326)
 
     print('📊 Lendo estatísticas por bacia...')
     resumo = pd.read_csv(RESUMO_CSV)
 
-    print('🖼️ Gerando mapa com polígonos oficiais...')
-    build_map_from_official(bacias_official, resumo)
+    # Exportar datasets
+    out_macro = os.path.join(BASE_DIR, 'outputs', 'bacias_oficiais_ana_macro.gpkg')
+    out_otto = os.path.join(BASE_DIR, 'outputs', 'ottobacias_sc_atribuida.gpkg')
+    try:
+        bacias_official.to_file(out_macro, driver='GPKG')
+        otto_assigned.to_file(out_otto, driver='GPKG')
+        print(f'📦 Exportados: {out_macro} e {out_otto}')
+    except Exception as e:
+        print(f'⚠️ Falha ao exportar GPKG: {e}')
+
+    print('🖼️ Gerando mapa com camadas (macro e ottobacias)...')
+    build_map_from_official(bacias_official, resumo, otto_assigned, sc_geom)
 
     print(f'✅ Mapa atualizado com bacias oficiais! Arquivo: {OUT_MAP}')
