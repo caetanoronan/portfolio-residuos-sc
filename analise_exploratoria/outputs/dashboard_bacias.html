@@ -270,6 +270,61 @@
             }
         }
         
+        /* Botão voltar ao topo */
+        #back-to-top {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        #back-to-top:hover {
+            background: #0d47a1;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+        
+        #back-to-top.show {
+            display: block;
+        }
+        
+        /* Toggle de modo compacto (desktop demo) */
+        .compact-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1001;
+            background: rgba(255,255,255,0.95);
+            padding: 8px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .compact-toggle input[type="checkbox"] {
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .compact-toggle {
+                display: none;
+            }
+        }
+        
         .info-box {
             background: #e3f2fd;
             border-left: 5px solid #1976d2;
@@ -331,6 +386,15 @@
     </style>
 </head>
 <body>
+    <!-- Toggle de modo compacto (só desktop) -->
+    <div class="compact-toggle">
+        <input type="checkbox" id="force-compact" />
+        <label for="force-compact" style="cursor: pointer; user-select: none;">📱 Modo Compacto (demo)</label>
+    </div>
+    
+    <!-- Botão voltar ao topo -->
+    <button id="back-to-top" title="Voltar ao topo">⬆️</button>
+    
     <div class="container">
         <header>
             <h1>🌊 Dashboard de Análise por Bacias Hidrográficas</h1>
@@ -539,7 +603,24 @@
         }
 
         // Render condicional baseado em viewport
-        if (!isMobile) {
+        var forceCompact = false;
+        
+        // Toggle de modo compacto (desktop demo)
+        document.getElementById('force-compact').addEventListener('change', function() {
+            forceCompact = this.checked;
+            var block = document.getElementById('more-charts');
+            var btn = document.getElementById('toggle-more');
+            
+            if (forceCompact) {
+                block.style.display = 'none';
+                btn.style.display = 'block';
+            } else {
+                block.style.display = 'block';
+                btn.style.display = 'none';
+            }
+        });
+        
+        if (!isMobile && !forceCompact) {
             // Desktop: renderiza tudo e mantém bloco visível
             document.getElementById('more-charts').style.display = 'block';
             renderMoreCharts();
@@ -555,8 +636,28 @@
                 }
                 block.style.display = (block.style.display === 'block') ? 'none' : 'block';
                 btn.textContent = block.style.display === 'block' ? '📉 Ocultar gráficos' : '📈 Mostrar mais gráficos';
+                
+                // Scroll ao topo ao ocultar
+                if (block.style.display === 'none') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             });
         }
+        
+        // Botão voltar ao topo
+        var backToTop = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        backToTop.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
         
         // Ajuste automático de tamanho para mobile
         window.addEventListener('resize', function() {

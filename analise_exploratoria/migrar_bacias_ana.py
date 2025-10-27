@@ -405,13 +405,13 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
     });
     </script>
     '''
-    m.get_root().add_child(folium.Element(meta_inject_js))
+    m.get_root().html.add_child(folium.Element(meta_inject_js))
     
     # LayerControl (colapsado para melhorar no mobile)
     folium.LayerControl(collapsed=True, position='topleft').add_to(m)
     
     # ADICIONAR LEGENDA POR ÚLTIMO para garantir que fique visível
-    m.get_root().add_child(folium.Element(legend_html))
+    m.get_root().html.add_child(folium.Element(legend_html))
 
     m.save(OUT_MAP)
 
