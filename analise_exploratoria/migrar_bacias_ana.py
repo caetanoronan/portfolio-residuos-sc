@@ -295,28 +295,44 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
         
         @media (max-width: 768px) {
             .legend-bacias {
-                bottom: 10px !important;
-                right: 10px !important;
-                left: 10px !important;
-                padding: 15px !important;
-                font-size: 11px !important;
-                max-height: 50vh;
-                min-width: auto;
-                max-width: none;
+                bottom: 5px !important;
+                right: 5px !important;
+                left: 5px !important;
+                padding: 10px !important;
+                font-size: 10px !important;
+                max-height: 40vh !important;
+                min-width: auto !important;
+                max-width: none !important;
+                border-width: 2px !important;
             }
             .legend-bacias h4 {
-                font-size: 14px !important;
-                margin-bottom: 10px !important;
+                font-size: 12px !important;
+                margin-bottom: 8px !important;
+                padding-bottom: 5px !important;
+                border-bottom-width: 2px !important;
             }
             .legend-bacias .bacia-item { 
-                margin: 5px 0 !important; 
+                margin: 4px 0 !important; 
             }
             .legend-bacias .color-box { 
-                width: 20px !important; 
-                height: 15px !important; 
+                width: 18px !important; 
+                height: 14px !important;
+                margin-right: 6px !important;
             }
             .legend-bacias .bacia-name { 
-                font-size: 11px !important; 
+                font-size: 10px !important; 
+                line-height: 1.2 !important;
+            }
+            /* Reduzir tamanho das seções extras em mobile */
+            .legend-bacias .instrucoes-mobile {
+                padding: 6px !important;
+                font-size: 9px !important;
+                margin-top: 8px !important;
+            }
+            .legend-bacias .fonte-mobile {
+                font-size: 8px !important;
+                margin-top: 8px !important;
+                padding-top: 6px !important;
             }
         }
         
@@ -341,17 +357,17 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
         </div>
         '''
     legend_html += '''
-        <div style="margin-top: 15px; padding: 10px; background: #e8f5e9; border-left: 4px solid #388e3c; 
+        <div class="instrucoes-mobile" style="margin-top: 15px; padding: 10px; background: #e8f5e9; border-left: 4px solid #388e3c; 
                     border-radius: 5px; font-size: 11px;">
             <strong>💡 Como usar:</strong><br>
             • Clique nas bacias para ver dados<br>
-            • Use os controles de camadas (canto superior direito)<br>
-            • Zoom: + / - ou scroll do mouse
+            • Use os controles de camadas<br>
+            • Zoom: + / - ou scroll
         </div>
-        <div style="margin-top: 12px; padding-top: 10px; border-top: 2px solid #e0e0e0; font-size: 10px; 
+        <div class="fonte-mobile" style="margin-top: 12px; padding-top: 10px; border-top: 2px solid #e0e0e0; font-size: 10px; 
                     color: #666; text-align: center;">
-            <strong>Fonte:</strong> ANA - Ottobacias (nível 05)<br>
-            Dissolvidas em 8 macro-bacias hidrográficas
+            <strong>Fonte:</strong> ANA - Ottobacias<br>
+            8 macro-bacias hidrográficas
         </div>
     </div>
     '''
