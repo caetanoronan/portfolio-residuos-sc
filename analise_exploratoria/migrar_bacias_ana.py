@@ -199,13 +199,13 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
         force_separate_button=True
     ).add_to(m)
     
-    # 3. MousePosition - Mostra coordenadas do mouse
+    # 3. MousePosition - Mostra coordenadas do mouse (movido para topright para evitar sobreposição)
     plugins.MousePosition(
-        position='bottomleft',
+        position='topright',
         separator=' | ',
-        prefix='Coordenadas:',
-        lat_formatter="function(num) {return L.Util.formatNum(num, 5) + ' º N';}",
-        lng_formatter="function(num) {return L.Util.formatNum(num, 5) + ' º E';}"
+        prefix='Coords: ',
+        lat_formatter="function(num) {return L.Util.formatNum(num, 4) + '°N';}",
+        lng_formatter="function(num) {return L.Util.formatNum(num, 4) + '°O';}"
     ).add_to(m)
     
     # 4. MeasureControl - Medir distâncias e áreas
@@ -219,21 +219,7 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
         completed_color='blue'
     ).add_to(m)
     
-    # 5. Draw - Desenhar no mapa (linhas, polígonos, etc)
-    plugins.Draw(
-        export=True,
-        position='topleft',
-        draw_options={
-            'polyline': {'allowIntersection': False},
-            'polygon': {'allowIntersection': False},
-            'circle': False,
-            'rectangle': True,
-            'marker': True,
-            'circlemarker': False
-        }
-    ).add_to(m)
-    
-    # 6. LocateControl - Botão para encontrar localização do usuário
+    # 5. LocateControl - Botão para encontrar localização do usuário
     plugins.LocateControl(
         position='topleft',
         strings={'title': 'Ver minha localização'},
@@ -283,20 +269,28 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
         fg_bacia.add_to(m)
         bacias_layers[bacia] = fg_bacia
 
-    # Legenda responsiva e SEMPRE VISÍVEL
+    # Legenda responsiva e SEMPRE VISÍVEL (ajustada para não sobrepor atribuição CartoDB)
     legend_html = '''
     <style>
+        /* Ajustar atribuição do mapa base para evitar sobreposição */
+        .leaflet-control-attribution {
+            font-size: 10px !important;
+            padding: 2px 5px !important;
+            background: rgba(255, 255, 255, 0.8) !important;
+            max-width: 200px !important;
+        }
+        
         .legend-bacias {
             position: fixed;
-            bottom: 20px;
+            bottom: 35px;
             right: 20px;
-            z-index: 9999 !important;
+            z-index: 999 !important;
             background: white;
             padding: 18px;
             border-radius: 12px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
             border: 3px solid #1976d2;
-            max-height: 85vh;
+            max-height: 80vh;
             overflow-y: auto;
             min-width: 280px;
             max-width: 350px;
