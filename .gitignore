@@ -11,6 +11,7 @@ env/
 
 # Arquivos grandes de dados
 *.gpkg
+!analise_exploratoria/outputs/bacias_oficiais_ana_macro.gpkg
 *.shp
 *.shx
 *.dbf

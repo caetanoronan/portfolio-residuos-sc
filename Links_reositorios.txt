@@ -1,0 +1,36 @@
+Claro! Aqui estão todos os links do seu projeto publicado no GitHub Pages:
+
+🌐 Links do Projeto - Análise de Resíduos por Bacias Hidrográficas SC
+📊 Visualizações Principais:
+Dashboard Interativo (6 gráficos):
+https://caetanoronan.github.io/portfolio-residuos-sc/analise_exploratoria/outputs/dashboard_bacias.html
+
+Mapa das Bacias Hidrográficas (com limites de zoom):
+https://caetanoronan.github.io/portfolio-residuos-sc/analise_exploratoria/outputs/mapa_bacias_hidrograficas.html
+
+Relatório Técnico Completo:
+https://caetanoronan.github.io/portfolio-residuos-sc/analise_exploratoria/outputs/relatorio_tecnico.html
+
+📁 Repositório GitHub:
+Código-fonte completo:
+https://github.com/caetanoronan/portfolio-residuos-sc
+
+README do Projeto de Bacias:
+https://github.com/caetanoronan/portfolio-residuos-sc/blob/main/analise_exploratoria/README_BACIAS.md
+
+📑 Dados (CSV):
+Resumo por Bacia:
+https://caetanoronan.github.io/portfolio-residuos-sc/analise_exploratoria/outputs/resumo_por_bacia.csv
+
+
+Análise de Risco dos Municípios:
+https://caetanoronan.github.io/portfolio-residuos-sc/analise_exploratoria/outputs/analise_risco_municipios.csv
+
+🎯 Links Prontos para Compartilhar:
+
+
+Portfolio/CV
+LinkedIn
+Apresentações acadêmicas
+Artigos científicos
+Todos os links estão ativos e funcionando!
