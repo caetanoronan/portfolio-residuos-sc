@@ -272,6 +272,12 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
     # Legenda responsiva e SEMPRE VISÍVEL (ajustada para não sobrepor atribuição CartoDB)
     legend_html = '''
     <style>
+        /* Esconder controles pesados no mobile */
+        @media (max-width: 768px) {
+            .leaflet-control-minimap { display: none !important; }
+            .leaflet-control-measure { display: none !important; }
+        }
+
         /* Ajustar atribuição do mapa base para evitar sobreposição */
         .leaflet-control-attribution {
             font-size: 10px !important;
@@ -401,11 +407,11 @@ def build_map_from_official(bacias_official: gpd.GeoDataFrame, resumo: pd.DataFr
     '''
     m.get_root().add_child(folium.Element(meta_inject_js))
     
-    # LayerControl simples (mostra todas as bacias individuais)
-    folium.LayerControl(collapsed=False, position='topleft').add_to(m)
+    # LayerControl (colapsado para melhorar no mobile)
+    folium.LayerControl(collapsed=True, position='topleft').add_to(m)
     
     # ADICIONAR LEGENDA POR ÚLTIMO para garantir que fique visível
-    m.get_root().html.add_child(folium.Element(legend_html))
+    m.get_root().add_child(folium.Element(legend_html))
 
     m.save(OUT_MAP)
 

@@ -889,6 +889,24 @@ html_content = f"""
                 clear: both !important;
                 margin-bottom: 20px !important;
             }}
+            /* Modo compacto: esconde gráficos extras e mostra botão */
+            #more-charts {{
+                display: none;
+            }}
+            .more-toggle {{
+                display: block;
+                margin: 10px auto 0 auto;
+                width: calc(100% - 30px);
+                max-width: 420px;
+                background: #1976d2;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                padding: 12px 16px;
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }}
         }}
         
         .info-box {{
@@ -1032,24 +1050,32 @@ html_content = f"""
             <div class="chart" id="chart1"></div>
         </div>
         
-        <div class="chart-container">
-            <div class="chart" id="chart2"></div>
+        <!-- Botão Mostrar mais (aparece só no mobile) -->
+        <div class="chart-container" style="text-align:center;">
+            <button id="toggle-more" class="more-toggle">📈 Mostrar mais gráficos</button>
         </div>
-        
-        <div class="chart-container">
-            <div class="chart" id="chart3"></div>
-        </div>
-        
-        <div class="chart-container">
-            <div class="chart" id="chart4"></div>
-        </div>
-        
-        <div class="chart-container">
-            <div class="chart" id="chart5"></div>
-        </div>
-        
-        <div class="chart-container">
-            <div class="chart" id="chart6"></div>
+
+        <!-- Bloco com gráficos extras (2-6) -->
+        <div id="more-charts">
+            <div class="chart-container">
+                <div class="chart" id="chart2"></div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart" id="chart3"></div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart" id="chart4"></div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart" id="chart5"></div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart" id="chart6"></div>
+            </div>
         </div>
         
         <div class="info-box">
@@ -1127,30 +1153,49 @@ html_content = f"""
         fig1.layout = adjustLayoutForMobile(fig1.layout);
         Plotly.newPlot('chart1', fig1.data, fig1.layout, responsiveConfig);
         
-        // Gráfico 2
+        // Preparar figuras 2-6 (render condicional)
         var fig2 = {fig2.to_json()};
-        fig2.layout = adjustLayoutForMobile(fig2.layout);
-        Plotly.newPlot('chart2', fig2.data, fig2.layout, responsiveConfig);
-        
-        // Gráfico 3
         var fig3 = {fig3.to_json()};
-        fig3.layout = adjustLayoutForMobile(fig3.layout);
-        Plotly.newPlot('chart3', fig3.data, fig3.layout, responsiveConfig);
-        
-        // Gráfico 4
         var fig4 = {fig4.to_json()};
-        fig4.layout = adjustLayoutForMobile(fig4.layout);
-        Plotly.newPlot('chart4', fig4.data, fig4.layout, responsiveConfig);
-        
-        // Gráfico 5
         var fig5 = {fig5.to_json()};
-        fig5.layout = adjustLayoutForMobile(fig5.layout);
-        Plotly.newPlot('chart5', fig5.data, fig5.layout, responsiveConfig);
-        
-        // Gráfico 6
         var fig6 = {fig6.to_json()};
-        fig6.layout = adjustLayoutForMobile(fig6.layout);
-        Plotly.newPlot('chart6', fig6.data, fig6.layout, responsiveConfig);
+        
+        function renderMoreCharts() {{
+            fig2.layout = adjustLayoutForMobile(fig2.layout);
+            Plotly.newPlot('chart2', fig2.data, fig2.layout, responsiveConfig);
+            
+            fig3.layout = adjustLayoutForMobile(fig3.layout);
+            Plotly.newPlot('chart3', fig3.data, fig3.layout, responsiveConfig);
+            
+            fig4.layout = adjustLayoutForMobile(fig4.layout);
+            Plotly.newPlot('chart4', fig4.data, fig4.layout, responsiveConfig);
+            
+            fig5.layout = adjustLayoutForMobile(fig5.layout);
+            Plotly.newPlot('chart5', fig5.data, fig5.layout, responsiveConfig);
+            
+            fig6.layout = adjustLayoutForMobile(fig6.layout);
+            Plotly.newPlot('chart6', fig6.data, fig6.layout, responsiveConfig);
+        }}
+
+        // Render condicional baseado em viewport
+        if (!isMobile) {{
+            // Desktop: renderiza tudo e mantém bloco visível
+            document.getElementById('more-charts').style.display = 'block';
+            renderMoreCharts();
+        }} else {{
+            // Mobile: só renderiza ao clicar
+            var toggled = false;
+            var btn = document.getElementById('toggle-more');
+            btn.addEventListener('click', function() {{
+                var block = document.getElementById('more-charts');
+                if (!toggled) {{
+                    renderMoreCharts();
+                    toggled = true;
+                }}
+                block.style.display = (block.style.display === 'block') ? 'none' : 'block';
+                btn.textContent = block.style.display === 'block' ? '📉 Ocultar gráficos' : '📈 Mostrar mais gráficos';
+            }});
+        }}
         
         // Ajuste automático de tamanho para mobile
         window.addEventListener('resize', function() {{
