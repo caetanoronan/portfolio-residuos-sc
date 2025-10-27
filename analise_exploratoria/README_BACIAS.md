@@ -21,15 +21,18 @@ Este projeto apresenta uma análise exploratória detalhada da geração de res�
 ```
 analise_exploratoria/
 ├── analise_bacias_hidrograficas.py    # Pipeline completo de análise
-├── dashboard_bacias.py                # Geração do dashboard interativo
+├── dashboard_bacias.py                # Geração do dashboard interativo (1288 linhas)
+├── migrar_bacias_ana.py              # Pipeline ANA Ottobacias (495 linhas)
 ├── relatorio_tecnico.html             # Relatório técnico completo
 ├── SC_setores_CD2022.gpkg            # Dados censitários (16.831 setores)
 └── outputs/
-    ├── dashboard_bacias.html          # Dashboard com 6 gráficos (0,07 MB)
-    ├── mapa_bacias_hidrograficas.html # Mapa interativo (4,17 MB)
+    ├── dashboard_bacias.html          # Dashboard com 6 gráficos (0,08 MB)
+    ├── mapa_bacias_hidrograficas.html # Mapa interativo (8 MB, 247 Ottobacias)
     ├── relatorio_tecnico.html         # Documentação técnica
     ├── resumo_por_bacia.csv          # Estatísticas por bacia
     ├── analise_risco_municipios.csv  # Classificação de risco
+    ├── bacias_oficiais_ana_macro.gpkg # 8 macro-bacias (0,28 MB)
+    ├── ottobacias_sc_atribuida.gpkg  # 247 Ottobacias classificadas
     └── sectors_with_waste_estimates.gpkg # GeoPackage completo
 ```
 
@@ -46,6 +49,14 @@ Contém 6 gráficos interativos Plotly:
 - 🔄 **Gráfico 5:** Comparação população vs resíduos
 - 🎯 **Gráfico 6:** Painel de indicadores-chave
 
+**Otimizações Mobile:**
+- ✅ Modo compacto automático em dispositivos móveis (<768px)
+- ✅ Renderização sob demanda: Gráficos 2-6 carregam apenas após clicar em "Mostrar mais"
+- ✅ Botão "Voltar ao topo" flutuante (aparece após rolar 300px)
+- ✅ Toggle de modo compacto para desktop (demonstração/acessibilidade)
+- ✅ Margens otimizadas e fontes reduzidas para telas pequenas
+- ✅ Tamanho final: **0,08 MB** (extremamente leve)
+
 ### 2. Mapa das Bacias Hidrográficas
 **Arquivo:** `outputs/mapa_bacias_hidrograficas.html`
 
@@ -54,6 +65,14 @@ Mapa coroplético interativo com:
 - Tooltips com nome da bacia
 - Popups com estatísticas detalhadas
 - Legenda com códigos de cores
+
+**Otimizações Mobile:**
+- ✅ Controles MiniMap e MeasureControl ocultos em telas <768px
+- ✅ LayerControl colapsado por padrão (interface mais limpa)
+- ✅ Legenda responsiva com altura máxima de 40vh no mobile
+- ✅ Cores ColorBrewer Set2: seguras para daltonismo (deuteranopia, protanopia, tritanopia)
+- ✅ Geometrias simplificadas (tolerância 100m) - redução significativa de tamanho
+- ✅ Tamanho final: **8 MB** (247 Ottobacias incluídas)
 
 ### 3. Relatório Técnico
 **Arquivo:** `outputs/relatorio_tecnico.html`
@@ -78,10 +97,17 @@ Documentação completa incluindo:
 - **GeoPandas 0.14.x** - Análise de dados geoespaciais
 - **Shapely 2.0.x** - Manipulação de geometrias
 - **Fiona 1.9.x** - Leitura/escrita de formatos GIS
-- **Folium 0.15.x** - Mapas interativos web
+- **Folium 0.15.x** - Mapas interativos web (Leaflet.js)
 
 ### Bibliotecas de Visualização
-- **Plotly 5.18.x** - Gráficos interativos
+- **Plotly 5.18.x** - Gráficos interativos responsivos
+- **ColorBrewer** - Paletas seguras para daltonismo
+
+### Acessibilidade & UX
+- **Mobile-first design** - Breakpoint 768px
+- **Progressive enhancement** - Renderização condicional
+- **WCAG 2.1 compliance** - Contraste adequado, touch targets 44x44px
+- **Colorblind-safe palettes** - Testado com Chrome DevTools emulation
 
 ### Ferramentas de Desenvolvimento
 - **Visual Studio Code** - IDE

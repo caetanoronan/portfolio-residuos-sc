@@ -77,9 +77,12 @@ git push origin main
 
 ### Accessibility is NON-NEGOTIABLE
 **Every** visualization MUST be colorblind-safe:
+- **Watershed boundaries:** ColorBrewer Set2 palette (8 qualitative colors: #66c2a5, #fc8d62, #8da0cb, #e78ac3, #a6d854, #ffd92f, #e5c494, #b3b3b3)
 - **Domestic waste:** Blue gradient (`#d0d1e6` → `#034e7b`) - safe for all types
 - **Recyclable waste:** Yellow→Orange (`#ffffcc` → `#e31a1c`) - high contrast
 - **Risk levels:** `#d32f2f` (critical), `#f57c00` (high), `#fbc02d` (medium), `#388e3c` (low)
+
+**Testing:** Chrome DevTools → Rendering → Emulate vision deficiencies (deuteranopia, protanopia, tritanopia)
 
 **Implementation:** See `crie_interactive_sector_maps.py` (lines 180-220) for HeatMap gradient configs.
 
@@ -95,6 +98,37 @@ git push origin main
 bo_3857 = bacias_official.to_crs(3857)
 bo_3857['geometry'] = bo_3857.geometry.simplify(100)  # ~100m tolerance
 bacias_official = bo_3857.to_crs(4326)
+```
+
+### Folium Map Patterns
+**Standard Controls Configuration:**
+- **LayerControl:** `collapsed=True, position='topleft'` - mobile-friendly
+- **MiniMap:** Hidden on mobile via CSS (`.leaflet-control-minimap { display: none; }` @ max-width: 768px)
+- **MeasureControl:** Hidden on mobile (same CSS pattern)
+- **MousePosition:** `position='topright'` - desktop only
+- **Fullscreen:** Always visible
+- **LocateControl:** Always visible
+
+**Legend Injection (CRITICAL):**
+```python
+# CORRECT method - injects into <html> element
+m.get_root().html.add_child(folium.Element(legend_html))
+
+# WRONG method - breaks rendering
+# m.get_root().add_child(folium.Element(legend_html))  # ❌ Don't use
+```
+
+**Mobile CSS Pattern:**
+```css
+@media (max-width: 768px) {
+  .leaflet-control-minimap,
+  .leaflet-control-measure { display: none; }
+  
+  .legend-bacias {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+}
 ```
 
 ### IBGE API Usage
@@ -115,7 +149,25 @@ All dashboards follow this structure:
 3. **Charts:** Plotly with `responsive: true`, mobile-friendly margins
 4. **Footer:** Credits, data sources, GitHub link, "Desenvolvido com GitHub Copilot (IA)"
 
-**Mobile support:** `@media (max-width: 768px)` overrides for all layouts.
+**Mobile-First Patterns (NEW):**
+- **Render-on-demand:** Charts 2-6 hidden on mobile by default, loaded via "Mostrar mais" button
+- **Progressive enhancement:** Desktop loads all charts immediately; mobile defers heavy content
+- **Compact mode toggle:** Desktop has checkbox to force compact view (demo capability)
+- **Back-to-top button:** Floating button appears after 300px scroll, smooth behavior
+- **Mobile breakpoint:** `@media (max-width: 768px)` for all responsive overrides
+- **Touch-friendly:** Minimum 44x44px touch targets, adequate spacing
+
+**Implementation (see `dashboard_bacias.py` lines 870-1306):**
+```javascript
+// Conditional rendering pattern
+const isMobile = window.innerWidth <= 768;
+if (!isMobile && !forceCompact) {
+  renderMoreCharts(); // Desktop: load all charts
+} else {
+  // Mobile: render on button click
+  document.getElementById('more-toggle').addEventListener('click', renderMoreCharts);
+}
+```
 
 ## Integration Points
 
@@ -159,18 +211,19 @@ All scripts use **0.95 kg/hab/day** statewide - NO regional variation. This is i
 Aggregates all watersheds NOT in the 7 named bacias. Contains ~47% of state population. Do NOT try to disaggregate - matches project methodology.
 
 ### 4. Output File Sizes
-- Maps range from 0.46 MB (municipal) to 4.17 MB (full sectors)
+- Dashboard: 0.08 MB (compact with render-on-demand)
+- Maps: 0.46 MB (municipal) to 8 MB (watershed with Ottobacias)
 - GitHub Pages limit: 100 MB per repo - safe for now
-- Simplification pattern in `migrar_bacias_ana.py` keeps maps under 5 MB
+- Simplification + render-on-demand keeps mobile performance optimal
 
 ### 5. Windows Paths in Code
 Scripts use raw strings `r'outputs\file.csv'` - Windows-specific. When refactoring for cross-platform, use `os.path.join()` or `pathlib.Path`.
 
 ## Key Files to Reference
 
-- **`migrar_bacias_ana.py`** (360 lines) - Most sophisticated: dual-source data loading, spatial joins, multi-layer maps
+- **`migrar_bacias_ana.py`** (495 lines) - Dual-source data loading, spatial joins, multi-layer maps, mobile-optimized controls
+- **`dashboard_bacias.py`** (1288 lines) - Plotly subplots, mobile-first render-on-demand, back-to-top button, compact mode toggle
 - **`crie_interactive_sector_maps.py)`** (300 lines) - CLI patterns, argparse usage, accessibility standards
-- **`dashboard_bacias.py`** (450 lines) - Plotly subplots, mobile responsiveness, embedded HTML generation
 - **`README_BACIAS.md`** - Full technical documentation (methodology, data sources, limitations)
 
 ## When Making Changes
@@ -190,3 +243,6 @@ Scripts use raw strings `r'outputs\file.csv'` - Windows-specific. When refactori
 ---
 
 **Last Updated:** October 2025 | **Language:** Brazilian Portuguese (code comments + outputs) | **Deployment:** GitHub Pages
+
+*.gpkg
+!analise_exploratoria/outputs/bacias_oficiais_ana_macro.gpkg
