@@ -398,15 +398,66 @@
     <div class="container">
         <header>
             <h1>🌊 Dashboard de Análise por Bacias Hidrográficas</h1>
-            <p>Gestão de Resíduos Sólidos em Santa Catarina</p>
-            <div style="margin-top: 20px;">
-                <a href="mapa_bacias_hidrograficas.html" class="map-link" target="_blank">
-                    🗺️ Ver Mapa Interativo das Bacias
-                </a>
-                <a href="relatorio_tecnico.html" class="map-link" target="_blank" style="background: #d32f2f;">
-                    📄 Relatório Técnico Completo
-                </a>
+            <p>Gestão de Resíduos Sólidos em Santa Catarina<br>
+            <span style="font-size:1.08rem;color:#ffd92f;font-weight:600;">Navegue entre análises espaciais (bacias) e temporais (Sul do Brasil)</span></p>
+            <nav style="margin-top: 20px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;">
+                <a href="mapa_bacias_hidrograficas.html" class="map-link" target="_blank">🗺️ Mapa Bacias SC</a>
+                <a href="../../outputs/mapa_residuos_SC.html" class="map-link" target="_blank" style="background:#1976d2;">🗺️ Mapa SC</a>
+                <a href="../../outputs/mapa_residuos_PR.html" class="map-link" target="_blank" style="background:#388e3c;">🗺️ Mapa PR</a>
+                <a href="../../outputs/mapa_residuos_RS.html" class="map-link" target="_blank" style="background:#fc8d62;">🗺️ Mapa RS</a>
+                <a href="relatorio_tecnico.html" class="map-link" target="_blank" style="background: #d32f2f;">📄 Relatório Técnico</a>
+                <a href="../../docs/dashboard_temporal_residuos.html" class="map-link" target="_blank" style="background: #ffd92f; color: #222;">⏳ Dashboard Temporal</a>
+            </nav>
+            <div style="margin-top:18px;text-align:center;">
+                <button onclick="window.scrollTo({top:0,behavior:'smooth'});" style="background:#1976d2;color:#fff;border:none;border-radius:20px;padding:8px 22px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(25,118,210,0.10);">Voltar ao topo</button>
             </div>
+        <div class="info-box" style="background:#fffde7;border-left:5px solid #ffd92f;margin-bottom:18px;">
+            <h3>🔄 Integração dos Painéis</h3>
+            <p>Este dashboard permite alternar entre a <b>análise espacial</b> (por bacias hidrográficas de SC) e a <b>análise temporal</b> (evolução dos resíduos nos estados do Sul do Brasil). Use os botões acima para navegar entre os painéis e mapas interativos.</p>
+        </div>
+        <div class="info-box" style="background:#e3f2fd;border-left:5px solid #1976d2;margin-bottom:18px;">
+            <h3>📊 Comparativo SC × PR × RS</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:1rem;margin-top:8px;">
+                <thead>
+                    <tr style="background:#1976d2;color:#fff;">
+                        <th style="padding:8px;border-radius:8px 0 0 8px;">Estado</th>
+                        <th style="padding:8px;">População</th>
+                        <th style="padding:8px;">Resíduos (t/ano)</th>
+                        <th style="padding:8px;border-radius:0 8px 8px 0;">Taxa per capita (kg/hab/ano)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:#f8f9fa;">
+                        <td style="padding:8px;font-weight:600;color:#1976d2;">Santa Catarina</td>
+                        <td style="padding:8px;">7,610,361</td>
+                        <td style="padding:8px;">2,640,000</td>
+                        <td style="padding:8px;">347</td>
+                    </tr>
+                    <tr style="background:#f8f9fa;">
+                        <td style="padding:8px;font-weight:600;color:#388e3c;">Paraná</td>
+                        <td style="padding:8px;">11,444,380</td>
+                        <td style="padding:8px;">3,980,000</td>
+                        <td style="padding:8px;">347</td>
+                    </tr>
+                    <tr style="background:#f8f9fa;">
+                        <td style="padding:8px;font-weight:600;color:#fc8d62;">Rio Grande do Sul</td>
+                        <td style="padding:8px;">10,880,506</td>
+                        <td style="padding:8px;">3,780,000</td>
+                        <td style="padding:8px;">347</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size:0.98rem;color:#1976d2;margin-top:8px;">Fonte: IBGE Censo 2022, estimativas uniformes (0,95 kg/hab/dia)</p>
+        </div>
+        <div class="info-box" style="background:#fff3e0;border-left:5px solid #ff9800;margin-bottom:18px;">
+            <h3>🆕 Novidades & Metodologia</h3>
+            <ul style="margin-left:18px;line-height:1.7;">
+                <li><b>Outubro/2025:</b> Painel temporal integrado, links diretos para mapas estaduais e comparativo SC/PR/RS.</li>
+                <li>Metodologia: Taxa uniforme de geração de resíduos (0,95 kg/hab/dia) aplicada a todos os estados.</li>
+                <li>Visualizações otimizadas para acessibilidade e dispositivos móveis.</li>
+                <li>Fontes: IBGE, GeoPandas, Folium, Plotly.</li>
+            </ul>
+        </div>
         </header>
         
         <div class="stats-grid">
