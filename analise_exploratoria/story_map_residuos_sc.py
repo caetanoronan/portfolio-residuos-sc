@@ -205,15 +205,15 @@ def main():
             # Dissolver todos os municípios em uma única geometria (contorno do estado)
             limite_sc = muni.dissolve().geometry.iloc[0]
             
-            # Adicionar como camada de contorno destacado
+            # Adicionar como camada de contorno sutil (linha preta fina translúcida)
             folium.GeoJson(
                 limite_sc,
                 name='Limite de Santa Catarina',
                 style_function=lambda x: {
-                    'color': '#d32f2f',
-                    'weight': 3,
-                    'fillOpacity': 0,
-                    'dashArray': '5, 5'
+                    'color': '#000000',
+                    'weight': 1,
+                    'opacity': 0.3,
+                    'fillOpacity': 0
                 },
                 tooltip='Santa Catarina'
             ).add_to(m)
