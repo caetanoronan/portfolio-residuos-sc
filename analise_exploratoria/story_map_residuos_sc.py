@@ -28,7 +28,8 @@ Obs:
 SRC_SETORS = r"analise_exploratoria/SC_setores_CD2022.gpkg"
 OUT_HTML = r"outputs/mapa_historia_residuos_sc.html"
 # Modo rápido: gera apenas marcadores por município (sem dissolve/choropleth)
-FAST_MODE = True
+# Para gerar o mapa completo (com polígonos/choropleth), mantenha como False
+FAST_MODE = False
 
 # Parâmetros de taxa
 TAXA_KG_HAB_DIA = 0.95
