@@ -198,26 +198,6 @@ def main():
     print("5) Construindo mapa Folium...")
     m = folium.Map(location=center, zoom_start=7, tiles='CartoDB positron', min_zoom=6, max_zoom=13)
 
-    if not FAST_MODE:
-        # Choropleth por resíduos domésticos (quantis) - OPCIONAL
-        try:
-            bins = list(muni['domestico_t_ano'].quantile([0, .2, .4, .6, .8, 1]).round(0).unique())
-            folium.Choropleth(
-                geo_data=muni,
-                data=muni,
-                columns=['CD_MUN_str', 'domestico_t_ano'],
-                key_on='feature.properties.CD_MUN_str',
-                fill_color='YlGnBu',
-                fill_opacity=0.6,
-                line_opacity=0.4,
-                legend_name='Resíduos domésticos (t/ano)',
-                bins=bins,
-                name='Resíduos (t/ano) – Choropleth',
-                show=False  # Desligado por padrão
-            ).add_to(m)
-        except Exception as e:
-            warnings.warn(f"Falha Choropleth: {e}")
-
     # Camada: Limite estadual de SC (contorno externo de todos os municípios)
     if not FAST_MODE:
         print("   ▶ Criando limite estadual...")
