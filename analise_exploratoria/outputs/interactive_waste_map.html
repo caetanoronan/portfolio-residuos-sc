@@ -54,6 +54,11 @@
 </head>
 <body>
     
+    <!-- Banner informativo (melhora a compreensão) -->
+    <div id="info-banner" style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); border: 2px solid #1976d2; color: #0d47a1; padding: 8px 12px; border-radius: 10px; z-index: 10000; box-shadow: 0 2px 8px rgba(0,0,0,0.2); font-family: Arial; font-size: 13px;">
+        🛈 Dica: use o controle no canto superior esquerdo para alternar as camadas. Azul = Domésticos, Amarelo = Recicláveis. Clique nos pontos para detalhes por município.
+    </div>
+    
     
     <div style="position: fixed; bottom: 50px; right: 50px; width: 250px; background: white; 
                 border: 3px solid #333; border-radius: 10px; padding: 15px; z-index: 9999;
@@ -68,6 +73,7 @@
         <div style="margin-top: 10px; font-size: 11px; text-align: center; color: #666;">
             ✓ Paleta segura para daltonismo<br>
             📍 295 municípios de SC
+            <div style="margin-top:6px;color:#333;">Use o seletor no topo esquerdo para ligar/desligar camadas.</div>
         </div>
     </div>
     
@@ -121,8 +127,8 @@
                 {
   "minOpacity": 0.5,
   "maxZoom": 18,
-  "radius": 25,
-  "blur": 30,
+    "radius": 18,
+    "blur": 22,
   "gradient": {
   0.0: "#d0d1e6",
   0.5: "#74a9cf",
@@ -140,8 +146,8 @@
                 {
   "minOpacity": 0.5,
   "maxZoom": 18,
-  "radius": 25,
-  "blur": 30,
+    "radius": 18,
+    "blur": 22,
   "gradient": {
   0.0: "#ffffcc",
   0.5: "#feb24c",
@@ -6957,6 +6963,45 @@
   "autoZIndex": true,
 }
             ).addTo(map_871466196e076a35c54aa643fc2d921a);
+
+            // Agrupa todos os pontos (CircleMarker) em uma camada para facilitar o toggle
+            var pontosGroup = L.layerGroup();
+            Object.values(map_871466196e076a35c54aa643fc2d921a._layers).forEach(function(layer){
+                if (layer instanceof L.CircleMarker) {
+                    pontosGroup.addLayer(layer);
+                }
+            });
+            pontosGroup.addTo(map_871466196e076a35c54aa643fc2d921a);
+            layer_control_e3b488478cd72f5a00764c8d44db01cd.addOverlay(pontosGroup, "📍 Municípios (pontos)");
+
+            // Adiciona escala métrica
+            L.control.scale({metric:true, imperial:false, position:'bottomleft'}).addTo(map_871466196e076a35c54aa643fc2d921a);
+
+            // Base extra (Satélite ESRI)
+            var esri_sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri'
+            });
+            layer_control_e3b488478cd72f5a00764c8d44db01cd.addBaseLayer(esri_sat, 'ESRI Satélite');
+
+            // Botão para recentrar o mapa
+            var resetControl = L.control({position:'topleft'});
+            resetControl.onAdd = function(map){
+                var div = L.DomUtil.create('div', 'leaflet-bar');
+                var a = L.DomUtil.create('a', '', div);
+                a.href = '#';
+                a.title = 'Recentrar';
+                a.innerHTML = '⤾';
+                a.style.width = '30px';
+                a.style.height = '30px';
+                a.style.lineHeight = '30px';
+                a.style.textAlign = 'center';
+                L.DomEvent.on(a, 'click', function(e){
+                    L.DomEvent.stop(e);
+                    map.setView([-27.263248760103004, -50.70671125428507], 7);
+                });
+                return div;
+            };
+            resetControl.addTo(map_871466196e076a35c54aa643fc2d921a);
 
         
 </script>
