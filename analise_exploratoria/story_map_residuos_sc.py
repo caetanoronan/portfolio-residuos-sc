@@ -2,6 +2,7 @@ import os
 import sys
 import warnings
 import folium
+from folium.plugins import Fullscreen, MiniMap
 import requests
 import pandas as pd
 import geopandas as gpd
@@ -26,6 +27,8 @@ Obs:
 
 SRC_SETORS = r"analise_exploratoria/SC_setores_CD2022.gpkg"
 OUT_HTML = r"outputs/mapa_historia_residuos_sc.html"
+# Modo rápido: gera apenas marcadores por município (sem dissolve/choropleth)
+FAST_MODE = True
 
 # Parâmetros de taxa
 TAXA_KG_HAB_DIA = 0.95
@@ -118,56 +121,89 @@ def main():
         pop_df = guess_pop_from_setors(gdf)
 
     # Dissolver setores → municípios (geometria)
-    print("3) Criando geometrias municipais (dissolve)...")
+    print("3) Preparando dados municipais...")
     gdf['CD_MUN_str'] = gdf['CD_MUN'].astype(str).str.zfill(7)
-    muni = gdf.dissolve(by='CD_MUN_str', aggfunc='first').reset_index()
-
-    # Tentar manter nome do município se houver
     name_cols = [c for c in ['NM_MUN', 'NM_MUNICIP', 'MUNICIPIO'] if c in gdf.columns]
-    if name_cols:
-        # Pega primeiro nome observado por município
-        name_map = gdf.groupby('CD_MUN_str')[name_cols[0]].first()
-        muni = muni.merge(name_map, left_on='CD_MUN_str', right_index=True, how='left')
-        muni = muni.rename(columns={name_cols[0]: 'NM_MUN'})
-    else:
-        muni['NM_MUN'] = muni['CD_MUN_str']
+    nm_col = name_cols[0] if name_cols else None
 
-    # Junta população e calcula resíduos
-    muni = muni.merge(pop_df, on='CD_MUN_str', how='left')
-    muni['domestico_t_ano'] = (muni['populacao'].fillna(0) * TAXA_KG_HAB_DIA * 365) / 1000.0
-    muni['reciclavel_t_ano'] = muni['domestico_t_ano'] * 0.10
-    muni['porte'] = muni['populacao'].apply(classificar_porte)
+    # Agregados por município (sem geometria por enquanto)
+    muni_stats = gdf[['CD_MUN_str']].drop_duplicates().copy()
+    if nm_col:
+        name_map = gdf.groupby('CD_MUN_str')[nm_col].first().rename('NM_MUN').reset_index()
+        muni_stats = muni_stats.merge(name_map, on='CD_MUN_str', how='left')
+    else:
+        muni_stats['NM_MUN'] = muni_stats['CD_MUN_str']
+
+    muni_stats = muni_stats.merge(pop_df, on='CD_MUN_str', how='left')
+    muni_stats['domestico_t_ano'] = (muni_stats['populacao'].fillna(0) * TAXA_KG_HAB_DIA * 365) / 1000.0
+    muni_stats['reciclavel_t_ano'] = muni_stats['domestico_t_ano'] * 0.10
+    muni_stats['porte'] = muni_stats['populacao'].apply(classificar_porte)
+
+    if FAST_MODE:
+        print("   ▶ FAST_MODE ativo: gerando pontos representativos por município...")
+        # Coordenadas representativas: média dos centróides dos setores por município
+        gdf4326 = gdf.to_crs(4326)
+        cent = gdf4326.geometry.centroid
+        coords = pd.DataFrame({'CD_MUN_str': gdf4326['CD_MUN_str'], 'lat': cent.y.values, 'lon': cent.x.values})
+        muni_xy = coords.groupby('CD_MUN_str').mean().reset_index()
+        muni = muni_stats.merge(muni_xy, on='CD_MUN_str', how='left')
+    else:
+        print("   ▶ Modo completo: criando geometrias municipais (dissolve)...")
+        muni = gdf.dissolve(by='CD_MUN_str', aggfunc='first').reset_index()
+        if nm_col:
+            name_map = gdf.groupby('CD_MUN_str')[nm_col].first()
+            muni = muni.merge(name_map, left_on='CD_MUN_str', right_index=True, how='left')
+            muni = muni.rename(columns={nm_col: 'NM_MUN'})
+        else:
+            muni['NM_MUN'] = muni['CD_MUN_str']
+        muni = muni.merge(muni_stats[['CD_MUN_str','populacao','domestico_t_ano','reciclavel_t_ano','porte']], on='CD_MUN_str', how='left')
 
     # Simplificação geométrica
-    print("4) Simplificando geometrias para web (100 m)...")
-    muni_3857 = muni.to_crs(3857)
-    muni_3857['geometry'] = muni_3857.geometry.simplify(100)
-    muni = muni_3857.to_crs(4326)
+    if not FAST_MODE:
+        print("4) Simplificando geometrias para web (100 m)...")
+        try:
+            muni_3857 = muni.to_crs(3857)
+            muni_3857['geometry'] = muni_3857.geometry.simplify(100, preserve_topology=True)
+            muni = muni_3857.to_crs(4326)
+        except KeyboardInterrupt:
+            print("   ⚠️ Simplificação interrompida. Prosseguindo sem simplificar.")
+            muni = muni.to_crs(4326)
+        except Exception as e:
+            print(f"   ⚠️ Falha na simplificação ({e}). Prosseguindo sem simplificar.")
+            muni = muni.to_crs(4326)
 
     # Centro do mapa
-    centroid = muni.geometry.centroid
-    center = [centroid.y.mean(), centroid.x.mean()]
+    # Centro do mapa (seguro e rápido): centro do bounding box
+    if FAST_MODE:
+        # Centro por bounds aproximado usando coordenadas dos pontos
+        minx, miny = muni['lon'].min(), muni['lat'].min()
+        maxx, maxy = muni['lon'].max(), muni['lat'].max()
+        center = [(miny + maxy) / 2, (minx + maxx) / 2]
+    else:
+        minx, miny, maxx, maxy = muni.total_bounds
+        center = [(miny + maxy) / 2, (minx + maxx) / 2]
 
     print("5) Construindo mapa Folium...")
     m = folium.Map(location=center, zoom_start=7, tiles='CartoDB positron', min_zoom=6, max_zoom=13)
 
-    # Choropleth por resíduos domésticos (quantis)
-    try:
-        bins = list(muni['domestico_t_ano'].quantile([0, .2, .4, .6, .8, 1]).round(0).unique())
-        folium.Choropleth(
-            geo_data=muni,
-            data=muni,
-            columns=['CD_MUN_str', 'domestico_t_ano'],
-            key_on='feature.properties.CD_MUN_str',
-            fill_color='YlGnBu',
-            fill_opacity=0.6,
-            line_opacity=0.4,
-            legend_name='Resíduos domésticos (t/ano)',
-            bins=bins,
-            name='Resíduos (t/ano) – Choropleth'
-        ).add_to(m)
-    except Exception as e:
-        warnings.warn(f"Falha Choropleth: {e}")
+    if not FAST_MODE:
+        # Choropleth por resíduos domésticos (quantis)
+        try:
+            bins = list(muni['domestico_t_ano'].quantile([0, .2, .4, .6, .8, 1]).round(0).unique())
+            folium.Choropleth(
+                geo_data=muni,
+                data=muni,
+                columns=['CD_MUN_str', 'domestico_t_ano'],
+                key_on='feature.properties.CD_MUN_str',
+                fill_color='YlGnBu',
+                fill_opacity=0.6,
+                line_opacity=0.4,
+                legend_name='Resíduos domésticos (t/ano)',
+                bins=bins,
+                name='Resíduos (t/ano) – Choropleth'
+            ).add_to(m)
+        except Exception as e:
+            warnings.warn(f"Falha Choropleth: {e}")
 
     # Camadas por porte com marcadores nos centróides
     fg_small = folium.FeatureGroup(name='Pequeno Porte', show=True)
@@ -176,7 +212,11 @@ def main():
 
     for _, row in muni.iterrows():
         try:
-            c = row.geometry.representative_point()
+            if FAST_MODE:
+                c_lat, c_lon = row['lat'], row['lon']
+            else:
+                c = row.geometry.representative_point()
+                c_lat, c_lon = c.y, c.x
             popup = folium.Popup(
                 f"""
                 <div style='font-family: Arial; font-size: 13px; min-width: 240px;'>
@@ -196,7 +236,7 @@ def main():
                 max_width=320
             )
             marker = folium.CircleMarker(
-                location=[c.y, c.x],
+                location=[c_lat, c_lon],
                 radius=5,
                 color=cor_por_porte(row['porte']),
                 fill=True,
@@ -220,8 +260,8 @@ def main():
 
     # Controles e acessibilidade
     folium.LayerControl(collapsed=True, position='topleft').add_to(m)
-    folium.plugins.Fullscreen(position='topright').add_to(m)
-    folium.plugins.MiniMap(toggle_display=True, position='bottomright').add_to(m)
+    Fullscreen(position='topright').add_to(m)
+    MiniMap(toggle_display=True, position='bottomright').add_to(m)
 
     # Legenda custom
     legend_html = f"""
@@ -234,6 +274,7 @@ def main():
       <div>Choropleth: azul claro → escuro = menor → maior dom. (t/ano)</div>
     </div>
     """
+    # Inserção correta na raiz HTML
     m.get_root().html.add_child(folium.Element(legend_html))
 
     # CSS mobile: esconder minimapa em telas pequenas
