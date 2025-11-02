@@ -6964,6 +6964,24 @@
 }
             ).addTo(map_871466196e076a35c54aa643fc2d921a);
 
+            // Overlays de limites administrativos via IBGE (WMS)
+            var uf_wms = L.tileLayer.wms('https://geoservicos.ibge.gov.br/geoserver/CGEO/ows', {
+                layers: 'CGEO:UF_2019',
+                format: 'image/png',
+                transparent: true,
+                opacity: 0.8
+            });
+            var muni_wms = L.tileLayer.wms('https://geoservicos.ibge.gov.br/geoserver/CGEO/ows', {
+                layers: 'CGEO:Municipio_2019',
+                format: 'image/png',
+                transparent: true,
+                opacity: 0.5
+            });
+            // Adiciona aos controles e liga apenas o limite estadual por padrão
+            uf_wms.addTo(map_871466196e076a35c54aa643fc2d921a);
+            layer_control_e3b488478cd72f5a00764c8d44db01cd.addOverlay(uf_wms, 'Limite Estadual (IBGE)');
+            layer_control_e3b488478cd72f5a00764c8d44db01cd.addOverlay(muni_wms, 'Limites Municipais (IBGE)');
+
             // Agrupa todos os pontos (CircleMarker) em uma camada para facilitar o toggle
             var pontosGroup = L.layerGroup();
             Object.values(map_871466196e076a35c54aa643fc2d921a._layers).forEach(function(layer){
