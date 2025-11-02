@@ -218,6 +218,28 @@ def main():
         except Exception as e:
             warnings.warn(f"Falha Choropleth: {e}")
 
+    # Camada: Limite estadual de SC (contorno externo de todos os municípios)
+    if not FAST_MODE:
+        print("   ▶ Criando limite estadual...")
+        try:
+            # Dissolver todos os municípios em uma única geometria (contorno do estado)
+            limite_sc = muni.dissolve().geometry.iloc[0]
+            
+            # Adicionar como camada de contorno destacado
+            folium.GeoJson(
+                limite_sc,
+                name='Limite de Santa Catarina',
+                style_function=lambda x: {
+                    'color': '#d32f2f',
+                    'weight': 3,
+                    'fillOpacity': 0,
+                    'dashArray': '5, 5'
+                },
+                tooltip='Santa Catarina'
+            ).add_to(m)
+        except Exception as e:
+            warnings.warn(f"Falha ao criar limite estadual: {e}")
+
     # Camadas por porte: GeoJSON com polígonos municipais
     fg_small = folium.FeatureGroup(name='Pequeno Porte', show=True)
     fg_medium = folium.FeatureGroup(name='Médio Porte', show=True)
