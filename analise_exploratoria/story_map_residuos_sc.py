@@ -199,7 +199,7 @@ def main():
     m = folium.Map(location=center, zoom_start=7, tiles='CartoDB positron', min_zoom=6, max_zoom=13)
 
     if not FAST_MODE:
-        # Choropleth por resíduos domésticos (quantis)
+        # Choropleth por resíduos domésticos (quantis) - OPCIONAL
         try:
             bins = list(muni['domestico_t_ano'].quantile([0, .2, .4, .6, .8, 1]).round(0).unique())
             folium.Choropleth(
@@ -212,72 +212,98 @@ def main():
                 line_opacity=0.4,
                 legend_name='Resíduos domésticos (t/ano)',
                 bins=bins,
-                name='Resíduos (t/ano) – Choropleth'
+                name='Resíduos (t/ano) – Choropleth',
+                show=False  # Desligado por padrão
             ).add_to(m)
         except Exception as e:
             warnings.warn(f"Falha Choropleth: {e}")
 
-    # Camadas por porte com marcadores nos centróides
+    # Camadas por porte: GeoJSON com polígonos municipais
     fg_small = folium.FeatureGroup(name='Pequeno Porte', show=True)
     fg_medium = folium.FeatureGroup(name='Médio Porte', show=True)
     fg_large = folium.FeatureGroup(name='Grande Porte', show=True)
 
-    added_small = added_medium = added_large = skipped = 0
-    for _, row in muni.iterrows():
-        try:
-            if FAST_MODE:
-                c_lat, c_lon = row.get('lat'), row.get('lon')
-            else:
-                geom = row.get('geometry')
-                if geom is None or geom.is_empty:
-                    skipped += 1
-                    continue
-                c = geom.representative_point()
-                c_lat, c_lon = c.y, c.x
-            if c_lat is None or c_lon is None:
-                skipped += 1
-                continue
-            popup = folium.Popup(
-                f"""
-                <div style='font-family: Arial; font-size: 13px; min-width: 240px;'>
-                    <h4 style='margin: 0 0 8px 0; color: {cor_por_porte(row.get('porte'))};'>{row.get('NM_MUN')}</h4>
-                    <div style='background:#e3f2fd;padding:6px;margin:4px 0;border-left:4px solid #1976d2;'>
-                        <b>População:</b> {fmt_num(row.get('populacao'))}
-                    </div>
-                    <div style='background:#e8f5e9;padding:6px;margin:4px 0;border-left:4px solid #388e3c;'>
-                        <b>Doméstico:</b> {fmt_num(row.get('domestico_t_ano'))} t/ano
-                    </div>
-                    <div style='background:#fff8e1;padding:6px;margin:4px 0;border-left:4px solid #fb8c00;'>
-                        <b>Reciclável (10%):</b> {fmt_num(row.get('reciclavel_t_ano'))} t/ano
-                    </div>
-                    <div style='margin-top:6px;color:#555;'>Porte: <b>{row.get('porte')}</b></div>
-                </div>
-                """,
-                max_width=320
-            )
-            marker = folium.CircleMarker(
-                location=[c_lat, c_lon],
-                radius=5,
-                color=cor_por_porte(row.get('porte')),
-                fill=True,
-                fill_color=cor_por_porte(row.get('porte')),
-                fill_opacity=0.8,
-                weight=2
-            )
-            marker.add_child(popup)
-            if row.get('porte') == 'Pequeno Porte':
-                marker.add_to(fg_small)
-                added_small += 1
-            elif row.get('porte') == 'Médio Porte':
-                marker.add_to(fg_medium)
-                added_medium += 1
-            else:
-                marker.add_to(fg_large)
-                added_large += 1
-        except Exception as e:
-            skipped += 1
-            continue
-    print(f"   ✔ Marcadores adicionados - Pequeno: {added_small}, Médio: {added_medium}, Grande/Outros: {added_large}, Ignorados: {skipped}")
+    # Função de estilo para cada porte
+    def style_function_small(feature):
+        return {
+            'fillColor': COR_PEQUENO,
+            'color': '#333',
+            'weight': 1,
+            'fillOpacity': 0.7
+        }
+    
+    def style_function_medium(feature):
+        return {
+            'fillColor': COR_MEDIO,
+            'color': '#333',
+            'weight': 1,
+            'fillOpacity': 0.7
+        }
+    
+    def style_function_large(feature):
+        return {
+            'fillColor': COR_GRANDE,
+            'color': '#333',
+            'weight': 1,
+            'fillOpacity': 0.7
+        }
+
+    # Função para criar popup com dados municipais
+    def create_popup_html(properties):
+        return f"""
+        <div style='font-family: Arial; font-size: 13px; min-width: 240px;'>
+            <h4 style='margin: 0 0 8px 0; color: {cor_por_porte(properties.get('porte'))};'>{properties.get('NM_MUN')}</h4>
+            <div style='background:#e3f2fd;padding:6px;margin:4px 0;border-left:4px solid #1976d2;'>
+                <b>População:</b> {fmt_num(properties.get('populacao'))}
+            </div>
+            <div style='background:#e8f5e9;padding:6px;margin:4px 0;border-left:4px solid #388e3c;'>
+                <b>Doméstico:</b> {fmt_num(properties.get('domestico_t_ano'))} t/ano
+            </div>
+            <div style='background:#fff8e1;padding:6px;margin:4px 0;border-left:4px solid #fb8c00;'>
+                <b>Reciclável (10%):</b> {fmt_num(properties.get('reciclavel_t_ano'))} t/ano
+            </div>
+            <div style='margin-top:6px;color:#555;'>Porte: <b>{properties.get('porte')}</b></div>
+        </div>
+        """
+
+    # Separar municípios por porte
+    muni_small = muni[muni['porte'] == 'Pequeno Porte'].copy()
+    muni_medium = muni[muni['porte'] == 'Médio Porte'].copy()
+    muni_large = muni[muni['porte'] == 'Grande Porte'].copy()
+
+    # Detectar nome correto do campo município (pode variar após dissolve)
+    nm_mun_field = 'NM_MUN' if 'NM_MUN' in muni.columns else ('NM_MUN_y' if 'NM_MUN_y' in muni.columns else 'NM_MUN_x')
+    
+    # Adicionar GeoJSON para cada porte
+    if not FAST_MODE:
+        if len(muni_small) > 0:
+            folium.GeoJson(
+                muni_small,
+                style_function=style_function_small,
+                popup=folium.GeoJsonPopup(fields=[nm_mun_field, 'populacao', 'domestico_t_ano', 'reciclavel_t_ano', 'porte'],
+                                          aliases=['Município', 'População', 'Doméstico (t/ano)', 'Reciclável (t/ano)', 'Porte'],
+                                          labels=True)
+            ).add_to(fg_small)
+        
+        if len(muni_medium) > 0:
+            folium.GeoJson(
+                muni_medium,
+                style_function=style_function_medium,
+                popup=folium.GeoJsonPopup(fields=[nm_mun_field, 'populacao', 'domestico_t_ano', 'reciclavel_t_ano', 'porte'],
+                                          aliases=['Município', 'População', 'Doméstico (t/ano)', 'Reciclável (t/ano)', 'Porte'],
+                                          labels=True)
+            ).add_to(fg_medium)
+        
+        if len(muni_large) > 0:
+            folium.GeoJson(
+                muni_large,
+                style_function=style_function_large,
+                popup=folium.GeoJsonPopup(fields=[nm_mun_field, 'populacao', 'domestico_t_ano', 'reciclavel_t_ano', 'porte'],
+                                          aliases=['Município', 'População', 'Doméstico (t/ano)', 'Reciclável (t/ano)', 'Porte'],
+                                          labels=True)
+            ).add_to(fg_large)
+    
+    print(f"   ✔ Camadas criadas - Pequeno: {len(muni_small)}, Médio: {len(muni_medium)}, Grande: {len(muni_large)}")
 
     fg_small.add_to(m)
     fg_medium.add_to(m)
