@@ -212,17 +212,135 @@ legenda_html = f'''
 '''
 m.get_root().html.add_child(folium.Element(legenda_html))
 
+# Calcular estatísticas gerais para o painel
+total_pop = muni['populacao'].sum()
+total_dom = muni['domestico_t_ano'].sum()
+total_rec = muni['reciclavel_t_ano'].sum()
+media_dom_mun = muni['domestico_t_ano'].mean()
+media_rec_mun = muni['reciclavel_t_ano'].mean()
+
+# Estatísticas por região para encontrar top 3
+regioes_stats = muni.groupby('NM_RGI').agg({
+    'populacao': 'sum',
+    'domestico_t_ano': 'sum',
+    'reciclavel_t_ano': 'sum',
+    'CD_MUN_str': 'count'
+}).reset_index().sort_values('domestico_t_ano', ascending=False)
+
+top_regiao_1 = regioes_stats.iloc[0]['NM_RGI'] if len(regioes_stats) > 0 else 'N/A'
+top_regiao_2 = regioes_stats.iloc[1]['NM_RGI'] if len(regioes_stats) > 1 else 'N/A'
+top_regiao_3 = regioes_stats.iloc[2]['NM_RGI'] if len(regioes_stats) > 2 else 'N/A'
+
+# Painel de estatísticas no canto superior direito
+stats_panel_html = f'''
+<div style="position: fixed; top: 80px; right: 10px; width: 340px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px; padding: 0; z-index: 9998; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            font-family: Arial, sans-serif; color: white;" id="stats-panel">
+    
+    <!-- Header -->
+    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px 12px 0 0; border-bottom: 2px solid rgba(255,255,255,0.3);">
+        <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;">
+            📊 Estatísticas - Santa Catarina
+        </h3>
+    </div>
+    
+    <!-- Stats Grid -->
+    <div style="padding: 15px;">
+        <!-- Card 1: População -->
+        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                    padding: 12px; margin-bottom: 10px; border-left: 4px solid #4caf50;">
+            <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">👥 POPULAÇÃO TOTAL</div>
+            <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_pop)}</div>
+            <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">habitantes em {len(muni)} municípios</div>
+        </div>
+        
+        <!-- Card 2: Resíduos Domésticos -->
+        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                    padding: 12px; margin-bottom: 10px; border-left: 4px solid #034e7b;">
+            <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">🔵 RESÍDUOS DOMÉSTICOS</div>
+            <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_dom)} t/ano</div>
+            <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">
+                📊 Média: {fmt_num(media_dom_mun)} t/ano por município
+            </div>
+        </div>
+        
+        <!-- Card 3: Resíduos Recicláveis -->
+        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                    padding: 12px; margin-bottom: 10px; border-left: 4px solid #e65100;">
+            <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">🟡 RESÍDUOS RECICLÁVEIS</div>
+            <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_rec)} t/ano</div>
+            <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">
+                📊 Média: {fmt_num(media_rec_mun)} t/ano por município
+            </div>
+        </div>
+        
+        <!-- Card 4: Top 3 Regiões -->
+        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                    padding: 12px; border-left: 4px solid #ffd92f;">
+            <div style="font-size: 11px; opacity: 0.9; margin-bottom: 6px;">🏆 TOP 3 REGIÕES (RGI)</div>
+            <div style="font-size: 11px; line-height: 1.6;">
+                <div style="padding: 3px 0;">🥇 {top_regiao_1}</div>
+                <div style="padding: 3px 0;">🥈 {top_regiao_2}</div>
+                <div style="padding: 3px 0;">🥉 {top_regiao_3}</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 0 0 12px 12px; 
+                text-align: center; font-size: 9px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.2);">
+        ✓ Dados: IBGE Censo 2022 | Taxa: 0,95 kg/hab/dia
+    </div>
+</div>
+'''
+m.get_root().html.add_child(folium.Element(stats_panel_html))
+
 # CSS responsivo para mobile
 mobile_css = '''
 <style>
 @media (max-width: 768px) {
     .leaflet-control-minimap { display: none; }
+    
+    /* Legenda de regiões */
     div[style*="position: fixed"][style*="bottom: 50px"] {
         bottom: 10px !important;
         right: 10px !important;
         width: 85vw !important;
         max-height: 40vh !important;
         font-size: 11px !important;
+    }
+    
+    /* Painel de estatísticas */
+    #stats-panel {
+        top: 60px !important;
+        right: 5px !important;
+        left: 5px !important;
+        width: auto !important;
+        max-width: 95vw !important;
+    }
+    
+    #stats-panel h3 {
+        font-size: 14px !important;
+    }
+    
+    #stats-panel > div:nth-child(2) {
+        padding: 10px !important;
+    }
+    
+    #stats-panel > div:nth-child(2) > div {
+        padding: 8px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    #stats-panel > div:nth-child(2) > div > div:nth-child(2) {
+        font-size: 20px !important;
+    }
+}
+
+/* Ajuste para desktop - evitar sobreposição */
+@media (min-width: 769px) {
+    .leaflet-control-container .leaflet-top.leaflet-right {
+        top: 420px !important;
     }
 }
 </style>
