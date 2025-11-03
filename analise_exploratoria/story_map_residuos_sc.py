@@ -316,6 +316,77 @@ def main():
     Fullscreen(position='topright').add_to(m)
     MiniMap(toggle_display=True, position='bottomright').add_to(m)
 
+    # Calcular estatísticas gerais para o painel
+    total_pop = muni['populacao'].sum()
+    total_dom = muni['domestico_t_ano'].sum()
+    total_rec = muni['reciclavel_t_ano'].sum()
+    media_dom_mun = muni['domestico_t_ano'].mean()
+    media_rec_mun = muni['reciclavel_t_ano'].mean()
+    
+    # Painel de estatísticas no canto superior direito
+    stats_panel_html = f'''
+    <div style="position: fixed; top: 80px; right: 10px; width: 340px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 12px; padding: 0; z-index: 9998; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+                font-family: Arial, sans-serif; color: white;" id="stats-panel">
+        
+        <!-- Header -->
+        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px 12px 0 0; border-bottom: 2px solid rgba(255,255,255,0.3);">
+            <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;">
+                📊 Estatísticas - Santa Catarina
+            </h3>
+        </div>
+        
+        <!-- Stats Grid -->
+        <div style="padding: 15px;">
+            <!-- Card 1: População -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                        padding: 12px; margin-bottom: 10px; border-left: 4px solid #4caf50;">
+                <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">👥 POPULAÇÃO TOTAL</div>
+                <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_pop)}</div>
+                <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">habitantes em {len(muni)} municípios</div>
+            </div>
+            
+            <!-- Card 2: Resíduos Domésticos -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                        padding: 12px; margin-bottom: 10px; border-left: 4px solid #034e7b;">
+                <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">🔵 RESÍDUOS DOMÉSTICOS</div>
+                <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_dom)} t/ano</div>
+                <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">
+                    📊 Média: {fmt_num(media_dom_mun)} t/ano por município
+                </div>
+            </div>
+            
+            <!-- Card 3: Resíduos Recicláveis -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                        padding: 12px; margin-bottom: 10px; border-left: 4px solid #e65100;">
+                <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">🟡 RESÍDUOS RECICLÁVEIS</div>
+                <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_rec)} t/ano</div>
+                <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">
+                    📊 Média: {fmt_num(media_rec_mun)} t/ano por município
+                </div>
+            </div>
+            
+            <!-- Card 4: Distribuição por Porte -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                        padding: 12px; border-left: 4px solid #ffd92f;">
+                <div style="font-size: 11px; opacity: 0.9; margin-bottom: 6px;">📏 MUNICÍPIOS POR PORTE</div>
+                <div style="font-size: 11px; line-height: 1.6;">
+                    <div style="padding: 3px 0;">🟢 Pequeno: {len(muni_small)} municípios</div>
+                    <div style="padding: 3px 0;">🟠 Médio: {len(muni_medium)} municípios</div>
+                    <div style="padding: 3px 0;">🟣 Grande: {len(muni_large)} municípios</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 0 0 12px 12px; 
+                    text-align: center; font-size: 9px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.2);">
+            ✓ Dados: IBGE Censo 2022 | Taxa: 0,95 kg/hab/dia
+        </div>
+    </div>
+    '''
+    m.get_root().html.add_child(folium.Element(stats_panel_html))
+
     # Legenda custom
     legend_html = f"""
     <div class='legend-bacias' style="position: fixed; bottom: 18px; left: 18px; z-index: 9999; background: #fff; padding: 10px 12px; border-radius: 10px; box-shadow: 0 2px 8px #0002; border: 2px solid #1976d2; font-family: Arial; font-size: 13px;">
@@ -323,16 +394,59 @@ def main():
       <div style='margin:4px 0;'><span style='display:inline-block;width:12px;height:12px;background:{COR_PEQUENO};border-radius:50%;margin-right:6px;'></span>Pequeno Porte (&lt; {LIM_PEQUENO:,} hab)</div>
       <div style='margin:4px 0;'><span style='display:inline-block;width:12px;height:12px;background:{COR_MEDIO};border-radius:50%;margin-right:6px;'></span>Médio Porte ({LIM_PEQUENO:,}–{LIM_MEDIO:,} hab)</div>
       <div style='margin:4px 0;'><span style='display:inline-block;width:12px;height:12px;background:{COR_GRANDE};border-radius:50%;margin-right:6px;'></span>Grande Porte (&ge; {LIM_MEDIO:,} hab)</div>
-      <hr style='margin:8px 0;border:none;border-top:1px solid #ddd;'>
-      <div>Choropleth: azul claro → escuro = menor → maior dom. (t/ano)</div>
     </div>
     """
     # Inserção correta na raiz HTML
     m.get_root().html.add_child(folium.Element(legend_html))
 
-    # CSS mobile: esconder minimapa em telas pequenas
+    # CSS responsivo para mobile
     mobile_css = """
-    <style>@media (max-width: 768px){ .leaflet-control-minimap{ display:none; } }</style>
+    <style>
+    @media (max-width: 768px) { 
+        .leaflet-control-minimap { display: none; }
+        
+        /* Painel de estatísticas */
+        #stats-panel {
+            top: 60px !important;
+            right: 5px !important;
+            left: 5px !important;
+            width: auto !important;
+            max-width: 95vw !important;
+        }
+        
+        #stats-panel h3 {
+            font-size: 14px !important;
+        }
+        
+        #stats-panel > div:nth-child(2) {
+            padding: 10px !important;
+        }
+        
+        #stats-panel > div:nth-child(2) > div {
+            padding: 8px !important;
+            margin-bottom: 8px !important;
+        }
+        
+        #stats-panel > div:nth-child(2) > div > div:nth-child(2) {
+            font-size: 20px !important;
+        }
+        
+        /* Legenda */
+        .legend-bacias {
+            bottom: 10px !important;
+            left: 10px !important;
+            font-size: 11px !important;
+            max-width: 85vw;
+        }
+    }
+    
+    /* Ajuste para desktop - evitar sobreposição */
+    @media (min-width: 769px) {
+        .leaflet-control-container .leaflet-top.leaflet-right {
+            top: 420px !important;
+        }
+    }
+    </style>
     """
     m.get_root().html.add_child(folium.Element(mobile_css))
 
