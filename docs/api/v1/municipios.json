@@ -1,0 +1,2365 @@
+{
+  "total": 295,
+  "municipios": [
+    {
+      "nome": "Abdon Batista",
+      "bacia": "Outras Bacias",
+      "populacao": 2598.0,
+      "residuos_domestico_t_ano": 900.8565,
+      "residuos_reciclavel_t_ano": 90.08565,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Abelardo Luz",
+      "bacia": "Outras Bacias",
+      "populacao": 17392.0,
+      "residuos_domestico_t_ano": 6030.6759999999995,
+      "residuos_reciclavel_t_ano": 603.0676,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Agrolândia",
+      "bacia": "Outras Bacias",
+      "populacao": 10990.0,
+      "residuos_domestico_t_ano": 3810.7825,
+      "residuos_reciclavel_t_ano": 381.07825,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Agronômica",
+      "bacia": "Outras Bacias",
+      "populacao": 6055.0,
+      "residuos_domestico_t_ano": 2099.57125,
+      "residuos_reciclavel_t_ano": 209.95712500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Alfredo Wagner",
+      "bacia": "Outras Bacias",
+      "populacao": 10481.0,
+      "residuos_domestico_t_ano": 3634.2867499999998,
+      "residuos_reciclavel_t_ano": 363.428675,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Alto Bela Vista",
+      "bacia": "Outras Bacias",
+      "populacao": 1856.0,
+      "residuos_domestico_t_ano": 643.5679999999999,
+      "residuos_reciclavel_t_ano": 64.35679999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Anchieta",
+      "bacia": "Outras Bacias",
+      "populacao": 5943.0,
+      "residuos_domestico_t_ano": 2060.7352499999997,
+      "residuos_reciclavel_t_ano": 206.073525,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Angelina",
+      "bacia": "Outras Bacias",
+      "populacao": 5358.0,
+      "residuos_domestico_t_ano": 1857.8864999999998,
+      "residuos_reciclavel_t_ano": 185.78865,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Anita Garibaldi",
+      "bacia": "Outras Bacias",
+      "populacao": 8285.0,
+      "residuos_domestico_t_ano": 2872.82375,
+      "residuos_reciclavel_t_ano": 287.282375,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Anitápolis",
+      "bacia": "Outras Bacias",
+      "populacao": 3593.0,
+      "residuos_domestico_t_ano": 1245.87275,
+      "residuos_reciclavel_t_ano": 124.587275,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Antônio Carlos",
+      "bacia": "Outras Bacias",
+      "populacao": 11224.0,
+      "residuos_domestico_t_ano": 3891.9219999999996,
+      "residuos_reciclavel_t_ano": 389.19219999999996,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Apiúna",
+      "bacia": "Outras Bacias",
+      "populacao": 9811.0,
+      "residuos_domestico_t_ano": 3401.9642499999995,
+      "residuos_reciclavel_t_ano": 340.196425,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Arabutã",
+      "bacia": "Outras Bacias",
+      "populacao": 4378.0,
+      "residuos_domestico_t_ano": 1518.0714999999998,
+      "residuos_reciclavel_t_ano": 151.80714999999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Araquari",
+      "bacia": "Bacia Litorânea Norte",
+      "populacao": 45283.0,
+      "residuos_domestico_t_ano": 15701.88025,
+      "residuos_reciclavel_t_ano": 1570.1880250000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Araranguá",
+      "bacia": "Bacia do Tubarão",
+      "populacao": 71922.0,
+      "residuos_domestico_t_ano": 24938.953499999996,
+      "residuos_reciclavel_t_ano": 2493.89535,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Armazém",
+      "bacia": "Outras Bacias",
+      "populacao": 8834.0,
+      "residuos_domestico_t_ano": 3063.1894999999995,
+      "residuos_reciclavel_t_ano": 306.31895,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Arroio Trinta",
+      "bacia": "Outras Bacias",
+      "populacao": 3556.0,
+      "residuos_domestico_t_ano": 1233.043,
+      "residuos_reciclavel_t_ano": 123.3043,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Arvoredo",
+      "bacia": "Outras Bacias",
+      "populacao": 2510.0,
+      "residuos_domestico_t_ano": 870.3425,
+      "residuos_reciclavel_t_ano": 87.03425,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ascurra",
+      "bacia": "Outras Bacias",
+      "populacao": 8319.0,
+      "residuos_domestico_t_ano": 2884.6132499999994,
+      "residuos_reciclavel_t_ano": 288.46132499999993,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Atalanta",
+      "bacia": "Outras Bacias",
+      "populacao": 3227.0,
+      "residuos_domestico_t_ano": 1118.9622499999998,
+      "residuos_reciclavel_t_ano": 111.89622499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Aurora",
+      "bacia": "Outras Bacias",
+      "populacao": 6780.0,
+      "residuos_domestico_t_ano": 2350.965,
+      "residuos_reciclavel_t_ano": 235.09650000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Balneário Arroio do Silva",
+      "bacia": "Outras Bacias",
+      "populacao": 15820.0,
+      "residuos_domestico_t_ano": 5485.585,
+      "residuos_reciclavel_t_ano": 548.5585,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Balneário Barra do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 14912.0,
+      "residuos_domestico_t_ano": 5170.736,
+      "residuos_reciclavel_t_ano": 517.0736,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Balneário Camboriú",
+      "bacia": "Outras Bacias",
+      "populacao": 139155.0,
+      "residuos_domestico_t_ano": 48251.99625,
+      "residuos_reciclavel_t_ano": 4825.199625,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Balneário Gaivota",
+      "bacia": "Outras Bacias",
+      "populacao": 15669.0,
+      "residuos_domestico_t_ano": 5433.22575,
+      "residuos_reciclavel_t_ano": 543.322575,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Balneário Piçarras",
+      "bacia": "Outras Bacias",
+      "populacao": 27127.0,
+      "residuos_domestico_t_ano": 9406.28725,
+      "residuos_reciclavel_t_ano": 940.628725,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Balneário Rincão",
+      "bacia": "Outras Bacias",
+      "populacao": 15981.0,
+      "residuos_domestico_t_ano": 5541.41175,
+      "residuos_reciclavel_t_ano": 554.1411750000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Bandeirante",
+      "bacia": "Outras Bacias",
+      "populacao": 3144.0,
+      "residuos_domestico_t_ano": 1090.182,
+      "residuos_reciclavel_t_ano": 109.01820000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Barra Bonita",
+      "bacia": "Outras Bacias",
+      "populacao": 1668.0,
+      "residuos_domestico_t_ano": 578.379,
+      "residuos_reciclavel_t_ano": 57.837900000000005,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Barra Velha",
+      "bacia": "Outras Bacias",
+      "populacao": 45369.0,
+      "residuos_domestico_t_ano": 15731.700749999998,
+      "residuos_reciclavel_t_ano": 1573.170075,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Bela Vista do Toldo",
+      "bacia": "Outras Bacias",
+      "populacao": 5872.0,
+      "residuos_domestico_t_ano": 2036.1159999999998,
+      "residuos_reciclavel_t_ano": 203.61159999999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Belmonte",
+      "bacia": "Outras Bacias",
+      "populacao": 2658.0,
+      "residuos_domestico_t_ano": 921.6615,
+      "residuos_reciclavel_t_ano": 92.16615000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Benedito Novo",
+      "bacia": "Outras Bacias",
+      "populacao": 10520.0,
+      "residuos_domestico_t_ano": 3647.81,
+      "residuos_reciclavel_t_ano": 364.781,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Biguaçu",
+      "bacia": "Bacia Litorânea Central",
+      "populacao": 76773.0,
+      "residuos_domestico_t_ano": 26621.037749999996,
+      "residuos_reciclavel_t_ano": 2662.1037749999996,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Blumenau",
+      "bacia": "Bacia do Itajaí",
+      "populacao": 361261.0,
+      "residuos_domestico_t_ano": 125267.25175,
+      "residuos_reciclavel_t_ano": 12526.725175,
+      "risco": "ALTO"
+    },
+    {
+      "nome": "Bocaina do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 3515.0,
+      "residuos_domestico_t_ano": 1218.82625,
+      "residuos_reciclavel_t_ano": 121.88262500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Bom Jardim da Serra",
+      "bacia": "Outras Bacias",
+      "populacao": 4026.0,
+      "residuos_domestico_t_ano": 1396.0155,
+      "residuos_reciclavel_t_ano": 139.60155,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Bom Jesus",
+      "bacia": "Outras Bacias",
+      "populacao": 2777.0,
+      "residuos_domestico_t_ano": 962.92475,
+      "residuos_reciclavel_t_ano": 96.29247500000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Bom Jesus do Oeste",
+      "bacia": "Outras Bacias",
+      "populacao": 2187.0,
+      "residuos_domestico_t_ano": 758.34225,
+      "residuos_reciclavel_t_ano": 75.834225,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Bom Retiro",
+      "bacia": "Outras Bacias",
+      "populacao": 8418.0,
+      "residuos_domestico_t_ano": 2918.9415,
+      "residuos_reciclavel_t_ano": 291.89415,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Bombinhas",
+      "bacia": "Outras Bacias",
+      "populacao": 25058.0,
+      "residuos_domestico_t_ano": 8688.8615,
+      "residuos_reciclavel_t_ano": 868.8861500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Botuverá",
+      "bacia": "Outras Bacias",
+      "populacao": 5363.0,
+      "residuos_domestico_t_ano": 1859.6202499999997,
+      "residuos_reciclavel_t_ano": 185.96202499999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Braço do Norte",
+      "bacia": "Outras Bacias",
+      "populacao": 33773.0,
+      "residuos_domestico_t_ano": 11710.78775,
+      "residuos_reciclavel_t_ano": 1171.078775,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Braço do Trombudo",
+      "bacia": "Outras Bacias",
+      "populacao": 4026.0,
+      "residuos_domestico_t_ano": 1396.0155,
+      "residuos_reciclavel_t_ano": 139.60155,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Brunópolis",
+      "bacia": "Outras Bacias",
+      "populacao": 2489.0,
+      "residuos_domestico_t_ano": 863.0607499999999,
+      "residuos_reciclavel_t_ano": 86.30607499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Brusque",
+      "bacia": "Bacia do Itajaí",
+      "populacao": 141385.0,
+      "residuos_domestico_t_ano": 49025.24875,
+      "residuos_reciclavel_t_ano": 4902.524875,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Caibi",
+      "bacia": "Outras Bacias",
+      "populacao": 6304.0,
+      "residuos_domestico_t_ano": 2185.9119999999994,
+      "residuos_reciclavel_t_ano": 218.59119999999996,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Calmon",
+      "bacia": "Outras Bacias",
+      "populacao": 3443.0,
+      "residuos_domestico_t_ano": 1193.86025,
+      "residuos_reciclavel_t_ano": 119.386025,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Camboriú",
+      "bacia": "Outras Bacias",
+      "populacao": 103074.0,
+      "residuos_domestico_t_ano": 35740.909499999994,
+      "residuos_reciclavel_t_ano": 3574.09095,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Campo Alegre",
+      "bacia": "Outras Bacias",
+      "populacao": 12501.0,
+      "residuos_domestico_t_ano": 4334.72175,
+      "residuos_reciclavel_t_ano": 433.472175,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Campo Belo do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 7257.0,
+      "residuos_domestico_t_ano": 2516.36475,
+      "residuos_reciclavel_t_ano": 251.63647500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Campo Erê",
+      "bacia": "Outras Bacias",
+      "populacao": 9623.0,
+      "residuos_domestico_t_ano": 3336.77525,
+      "residuos_reciclavel_t_ano": 333.67752500000006,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Campos Novos",
+      "bacia": "Bacia do Canoas",
+      "populacao": 36932.0,
+      "residuos_domestico_t_ano": 12806.171,
+      "residuos_reciclavel_t_ano": 1280.6171000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Canelinha",
+      "bacia": "Outras Bacias",
+      "populacao": 12821.0,
+      "residuos_domestico_t_ano": 4445.68175,
+      "residuos_reciclavel_t_ano": 444.568175,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Canoinhas",
+      "bacia": "Outras Bacias",
+      "populacao": 55016.0,
+      "residuos_domestico_t_ano": 19076.798,
+      "residuos_reciclavel_t_ano": 1907.6798,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Capinzal",
+      "bacia": "Outras Bacias",
+      "populacao": 23314.0,
+      "residuos_domestico_t_ano": 8084.1295,
+      "residuos_reciclavel_t_ano": 808.41295,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Capivari de Baixo",
+      "bacia": "Outras Bacias",
+      "populacao": 23975.0,
+      "residuos_domestico_t_ano": 8313.33125,
+      "residuos_reciclavel_t_ano": 831.333125,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Capão Alto",
+      "bacia": "Outras Bacias",
+      "populacao": 2625.0,
+      "residuos_domestico_t_ano": 910.21875,
+      "residuos_reciclavel_t_ano": 91.02187500000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Catanduvas",
+      "bacia": "Outras Bacias",
+      "populacao": 10566.0,
+      "residuos_domestico_t_ano": 3663.7604999999994,
+      "residuos_reciclavel_t_ano": 366.37604999999996,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Caxambu do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 4614.0,
+      "residuos_domestico_t_ano": 1599.9045,
+      "residuos_reciclavel_t_ano": 159.99045,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Caçador",
+      "bacia": "Bacia do Rio do Peixe",
+      "populacao": 73720.0,
+      "residuos_domestico_t_ano": 25562.41,
+      "residuos_reciclavel_t_ano": 2556.241,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Celso Ramos",
+      "bacia": "Outras Bacias",
+      "populacao": 2805.0,
+      "residuos_domestico_t_ano": 972.63375,
+      "residuos_reciclavel_t_ano": 97.263375,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Cerro Negro",
+      "bacia": "Outras Bacias",
+      "populacao": 3317.0,
+      "residuos_domestico_t_ano": 1150.1697499999998,
+      "residuos_reciclavel_t_ano": 115.01697499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Chapadão do Lageado",
+      "bacia": "Outras Bacias",
+      "populacao": 2950.0,
+      "residuos_domestico_t_ano": 1022.9125,
+      "residuos_reciclavel_t_ano": 102.29125,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Chapecó",
+      "bacia": "Bacia do Uruguai",
+      "populacao": 254785.0,
+      "residuos_domestico_t_ano": 88346.69875,
+      "residuos_reciclavel_t_ano": 8834.669875,
+      "risco": "MÉDIO"
+    },
+    {
+      "nome": "Cocal do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 17240.0,
+      "residuos_domestico_t_ano": 5977.97,
+      "residuos_reciclavel_t_ano": 597.797,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Concórdia",
+      "bacia": "Bacia do Uruguai",
+      "populacao": 81646.0,
+      "residuos_domestico_t_ano": 28310.7505,
+      "residuos_reciclavel_t_ano": 2831.07505,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Cordilheira Alta",
+      "bacia": "Outras Bacias",
+      "populacao": 4781.0,
+      "residuos_domestico_t_ano": 1657.81175,
+      "residuos_reciclavel_t_ano": 165.78117500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Coronel Freitas",
+      "bacia": "Outras Bacias",
+      "populacao": 10388.0,
+      "residuos_domestico_t_ano": 3602.039,
+      "residuos_reciclavel_t_ano": 360.20390000000003,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Coronel Martins",
+      "bacia": "Outras Bacias",
+      "populacao": 2065.0,
+      "residuos_domestico_t_ano": 716.03875,
+      "residuos_reciclavel_t_ano": 71.603875,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Correia Pinto",
+      "bacia": "Outras Bacias",
+      "populacao": 15727.0,
+      "residuos_domestico_t_ano": 5453.33725,
+      "residuos_reciclavel_t_ano": 545.333725,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Corupá",
+      "bacia": "Outras Bacias",
+      "populacao": 15267.0,
+      "residuos_domestico_t_ano": 5293.83225,
+      "residuos_reciclavel_t_ano": 529.383225,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Criciúma",
+      "bacia": "Bacia do Tubarão",
+      "populacao": 214493.0,
+      "residuos_domestico_t_ano": 74375.44774999999,
+      "residuos_reciclavel_t_ano": 7437.544774999999,
+      "risco": "MÉDIO"
+    },
+    {
+      "nome": "Cunha Porã",
+      "bacia": "Outras Bacias",
+      "populacao": 10953.0,
+      "residuos_domestico_t_ano": 3797.95275,
+      "residuos_reciclavel_t_ano": 379.795275,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Cunhataí",
+      "bacia": "Outras Bacias",
+      "populacao": 1968.0,
+      "residuos_domestico_t_ano": 682.404,
+      "residuos_reciclavel_t_ano": 68.24040000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Curitibanos",
+      "bacia": "Bacia do Rio do Peixe",
+      "populacao": 40045.0,
+      "residuos_domestico_t_ano": 13885.60375,
+      "residuos_reciclavel_t_ano": 1388.560375,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Descanso",
+      "bacia": "Outras Bacias",
+      "populacao": 8530.0,
+      "residuos_domestico_t_ano": 2957.7775,
+      "residuos_reciclavel_t_ano": 295.77775,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Dionísio Cerqueira",
+      "bacia": "Outras Bacias",
+      "populacao": 15008.0,
+      "residuos_domestico_t_ano": 5204.023999999999,
+      "residuos_reciclavel_t_ano": 520.4024,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Dona Emma",
+      "bacia": "Outras Bacias",
+      "populacao": 4221.0,
+      "residuos_domestico_t_ano": 1463.63175,
+      "residuos_reciclavel_t_ano": 146.363175,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Doutor Pedrinho",
+      "bacia": "Outras Bacias",
+      "populacao": 3637.0,
+      "residuos_domestico_t_ano": 1261.1297499999998,
+      "residuos_reciclavel_t_ano": 126.11297499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Entre Rios",
+      "bacia": "Outras Bacias",
+      "populacao": 3402.0,
+      "residuos_domestico_t_ano": 1179.6434999999997,
+      "residuos_reciclavel_t_ano": 117.96434999999997,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ermo",
+      "bacia": "Outras Bacias",
+      "populacao": 2269.0,
+      "residuos_domestico_t_ano": 786.7757499999999,
+      "residuos_reciclavel_t_ano": 78.67757499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Erval Velho",
+      "bacia": "Outras Bacias",
+      "populacao": 4885.0,
+      "residuos_domestico_t_ano": 1693.87375,
+      "residuos_reciclavel_t_ano": 169.38737500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Faxinal dos Guedes",
+      "bacia": "Outras Bacias",
+      "populacao": 11192.0,
+      "residuos_domestico_t_ano": 3880.826,
+      "residuos_reciclavel_t_ano": 388.0826,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Flor do Sertão",
+      "bacia": "Outras Bacias",
+      "populacao": 1783.0,
+      "residuos_domestico_t_ano": 618.25525,
+      "residuos_reciclavel_t_ano": 61.825525000000006,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Florianópolis",
+      "bacia": "Bacia Litorânea Central",
+      "populacao": 537211.0,
+      "residuos_domestico_t_ano": 186277.91424999997,
+      "residuos_reciclavel_t_ano": 18627.791425,
+      "risco": "ALTO"
+    },
+    {
+      "nome": "Formosa do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 2682.0,
+      "residuos_domestico_t_ano": 929.9835,
+      "residuos_reciclavel_t_ano": 92.99835000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Forquilhinha",
+      "bacia": "Outras Bacias",
+      "populacao": 31431.0,
+      "residuos_domestico_t_ano": 10898.699249999998,
+      "residuos_reciclavel_t_ano": 1089.8699249999997,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Fraiburgo",
+      "bacia": "Outras Bacias",
+      "populacao": 33481.0,
+      "residuos_domestico_t_ano": 11609.536749999997,
+      "residuos_reciclavel_t_ano": 1160.9536749999997,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Frei Rogério",
+      "bacia": "Outras Bacias",
+      "populacao": 2411.0,
+      "residuos_domestico_t_ano": 836.0142499999998,
+      "residuos_reciclavel_t_ano": 83.60142499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Galvão",
+      "bacia": "Outras Bacias",
+      "populacao": 3210.0,
+      "residuos_domestico_t_ano": 1113.0675,
+      "residuos_reciclavel_t_ano": 111.30675000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Garopaba",
+      "bacia": "Outras Bacias",
+      "populacao": 29959.0,
+      "residuos_domestico_t_ano": 10388.28325,
+      "residuos_reciclavel_t_ano": 1038.8283250000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Garuva",
+      "bacia": "Outras Bacias",
+      "populacao": 18545.0,
+      "residuos_domestico_t_ano": 6430.47875,
+      "residuos_reciclavel_t_ano": 643.0478750000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Gaspar",
+      "bacia": "Outras Bacias",
+      "populacao": 72570.0,
+      "residuos_domestico_t_ano": 25163.6475,
+      "residuos_reciclavel_t_ano": 2516.36475,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Governador Celso Ramos",
+      "bacia": "Outras Bacias",
+      "populacao": 16915.0,
+      "residuos_domestico_t_ano": 5865.27625,
+      "residuos_reciclavel_t_ano": 586.5276250000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Gravatal",
+      "bacia": "Outras Bacias",
+      "populacao": 12435.0,
+      "residuos_domestico_t_ano": 4311.83625,
+      "residuos_reciclavel_t_ano": 431.18362500000006,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Grão-Pará",
+      "bacia": "Outras Bacias",
+      "populacao": 6277.0,
+      "residuos_domestico_t_ano": 2176.54975,
+      "residuos_reciclavel_t_ano": 217.65497500000004,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Guabiruba",
+      "bacia": "Outras Bacias",
+      "populacao": 24543.0,
+      "residuos_domestico_t_ano": 8510.28525,
+      "residuos_reciclavel_t_ano": 851.0285250000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Guaraciaba",
+      "bacia": "Outras Bacias",
+      "populacao": 10796.0,
+      "residuos_domestico_t_ano": 3743.5129999999995,
+      "residuos_reciclavel_t_ano": 374.3513,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Guaramirim",
+      "bacia": "Outras Bacias",
+      "populacao": 46711.0,
+      "residuos_domestico_t_ano": 16197.039249999998,
+      "residuos_reciclavel_t_ano": 1619.7039249999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Guarujá do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 4829.0,
+      "residuos_domestico_t_ano": 1674.45575,
+      "residuos_reciclavel_t_ano": 167.44557500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Guatambú",
+      "bacia": "Outras Bacias",
+      "populacao": 8425.0,
+      "residuos_domestico_t_ano": 2921.36875,
+      "residuos_reciclavel_t_ano": 292.13687500000003,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Herval d'Oeste",
+      "bacia": "Outras Bacias",
+      "populacao": 21724.0,
+      "residuos_domestico_t_ano": 7532.797,
+      "residuos_reciclavel_t_ano": 753.2797,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ibiam",
+      "bacia": "Outras Bacias",
+      "populacao": 2008.0,
+      "residuos_domestico_t_ano": 696.274,
+      "residuos_reciclavel_t_ano": 69.62740000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ibicaré",
+      "bacia": "Outras Bacias",
+      "populacao": 3269.0,
+      "residuos_domestico_t_ano": 1133.52575,
+      "residuos_reciclavel_t_ano": 113.352575,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ibirama",
+      "bacia": "Bacia do Itajaí",
+      "populacao": 19862.0,
+      "residuos_domestico_t_ano": 6887.148499999999,
+      "residuos_reciclavel_t_ano": 688.71485,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ilhota",
+      "bacia": "Outras Bacias",
+      "populacao": 17046.0,
+      "residuos_domestico_t_ano": 5910.7005,
+      "residuos_reciclavel_t_ano": 591.07005,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Imaruí",
+      "bacia": "Outras Bacias",
+      "populacao": 11881.0,
+      "residuos_domestico_t_ano": 4119.736749999999,
+      "residuos_reciclavel_t_ano": 411.97367499999996,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Imbituba",
+      "bacia": "Outras Bacias",
+      "populacao": 52579.0,
+      "residuos_domestico_t_ano": 18231.76825,
+      "residuos_reciclavel_t_ano": 1823.1768250000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Imbuia",
+      "bacia": "Outras Bacias",
+      "populacao": 5982.0,
+      "residuos_domestico_t_ano": 2074.2585,
+      "residuos_reciclavel_t_ano": 207.42585,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Indaial",
+      "bacia": "Outras Bacias",
+      "populacao": 71549.0,
+      "residuos_domestico_t_ano": 24809.61575,
+      "residuos_reciclavel_t_ano": 2480.9615750000003,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Iomerê",
+      "bacia": "Outras Bacias",
+      "populacao": 2877.0,
+      "residuos_domestico_t_ano": 997.59975,
+      "residuos_reciclavel_t_ano": 99.759975,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ipira",
+      "bacia": "Outras Bacias",
+      "populacao": 4578.0,
+      "residuos_domestico_t_ano": 1587.4214999999997,
+      "residuos_reciclavel_t_ano": 158.74214999999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Iporã do Oeste",
+      "bacia": "Outras Bacias",
+      "populacao": 9335.0,
+      "residuos_domestico_t_ano": 3236.91125,
+      "residuos_reciclavel_t_ano": 323.69112500000006,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ipuaçu",
+      "bacia": "Outras Bacias",
+      "populacao": 7730.0,
+      "residuos_domestico_t_ano": 2680.3775,
+      "residuos_reciclavel_t_ano": 268.03775,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ipumirim",
+      "bacia": "Outras Bacias",
+      "populacao": 7816.0,
+      "residuos_domestico_t_ano": 2710.198,
+      "residuos_reciclavel_t_ano": 271.0198,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Iraceminha",
+      "bacia": "Outras Bacias",
+      "populacao": 3986.0,
+      "residuos_domestico_t_ano": 1382.1455,
+      "residuos_reciclavel_t_ano": 138.21455,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Irani",
+      "bacia": "Outras Bacias",
+      "populacao": 10195.0,
+      "residuos_domestico_t_ano": 3535.11625,
+      "residuos_reciclavel_t_ano": 353.51162500000004,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Irati",
+      "bacia": "Outras Bacias",
+      "populacao": 2069.0,
+      "residuos_domestico_t_ano": 717.42575,
+      "residuos_reciclavel_t_ano": 71.742575,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Irineópolis",
+      "bacia": "Outras Bacias",
+      "populacao": 10285.0,
+      "residuos_domestico_t_ano": 3566.32375,
+      "residuos_reciclavel_t_ano": 356.632375,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Itaiópolis",
+      "bacia": "Outras Bacias",
+      "populacao": 22051.0,
+      "residuos_domestico_t_ano": 7646.18425,
+      "residuos_reciclavel_t_ano": 764.6184250000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Itajaí",
+      "bacia": "Bacia do Itajaí",
+      "populacao": 264054.0,
+      "residuos_domestico_t_ano": 91560.7245,
+      "residuos_reciclavel_t_ano": 9156.07245,
+      "risco": "MÉDIO"
+    },
+    {
+      "nome": "Itapema",
+      "bacia": "Outras Bacias",
+      "populacao": 75940.0,
+      "residuos_domestico_t_ano": 26332.195,
+      "residuos_reciclavel_t_ano": 2633.2195,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Itapiranga",
+      "bacia": "Outras Bacias",
+      "populacao": 16638.0,
+      "residuos_domestico_t_ano": 5769.226499999999,
+      "residuos_reciclavel_t_ano": 576.9226499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Itapoá",
+      "bacia": "Outras Bacias",
+      "populacao": 30750.0,
+      "residuos_domestico_t_ano": 10662.5625,
+      "residuos_reciclavel_t_ano": 1066.2562500000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ituporanga",
+      "bacia": "Outras Bacias",
+      "populacao": 26525.0,
+      "residuos_domestico_t_ano": 9197.54375,
+      "residuos_reciclavel_t_ano": 919.7543750000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Itá",
+      "bacia": "Outras Bacias",
+      "populacao": 7067.0,
+      "residuos_domestico_t_ano": 2450.48225,
+      "residuos_reciclavel_t_ano": 245.048225,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Içara",
+      "bacia": "Bacia do Tubarão",
+      "populacao": 59035.0,
+      "residuos_domestico_t_ano": 20470.38625,
+      "residuos_reciclavel_t_ano": 2047.0386250000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Jaborá",
+      "bacia": "Outras Bacias",
+      "populacao": 4310.0,
+      "residuos_domestico_t_ano": 1494.4925,
+      "residuos_reciclavel_t_ano": 149.44925,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Jacinto Machado",
+      "bacia": "Outras Bacias",
+      "populacao": 10624.0,
+      "residuos_domestico_t_ano": 3683.8719999999994,
+      "residuos_reciclavel_t_ano": 368.38719999999995,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Jaguaruna",
+      "bacia": "Outras Bacias",
+      "populacao": 20375.0,
+      "residuos_domestico_t_ano": 7065.03125,
+      "residuos_reciclavel_t_ano": 706.5031250000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Jaraguá do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 182660.0,
+      "residuos_domestico_t_ano": 63337.355,
+      "residuos_reciclavel_t_ano": 6333.735500000001,
+      "risco": "MÉDIO"
+    },
+    {
+      "nome": "Jardinópolis",
+      "bacia": "Outras Bacias",
+      "populacao": 1776.0,
+      "residuos_domestico_t_ano": 615.8279999999999,
+      "residuos_reciclavel_t_ano": 61.58279999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Joaçaba",
+      "bacia": "Bacia do Uruguai",
+      "populacao": 30146.0,
+      "residuos_domestico_t_ano": 10453.125499999998,
+      "residuos_reciclavel_t_ano": 1045.3125499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Joinville",
+      "bacia": "Bacia Litorânea Norte",
+      "populacao": 616317.0,
+      "residuos_domestico_t_ano": 213707.91975,
+      "residuos_reciclavel_t_ano": 21370.791975,
+      "risco": "CRÍTICO"
+    },
+    {
+      "nome": "José Boiteux",
+      "bacia": "Outras Bacias",
+      "populacao": 5985.0,
+      "residuos_domestico_t_ano": 2075.29875,
+      "residuos_reciclavel_t_ano": 207.529875,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Jupiá",
+      "bacia": "Outras Bacias",
+      "populacao": 2555.0,
+      "residuos_domestico_t_ano": 885.94625,
+      "residuos_reciclavel_t_ano": 88.59462500000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Lacerdópolis",
+      "bacia": "Outras Bacias",
+      "populacao": 2248.0,
+      "residuos_domestico_t_ano": 779.494,
+      "residuos_reciclavel_t_ano": 77.94940000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Lages",
+      "bacia": "Bacia do Canoas",
+      "populacao": 164981.0,
+      "residuos_domestico_t_ano": 57207.16174999999,
+      "residuos_reciclavel_t_ano": 5720.716175,
+      "risco": "MÉDIO"
+    },
+    {
+      "nome": "Laguna",
+      "bacia": "Outras Bacias",
+      "populacao": 42785.0,
+      "residuos_domestico_t_ano": 14835.69875,
+      "residuos_reciclavel_t_ano": 1483.5698750000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Lajeado Grande",
+      "bacia": "Outras Bacias",
+      "populacao": 1702.0,
+      "residuos_domestico_t_ano": 590.1685,
+      "residuos_reciclavel_t_ano": 59.016850000000005,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Laurentino",
+      "bacia": "Outras Bacias",
+      "populacao": 7932.0,
+      "residuos_domestico_t_ano": 2750.421,
+      "residuos_reciclavel_t_ano": 275.0421,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Lauro Müller",
+      "bacia": "Outras Bacias",
+      "populacao": 14381.0,
+      "residuos_domestico_t_ano": 4986.61175,
+      "residuos_reciclavel_t_ano": 498.661175,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Lebon Régis",
+      "bacia": "Outras Bacias",
+      "populacao": 11472.0,
+      "residuos_domestico_t_ano": 3977.916,
+      "residuos_reciclavel_t_ano": 397.7916,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Leoberto Leal",
+      "bacia": "Outras Bacias",
+      "populacao": 3330.0,
+      "residuos_domestico_t_ano": 1154.6775,
+      "residuos_reciclavel_t_ano": 115.46775000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Lindóia do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 4549.0,
+      "residuos_domestico_t_ano": 1577.36575,
+      "residuos_reciclavel_t_ano": 157.73657500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Lontras",
+      "bacia": "Outras Bacias",
+      "populacao": 12873.0,
+      "residuos_domestico_t_ano": 4463.712749999999,
+      "residuos_reciclavel_t_ano": 446.3712749999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Luiz Alves",
+      "bacia": "Outras Bacias",
+      "populacao": 11684.0,
+      "residuos_domestico_t_ano": 4051.4269999999997,
+      "residuos_reciclavel_t_ano": 405.1427,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Luzerna",
+      "bacia": "Outras Bacias",
+      "populacao": 5794.0,
+      "residuos_domestico_t_ano": 2009.0695,
+      "residuos_reciclavel_t_ano": 200.90695000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Macieira",
+      "bacia": "Outras Bacias",
+      "populacao": 1778.0,
+      "residuos_domestico_t_ano": 616.5215,
+      "residuos_reciclavel_t_ano": 61.65215,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Mafra",
+      "bacia": "Outras Bacias",
+      "populacao": 55286.0,
+      "residuos_domestico_t_ano": 19170.4205,
+      "residuos_reciclavel_t_ano": 1917.04205,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Major Gercino",
+      "bacia": "Outras Bacias",
+      "populacao": 3214.0,
+      "residuos_domestico_t_ano": 1114.4545,
+      "residuos_reciclavel_t_ano": 111.44545000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Major Vieira",
+      "bacia": "Outras Bacias",
+      "populacao": 7425.0,
+      "residuos_domestico_t_ano": 2574.61875,
+      "residuos_reciclavel_t_ano": 257.461875,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Maracajá",
+      "bacia": "Outras Bacias",
+      "populacao": 7815.0,
+      "residuos_domestico_t_ano": 2709.85125,
+      "residuos_reciclavel_t_ano": 270.98512500000004,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Maravilha",
+      "bacia": "Outras Bacias",
+      "populacao": 28251.0,
+      "residuos_domestico_t_ano": 9796.034249999999,
+      "residuos_reciclavel_t_ano": 979.6034249999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Marema",
+      "bacia": "Outras Bacias",
+      "populacao": 2184.0,
+      "residuos_domestico_t_ano": 757.3019999999999,
+      "residuos_reciclavel_t_ano": 75.7302,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Massaranduba",
+      "bacia": "Outras Bacias",
+      "populacao": 17162.0,
+      "residuos_domestico_t_ano": 5950.9235,
+      "residuos_reciclavel_t_ano": 595.09235,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Matos Costa",
+      "bacia": "Outras Bacias",
+      "populacao": 2761.0,
+      "residuos_domestico_t_ano": 957.3767499999999,
+      "residuos_reciclavel_t_ano": 95.737675,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Meleiro",
+      "bacia": "Outras Bacias",
+      "populacao": 7006.0,
+      "residuos_domestico_t_ano": 2429.3305,
+      "residuos_reciclavel_t_ano": 242.93305,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Mirim Doce",
+      "bacia": "Outras Bacias",
+      "populacao": 2511.0,
+      "residuos_domestico_t_ano": 870.6892499999999,
+      "residuos_reciclavel_t_ano": 87.068925,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Modelo",
+      "bacia": "Outras Bacias",
+      "populacao": 4080.0,
+      "residuos_domestico_t_ano": 1414.74,
+      "residuos_reciclavel_t_ano": 141.47400000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Mondaí",
+      "bacia": "Outras Bacias",
+      "populacao": 10066.0,
+      "residuos_domestico_t_ano": 3490.3854999999994,
+      "residuos_reciclavel_t_ano": 349.03855,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Monte Carlo",
+      "bacia": "Outras Bacias",
+      "populacao": 9117.0,
+      "residuos_domestico_t_ano": 3161.31975,
+      "residuos_reciclavel_t_ano": 316.131975,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Monte Castelo",
+      "bacia": "Outras Bacias",
+      "populacao": 7736.0,
+      "residuos_domestico_t_ano": 2682.458,
+      "residuos_reciclavel_t_ano": 268.24580000000003,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Morro Grande",
+      "bacia": "Outras Bacias",
+      "populacao": 3010.0,
+      "residuos_domestico_t_ano": 1043.7175,
+      "residuos_reciclavel_t_ano": 104.37175,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Morro da Fumaça",
+      "bacia": "Outras Bacias",
+      "populacao": 18537.0,
+      "residuos_domestico_t_ano": 6427.704749999999,
+      "residuos_reciclavel_t_ano": 642.7704749999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Navegantes",
+      "bacia": "Outras Bacias",
+      "populacao": 86401.0,
+      "residuos_domestico_t_ano": 29959.54675,
+      "residuos_reciclavel_t_ano": 2995.9546750000004,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Nova Erechim",
+      "bacia": "Outras Bacias",
+      "populacao": 5155.0,
+      "residuos_domestico_t_ano": 1787.49625,
+      "residuos_reciclavel_t_ano": 178.749625,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Nova Itaberaba",
+      "bacia": "Outras Bacias",
+      "populacao": 4536.0,
+      "residuos_domestico_t_ano": 1572.858,
+      "residuos_reciclavel_t_ano": 157.2858,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Nova Trento",
+      "bacia": "Outras Bacias",
+      "populacao": 13727.0,
+      "residuos_domestico_t_ano": 4759.83725,
+      "residuos_reciclavel_t_ano": 475.983725,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Nova Veneza",
+      "bacia": "Outras Bacias",
+      "populacao": 13664.0,
+      "residuos_domestico_t_ano": 4737.992,
+      "residuos_reciclavel_t_ano": 473.79920000000004,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Novo Horizonte",
+      "bacia": "Outras Bacias",
+      "populacao": 2643.0,
+      "residuos_domestico_t_ano": 916.46025,
+      "residuos_reciclavel_t_ano": 91.64602500000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Orleans",
+      "bacia": "Outras Bacias",
+      "populacao": 23661.0,
+      "residuos_domestico_t_ano": 8204.45175,
+      "residuos_reciclavel_t_ano": 820.4451750000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Otacílio Costa",
+      "bacia": "Outras Bacias",
+      "populacao": 17312.0,
+      "residuos_domestico_t_ano": 6002.935999999999,
+      "residuos_reciclavel_t_ano": 600.2935999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ouro",
+      "bacia": "Outras Bacias",
+      "populacao": 7032.0,
+      "residuos_domestico_t_ano": 2438.346,
+      "residuos_reciclavel_t_ano": 243.83460000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ouro Verde",
+      "bacia": "Outras Bacias",
+      "populacao": 2181.0,
+      "residuos_domestico_t_ano": 756.2617499999999,
+      "residuos_reciclavel_t_ano": 75.62617499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Paial",
+      "bacia": "Outras Bacias",
+      "populacao": 1927.0,
+      "residuos_domestico_t_ano": 668.18725,
+      "residuos_reciclavel_t_ano": 66.818725,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Painel",
+      "bacia": "Outras Bacias",
+      "populacao": 2215.0,
+      "residuos_domestico_t_ano": 768.05125,
+      "residuos_reciclavel_t_ano": 76.805125,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Palhoça",
+      "bacia": "Bacia Litorânea Central",
+      "populacao": 222598.0,
+      "residuos_domestico_t_ano": 77185.85649999998,
+      "residuos_reciclavel_t_ano": 7718.585649999998,
+      "risco": "MÉDIO"
+    },
+    {
+      "nome": "Palma Sola",
+      "bacia": "Outras Bacias",
+      "populacao": 7605.0,
+      "residuos_domestico_t_ano": 2637.03375,
+      "residuos_reciclavel_t_ano": 263.703375,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Palmeira",
+      "bacia": "Outras Bacias",
+      "populacao": 2561.0,
+      "residuos_domestico_t_ano": 888.0267499999999,
+      "residuos_reciclavel_t_ano": 88.802675,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Palmitos",
+      "bacia": "Outras Bacias",
+      "populacao": 15626.0,
+      "residuos_domestico_t_ano": 5418.3155,
+      "residuos_reciclavel_t_ano": 541.83155,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Papanduva",
+      "bacia": "Outras Bacias",
+      "populacao": 19150.0,
+      "residuos_domestico_t_ano": 6640.2625,
+      "residuos_reciclavel_t_ano": 664.02625,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Paraíso",
+      "bacia": "Outras Bacias",
+      "populacao": 4267.0,
+      "residuos_domestico_t_ano": 1479.5822499999997,
+      "residuos_reciclavel_t_ano": 147.95822499999997,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Passo de Torres",
+      "bacia": "Outras Bacias",
+      "populacao": 12897.0,
+      "residuos_domestico_t_ano": 4472.03475,
+      "residuos_reciclavel_t_ano": 447.203475,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Passos Maia",
+      "bacia": "Outras Bacias",
+      "populacao": 4034.0,
+      "residuos_domestico_t_ano": 1398.7895,
+      "residuos_reciclavel_t_ano": 139.87895,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Paulo Lopes",
+      "bacia": "Outras Bacias",
+      "populacao": 9063.0,
+      "residuos_domestico_t_ano": 3142.59525,
+      "residuos_reciclavel_t_ano": 314.259525,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Pedras Grandes",
+      "bacia": "Outras Bacias",
+      "populacao": 4245.0,
+      "residuos_domestico_t_ano": 1471.95375,
+      "residuos_reciclavel_t_ano": 147.19537499999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Penha",
+      "bacia": "Outras Bacias",
+      "populacao": 33663.0,
+      "residuos_domestico_t_ano": 11672.64525,
+      "residuos_reciclavel_t_ano": 1167.264525,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Peritiba",
+      "bacia": "Outras Bacias",
+      "populacao": 2992.0,
+      "residuos_domestico_t_ano": 1037.476,
+      "residuos_reciclavel_t_ano": 103.74760000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Pescaria Brava",
+      "bacia": "Outras Bacias",
+      "populacao": 10190.0,
+      "residuos_domestico_t_ano": 3533.3825,
+      "residuos_reciclavel_t_ano": 353.33825,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Petrolândia",
+      "bacia": "Outras Bacias",
+      "populacao": 6716.0,
+      "residuos_domestico_t_ano": 2328.773,
+      "residuos_reciclavel_t_ano": 232.87730000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Pinhalzinho",
+      "bacia": "Outras Bacias",
+      "populacao": 21972.0,
+      "residuos_domestico_t_ano": 7618.790999999999,
+      "residuos_reciclavel_t_ano": 761.8791,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Pinheiro Preto",
+      "bacia": "Outras Bacias",
+      "populacao": 3473.0,
+      "residuos_domestico_t_ano": 1204.26275,
+      "residuos_reciclavel_t_ano": 120.42627500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Piratuba",
+      "bacia": "Outras Bacias",
+      "populacao": 5769.0,
+      "residuos_domestico_t_ano": 2000.40075,
+      "residuos_reciclavel_t_ano": 200.040075,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Planalto Alegre",
+      "bacia": "Outras Bacias",
+      "populacao": 2946.0,
+      "residuos_domestico_t_ano": 1021.5254999999999,
+      "residuos_reciclavel_t_ano": 102.15254999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Pomerode",
+      "bacia": "Outras Bacias",
+      "populacao": 34289.0,
+      "residuos_domestico_t_ano": 11889.71075,
+      "residuos_reciclavel_t_ano": 1188.9710750000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ponte Alta",
+      "bacia": "Outras Bacias",
+      "populacao": 4437.0,
+      "residuos_domestico_t_ano": 1538.5297499999997,
+      "residuos_reciclavel_t_ano": 153.852975,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ponte Alta do Norte",
+      "bacia": "Outras Bacias",
+      "populacao": 3210.0,
+      "residuos_domestico_t_ano": 1113.0675,
+      "residuos_reciclavel_t_ano": 111.30675000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Ponte Serrada",
+      "bacia": "Outras Bacias",
+      "populacao": 10649.0,
+      "residuos_domestico_t_ano": 3692.5407499999997,
+      "residuos_reciclavel_t_ano": 369.254075,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Porto Belo",
+      "bacia": "Outras Bacias",
+      "populacao": 27688.0,
+      "residuos_domestico_t_ano": 9600.814,
+      "residuos_reciclavel_t_ano": 960.0814,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Porto União",
+      "bacia": "Outras Bacias",
+      "populacao": 32970.0,
+      "residuos_domestico_t_ano": 11432.3475,
+      "residuos_reciclavel_t_ano": 1143.23475,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Pouso Redondo",
+      "bacia": "Outras Bacias",
+      "populacao": 17123.0,
+      "residuos_domestico_t_ano": 5937.400249999999,
+      "residuos_reciclavel_t_ano": 593.740025,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Praia Grande",
+      "bacia": "Outras Bacias",
+      "populacao": 8270.0,
+      "residuos_domestico_t_ano": 2867.6225,
+      "residuos_reciclavel_t_ano": 286.76225,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Presidente Castello Branco",
+      "bacia": "Outras Bacias",
+      "populacao": 1689.0,
+      "residuos_domestico_t_ano": 585.66075,
+      "residuos_reciclavel_t_ano": 58.566075000000005,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Presidente Getúlio",
+      "bacia": "Outras Bacias",
+      "populacao": 20010.0,
+      "residuos_domestico_t_ano": 6938.4675,
+      "residuos_reciclavel_t_ano": 693.84675,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Presidente Nereu",
+      "bacia": "Outras Bacias",
+      "populacao": 2301.0,
+      "residuos_domestico_t_ano": 797.8717499999999,
+      "residuos_reciclavel_t_ano": 79.78717499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Princesa",
+      "bacia": "Outras Bacias",
+      "populacao": 2964.0,
+      "residuos_domestico_t_ano": 1027.7669999999998,
+      "residuos_reciclavel_t_ano": 102.77669999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Quilombo",
+      "bacia": "Outras Bacias",
+      "populacao": 11022.0,
+      "residuos_domestico_t_ano": 3821.8785,
+      "residuos_reciclavel_t_ano": 382.18785,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rancho Queimado",
+      "bacia": "Outras Bacias",
+      "populacao": 3279.0,
+      "residuos_domestico_t_ano": 1136.99325,
+      "residuos_reciclavel_t_ano": 113.699325,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rio Fortuna",
+      "bacia": "Outras Bacias",
+      "populacao": 4847.0,
+      "residuos_domestico_t_ano": 1680.6972499999997,
+      "residuos_reciclavel_t_ano": 168.06972499999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rio Negrinho",
+      "bacia": "Outras Bacias",
+      "populacao": 39261.0,
+      "residuos_domestico_t_ano": 13613.751749999998,
+      "residuos_reciclavel_t_ano": 1361.375175,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rio Rufino",
+      "bacia": "Outras Bacias",
+      "populacao": 2397.0,
+      "residuos_domestico_t_ano": 831.15975,
+      "residuos_reciclavel_t_ano": 83.115975,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rio das Antas",
+      "bacia": "Outras Bacias",
+      "populacao": 6253.0,
+      "residuos_domestico_t_ano": 2168.22775,
+      "residuos_reciclavel_t_ano": 216.822775,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rio do Campo",
+      "bacia": "Outras Bacias",
+      "populacao": 6452.0,
+      "residuos_domestico_t_ano": 2237.231,
+      "residuos_reciclavel_t_ano": 223.72310000000004,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rio do Oeste",
+      "bacia": "Outras Bacias",
+      "populacao": 7747.0,
+      "residuos_domestico_t_ano": 2686.27225,
+      "residuos_reciclavel_t_ano": 268.627225,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rio do Sul",
+      "bacia": "Bacia do Itajaí",
+      "populacao": 72587.0,
+      "residuos_domestico_t_ano": 25169.542249999995,
+      "residuos_reciclavel_t_ano": 2516.9542249999995,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rio dos Cedros",
+      "bacia": "Outras Bacias",
+      "populacao": 10865.0,
+      "residuos_domestico_t_ano": 3767.43875,
+      "residuos_reciclavel_t_ano": 376.743875,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Riqueza",
+      "bacia": "Outras Bacias",
+      "populacao": 4768.0,
+      "residuos_domestico_t_ano": 1653.3039999999999,
+      "residuos_reciclavel_t_ano": 165.3304,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Rodeio",
+      "bacia": "Outras Bacias",
+      "populacao": 12757.0,
+      "residuos_domestico_t_ano": 4423.48975,
+      "residuos_reciclavel_t_ano": 442.348975,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Romelândia",
+      "bacia": "Outras Bacias",
+      "populacao": 4823.0,
+      "residuos_domestico_t_ano": 1672.3752499999998,
+      "residuos_reciclavel_t_ano": 167.237525,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Salete",
+      "bacia": "Outras Bacias",
+      "populacao": 7489.0,
+      "residuos_domestico_t_ano": 2596.8107499999996,
+      "residuos_reciclavel_t_ano": 259.68107499999996,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Saltinho",
+      "bacia": "Outras Bacias",
+      "populacao": 3632.0,
+      "residuos_domestico_t_ano": 1259.3959999999997,
+      "residuos_reciclavel_t_ano": 125.93959999999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Salto Veloso",
+      "bacia": "Outras Bacias",
+      "populacao": 4390.0,
+      "residuos_domestico_t_ano": 1522.2325,
+      "residuos_reciclavel_t_ano": 152.22325,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Sangão",
+      "bacia": "Outras Bacias",
+      "populacao": 12882.0,
+      "residuos_domestico_t_ano": 4466.8335,
+      "residuos_reciclavel_t_ano": 446.68335,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Santa Cecília",
+      "bacia": "Outras Bacias",
+      "populacao": 15546.0,
+      "residuos_domestico_t_ano": 5390.5755,
+      "residuos_reciclavel_t_ano": 539.05755,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Santa Helena",
+      "bacia": "Outras Bacias",
+      "populacao": 2425.0,
+      "residuos_domestico_t_ano": 840.86875,
+      "residuos_reciclavel_t_ano": 84.086875,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Santa Rosa de Lima",
+      "bacia": "Outras Bacias",
+      "populacao": 2088.0,
+      "residuos_domestico_t_ano": 724.014,
+      "residuos_reciclavel_t_ano": 72.40140000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Santa Rosa do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 9792.0,
+      "residuos_domestico_t_ano": 3395.376,
+      "residuos_reciclavel_t_ano": 339.53760000000005,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Santa Terezinha",
+      "bacia": "Outras Bacias",
+      "populacao": 8066.0,
+      "residuos_domestico_t_ano": 2796.8855,
+      "residuos_reciclavel_t_ano": 279.68855,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Santa Terezinha do Progresso",
+      "bacia": "Outras Bacias",
+      "populacao": 2576.0,
+      "residuos_domestico_t_ano": 893.2279999999998,
+      "residuos_reciclavel_t_ano": 89.32279999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Santiago do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 1651.0,
+      "residuos_domestico_t_ano": 572.4842499999999,
+      "residuos_reciclavel_t_ano": 57.24842499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Santo Amaro da Imperatriz",
+      "bacia": "Outras Bacias",
+      "populacao": 27272.0,
+      "residuos_domestico_t_ano": 9456.566,
+      "residuos_reciclavel_t_ano": 945.6566000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Saudades",
+      "bacia": "Outras Bacias",
+      "populacao": 10265.0,
+      "residuos_domestico_t_ano": 3559.38875,
+      "residuos_reciclavel_t_ano": 355.93887500000005,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Schroeder",
+      "bacia": "Outras Bacias",
+      "populacao": 20061.0,
+      "residuos_domestico_t_ano": 6956.15175,
+      "residuos_reciclavel_t_ano": 695.615175,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Seara",
+      "bacia": "Outras Bacias",
+      "populacao": 18620.0,
+      "residuos_domestico_t_ano": 6456.485,
+      "residuos_reciclavel_t_ano": 645.6485,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Serra Alta",
+      "bacia": "Outras Bacias",
+      "populacao": 3303.0,
+      "residuos_domestico_t_ano": 1145.31525,
+      "residuos_reciclavel_t_ano": 114.53152500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Siderópolis",
+      "bacia": "Outras Bacias",
+      "populacao": 13714.0,
+      "residuos_domestico_t_ano": 4755.3295,
+      "residuos_reciclavel_t_ano": 475.53295,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Sombrio",
+      "bacia": "Outras Bacias",
+      "populacao": 29991.0,
+      "residuos_domestico_t_ano": 10399.379249999998,
+      "residuos_reciclavel_t_ano": 1039.937925,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Sul Brasil",
+      "bacia": "Outras Bacias",
+      "populacao": 2832.0,
+      "residuos_domestico_t_ano": 981.996,
+      "residuos_reciclavel_t_ano": 98.1996,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Bento do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 83277.0,
+      "residuos_domestico_t_ano": 28876.299749999995,
+      "residuos_reciclavel_t_ano": 2887.629975,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Bernardino",
+      "bacia": "Outras Bacias",
+      "populacao": 2684.0,
+      "residuos_domestico_t_ano": 930.6769999999999,
+      "residuos_reciclavel_t_ano": 93.0677,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Bonifácio",
+      "bacia": "Outras Bacias",
+      "populacao": 2946.0,
+      "residuos_domestico_t_ano": 1021.5254999999999,
+      "residuos_reciclavel_t_ano": 102.15254999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Carlos",
+      "bacia": "Outras Bacias",
+      "populacao": 10282.0,
+      "residuos_domestico_t_ano": 3565.2835,
+      "residuos_reciclavel_t_ano": 356.52835000000005,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Cristóvão do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 6084.0,
+      "residuos_domestico_t_ano": 2109.627,
+      "residuos_reciclavel_t_ano": 210.9627,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Domingos",
+      "bacia": "Outras Bacias",
+      "populacao": 9226.0,
+      "residuos_domestico_t_ano": 3199.1154999999994,
+      "residuos_reciclavel_t_ano": 319.91155,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Francisco do Sul",
+      "bacia": "Bacia Litorânea Norte",
+      "populacao": 52674.0,
+      "residuos_domestico_t_ano": 18264.7095,
+      "residuos_reciclavel_t_ano": 1826.4709500000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Joaquim",
+      "bacia": "Bacia do Canoas",
+      "populacao": 25939.0,
+      "residuos_domestico_t_ano": 8994.34825,
+      "residuos_reciclavel_t_ano": 899.4348249999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São José",
+      "bacia": "Bacia Litorânea Central",
+      "populacao": 270299.0,
+      "residuos_domestico_t_ano": 93726.17825,
+      "residuos_reciclavel_t_ano": 9372.617825,
+      "risco": "MÉDIO"
+    },
+    {
+      "nome": "São José do Cedro",
+      "bacia": "Bacia Litorânea Central",
+      "populacao": 14167.0,
+      "residuos_domestico_t_ano": 4912.40725,
+      "residuos_reciclavel_t_ano": 491.24072500000005,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São José do Cerrito",
+      "bacia": "Bacia Litorânea Central",
+      "populacao": 8708.0,
+      "residuos_domestico_t_ano": 3019.499,
+      "residuos_reciclavel_t_ano": 301.9499,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São João Batista",
+      "bacia": "Outras Bacias",
+      "populacao": 32687.0,
+      "residuos_domestico_t_ano": 11334.21725,
+      "residuos_reciclavel_t_ano": 1133.421725,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São João do Itaperiú",
+      "bacia": "Outras Bacias",
+      "populacao": 4463.0,
+      "residuos_domestico_t_ano": 1547.5452499999997,
+      "residuos_reciclavel_t_ano": 154.75452499999997,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São João do Oeste",
+      "bacia": "Outras Bacias",
+      "populacao": 6295.0,
+      "residuos_domestico_t_ano": 2182.79125,
+      "residuos_reciclavel_t_ano": 218.27912500000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São João do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 8668.0,
+      "residuos_domestico_t_ano": 3005.629,
+      "residuos_reciclavel_t_ano": 300.5629,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Lourenço do Oeste",
+      "bacia": "Outras Bacias",
+      "populacao": 24791.0,
+      "residuos_domestico_t_ano": 8596.279249999998,
+      "residuos_reciclavel_t_ano": 859.6279249999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Ludgero",
+      "bacia": "Outras Bacias",
+      "populacao": 13509.0,
+      "residuos_domestico_t_ano": 4684.24575,
+      "residuos_reciclavel_t_ano": 468.424575,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Martinho",
+      "bacia": "Outras Bacias",
+      "populacao": 3405.0,
+      "residuos_domestico_t_ano": 1180.68375,
+      "residuos_reciclavel_t_ano": 118.068375,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Miguel da Boa Vista",
+      "bacia": "Outras Bacias",
+      "populacao": 1781.0,
+      "residuos_domestico_t_ano": 617.5617499999998,
+      "residuos_reciclavel_t_ano": 61.756174999999985,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Miguel do Oeste",
+      "bacia": "Bacia do Uruguai",
+      "populacao": 44330.0,
+      "residuos_domestico_t_ano": 15371.4275,
+      "residuos_reciclavel_t_ano": 1537.14275,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "São Pedro de Alcântara",
+      "bacia": "Outras Bacias",
+      "populacao": 5776.0,
+      "residuos_domestico_t_ano": 2002.828,
+      "residuos_reciclavel_t_ano": 200.2828,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Taió",
+      "bacia": "Outras Bacias",
+      "populacao": 18310.0,
+      "residuos_domestico_t_ano": 6348.9925,
+      "residuos_reciclavel_t_ano": 634.89925,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Tangará",
+      "bacia": "Outras Bacias",
+      "populacao": 8143.0,
+      "residuos_domestico_t_ano": 2823.58525,
+      "residuos_reciclavel_t_ano": 282.35852500000004,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Tigrinhos",
+      "bacia": "Outras Bacias",
+      "populacao": 2329.0,
+      "residuos_domestico_t_ano": 807.5807499999999,
+      "residuos_reciclavel_t_ano": 80.75807499999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Tijucas",
+      "bacia": "Outras Bacias",
+      "populacao": 51592.0,
+      "residuos_domestico_t_ano": 17889.525999999998,
+      "residuos_reciclavel_t_ano": 1788.9525999999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Timbé do Sul",
+      "bacia": "Outras Bacias",
+      "populacao": 5386.0,
+      "residuos_domestico_t_ano": 1867.5955,
+      "residuos_reciclavel_t_ano": 186.75955,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Timbó",
+      "bacia": "Outras Bacias",
+      "populacao": 46099.0,
+      "residuos_domestico_t_ano": 15984.828249999999,
+      "residuos_reciclavel_t_ano": 1598.482825,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Timbó Grande",
+      "bacia": "Outras Bacias",
+      "populacao": 7342.0,
+      "residuos_domestico_t_ano": 2545.8385,
+      "residuos_reciclavel_t_ano": 254.58384999999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Treviso",
+      "bacia": "Outras Bacias",
+      "populacao": 3782.0,
+      "residuos_domestico_t_ano": 1311.4084999999998,
+      "residuos_reciclavel_t_ano": 131.14084999999997,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Treze Tílias",
+      "bacia": "Outras Bacias",
+      "populacao": 8787.0,
+      "residuos_domestico_t_ano": 3046.89225,
+      "residuos_reciclavel_t_ano": 304.689225,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Treze de Maio",
+      "bacia": "Outras Bacias",
+      "populacao": 7362.0,
+      "residuos_domestico_t_ano": 2552.7735,
+      "residuos_reciclavel_t_ano": 255.27734999999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Trombudo Central",
+      "bacia": "Outras Bacias",
+      "populacao": 7274.0,
+      "residuos_domestico_t_ano": 2522.2594999999997,
+      "residuos_reciclavel_t_ano": 252.22594999999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Três Barras",
+      "bacia": "Outras Bacias",
+      "populacao": 19746.0,
+      "residuos_domestico_t_ano": 6846.9255,
+      "residuos_reciclavel_t_ano": 684.6925500000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Tubarão",
+      "bacia": "Bacia do Tubarão",
+      "populacao": 110088.0,
+      "residuos_domestico_t_ano": 38173.014,
+      "residuos_reciclavel_t_ano": 3817.3014000000003,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Tunápolis",
+      "bacia": "Outras Bacias",
+      "populacao": 4916.0,
+      "residuos_domestico_t_ano": 1704.623,
+      "residuos_reciclavel_t_ano": 170.46230000000003,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Turvo",
+      "bacia": "Outras Bacias",
+      "populacao": 13043.0,
+      "residuos_domestico_t_ano": 4522.660249999999,
+      "residuos_reciclavel_t_ano": 452.2660249999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "União do Oeste",
+      "bacia": "Outras Bacias",
+      "populacao": 2774.0,
+      "residuos_domestico_t_ano": 961.8844999999999,
+      "residuos_reciclavel_t_ano": 96.18844999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Urubici",
+      "bacia": "Outras Bacias",
+      "populacao": 10834.0,
+      "residuos_domestico_t_ano": 3756.6894999999995,
+      "residuos_reciclavel_t_ano": 375.66895,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Urupema",
+      "bacia": "Outras Bacias",
+      "populacao": 2656.0,
+      "residuos_domestico_t_ano": 920.9679999999998,
+      "residuos_reciclavel_t_ano": 92.09679999999999,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Urussanga",
+      "bacia": "Outras Bacias",
+      "populacao": 20919.0,
+      "residuos_domestico_t_ano": 7253.66325,
+      "residuos_reciclavel_t_ano": 725.366325,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Vargem",
+      "bacia": "Outras Bacias",
+      "populacao": 2627.0,
+      "residuos_domestico_t_ano": 910.91225,
+      "residuos_reciclavel_t_ano": 91.09122500000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Vargem Bonita",
+      "bacia": "Outras Bacias",
+      "populacao": 4576.0,
+      "residuos_domestico_t_ano": 1586.728,
+      "residuos_reciclavel_t_ano": 158.67280000000002,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Vargeão",
+      "bacia": "Outras Bacias",
+      "populacao": 3634.0,
+      "residuos_domestico_t_ano": 1260.0895,
+      "residuos_reciclavel_t_ano": 126.00895000000001,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Vidal Ramos",
+      "bacia": "Outras Bacias",
+      "populacao": 6189.0,
+      "residuos_domestico_t_ano": 2146.0357499999996,
+      "residuos_reciclavel_t_ano": 214.60357499999998,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Videira",
+      "bacia": "Bacia do Rio do Peixe",
+      "populacao": 55466.0,
+      "residuos_domestico_t_ano": 19232.8355,
+      "residuos_reciclavel_t_ano": 1923.28355,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Vitor Meireles",
+      "bacia": "Outras Bacias",
+      "populacao": 5370.0,
+      "residuos_domestico_t_ano": 1862.0475,
+      "residuos_reciclavel_t_ano": 186.20475,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Witmarsum",
+      "bacia": "Outras Bacias",
+      "populacao": 4255.0,
+      "residuos_domestico_t_ano": 1475.42125,
+      "residuos_reciclavel_t_ano": 147.54212500000003,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Xanxerê",
+      "bacia": "Bacia do Uruguai",
+      "populacao": 51607.0,
+      "residuos_domestico_t_ano": 17894.727249999996,
+      "residuos_reciclavel_t_ano": 1789.4727249999996,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Xavantina",
+      "bacia": "Outras Bacias",
+      "populacao": 3653.0,
+      "residuos_domestico_t_ano": 1266.67775,
+      "residuos_reciclavel_t_ano": 126.667775,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Xaxim",
+      "bacia": "Outras Bacias",
+      "populacao": 31918.0,
+      "residuos_domestico_t_ano": 11067.5665,
+      "residuos_reciclavel_t_ano": 1106.75665,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Zortéa",
+      "bacia": "Outras Bacias",
+      "populacao": 3930.0,
+      "residuos_domestico_t_ano": 1362.7275,
+      "residuos_reciclavel_t_ano": 136.27275,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Água Doce",
+      "bacia": "Outras Bacias",
+      "populacao": 6508.0,
+      "residuos_domestico_t_ano": 2256.649,
+      "residuos_reciclavel_t_ano": 225.6649,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Águas Frias",
+      "bacia": "Outras Bacias",
+      "populacao": 2839.0,
+      "residuos_domestico_t_ano": 984.4232499999999,
+      "residuos_reciclavel_t_ano": 98.442325,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Águas Mornas",
+      "bacia": "Outras Bacias",
+      "populacao": 6743.0,
+      "residuos_domestico_t_ano": 2338.13525,
+      "residuos_reciclavel_t_ano": 233.813525,
+      "risco": "BAIXO"
+    },
+    {
+      "nome": "Águas de Chapecó",
+      "bacia": "Bacia do Uruguai",
+      "populacao": 6036.0,
+      "residuos_domestico_t_ano": 2092.983,
+      "residuos_reciclavel_t_ano": 209.29830000000004,
+      "risco": "BAIXO"
+    }
+  ]
+}

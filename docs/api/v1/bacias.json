@@ -1,0 +1,53 @@
+{
+  "total": 8,
+  "bacias": [
+    {
+      "bacia": "Outras Bacias",
+      "populacao": 3586011.0,
+      "residuos_domestico_t_ano": 1243449.31425,
+      "residuos_reciclavel_t_ano": 124344.931425
+    },
+    {
+      "bacia": "Bacia Litorânea Central",
+      "populacao": 1129756.0,
+      "residuos_domestico_t_ano": 391742.8929999999,
+      "residuos_reciclavel_t_ano": 39174.2893
+    },
+    {
+      "bacia": "Bacia do Itajaí",
+      "populacao": 859149.0,
+      "residuos_domestico_t_ano": 297909.91575,
+      "residuos_reciclavel_t_ano": 29790.991575
+    },
+    {
+      "bacia": "Bacia Litorânea Norte",
+      "populacao": 714274.0,
+      "residuos_domestico_t_ano": 247674.5095,
+      "residuos_reciclavel_t_ano": 24767.45095
+    },
+    {
+      "bacia": "Bacia do Uruguai",
+      "populacao": 468550.0,
+      "residuos_domestico_t_ano": 162469.7125,
+      "residuos_reciclavel_t_ano": 16246.971249999999
+    },
+    {
+      "bacia": "Bacia do Tubarão",
+      "populacao": 455538.0,
+      "residuos_domestico_t_ano": 157957.8015,
+      "residuos_reciclavel_t_ano": 15795.780149999999
+    },
+    {
+      "bacia": "Bacia do Canoas",
+      "populacao": 227852.0,
+      "residuos_domestico_t_ano": 79007.681,
+      "residuos_reciclavel_t_ano": 7900.7681
+    },
+    {
+      "bacia": "Bacia do Rio do Peixe",
+      "populacao": 169231.0,
+      "residuos_domestico_t_ano": 58680.84925,
+      "residuos_reciclavel_t_ano": 5868.084925
+    }
+  ]
+}

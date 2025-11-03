@@ -1,0 +1,7 @@
+{
+  "endpoints": [
+    "/api/v1/stats.json",
+    "/api/v1/municipios.json",
+    "/api/v1/bacias.json"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "estado": "Santa Catarina",
+  "sigla": "SC",
+  "municipios": 295,
+  "populacao": 7610361,
+  "residuos_totais_ton_ano": 2638892.68,
+  "residuos_reciclaveis_ton_ano": 263889.27,
+  "residuos_per_capita_kg_dia": 0.95,
+  "fonte": "CSV gerados pelo pipeline do portfólio",
+  "observacao": "Valores agregados; sem geometrias. API estática para GitHub Pages."
+}
