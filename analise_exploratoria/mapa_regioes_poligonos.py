@@ -111,16 +111,31 @@ MiniMap(toggle_display=True).add_to(m)
 # Identificar regiões únicas
 regioes = muni[[cd for cd in ['CD_RGI', 'NM_RGI'] if cd in muni.columns]].drop_duplicates().sort_values('NM_RGI')
 
-# Cores por região (palette ColorBrewer qualitativa - 15 cores acessíveis)
+# Cores por região - Paleta expandida para 24+ cores (colorblind-safe)
+# Combinação de paletas ColorBrewer: Set1, Set2, Set3, Dark2, Paired
 cores_disponiveis = [
+    # Set1 (9 cores)
     '#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00',
-    '#ffff33', '#a65628', '#f781bf', '#999999', '#66c2a5',
-    '#fc8d62', '#8da0cb', '#e78ac3', '#a6d854', '#ffd92f'
+    '#ffff33', '#a65628', '#f781bf', '#999999',
+    # Set2 (8 cores) 
+    '#66c2a5', '#fc8d62', '#8da0cb', '#e78ac3', '#a6d854', 
+    '#ffd92f', '#e5c494', '#b3b3b3',
+    # Dark2 (8 cores - tons mais escuros)
+    '#1b9e77', '#d95f02', '#7570b3', '#e7298a', '#66a61e',
+    '#e6ab02', '#a6761d', '#666666',
+    # Paired (cores adicionais distintas)
+    '#a6cee3', '#b2df8a', '#fb9a99', '#fdbf6f', '#cab2d6'
 ]
 
 cores_regioes = {}
 for i, (_, regiao) in enumerate(regioes.iterrows()):
-    cores_regioes[regiao['CD_RGI']] = cores_disponiveis[i % len(cores_disponiveis)]
+    if i < len(cores_disponiveis):
+        cores_regioes[regiao['CD_RGI']] = cores_disponiveis[i]
+    else:
+        # Fallback caso haja mais regiões que cores (gerar cor aleatória distinta)
+        import hashlib
+        hash_cor = hashlib.md5(str(regiao['CD_RGI']).encode()).hexdigest()[:6]
+        cores_regioes[regiao['CD_RGI']] = f'#{hash_cor}'
 
 print(f"   ✓ {len(regioes)} regiões identificadas")
 
@@ -196,67 +211,132 @@ try:
 except Exception as e:
     warnings.warn(f"Falha ao criar limite estadual: {e}")
 
-# Controles
-folium.LayerControl(position='topleft', collapsed=False).add_to(m)
+# Controles (LayerControl inicia FECHADO/collapsed)
+folium.LayerControl(position='topleft', collapsed=True).add_to(m)
 
-# Legenda com cores das regiões
-legenda_items = []
-for _, regiao in regioes.iterrows():
-    cor = cores_regioes[regiao['CD_RGI']]
-    legenda_items.append(f"<div style='margin: 3px 0;'><span style='display: inline-block; width: 16px; height: 16px; background: {cor}; border: 1px solid #333; margin-right: 6px;'></span>{regiao['NM_RGI']}</div>")
-
-legenda_html = f'''
-<div id="legend-panel" style="position: fixed; bottom: 20px; left: 20px; width: 320px; background: rgba(255, 255, 255, 0.95); 
-            border: 3px solid #333; border-radius: 10px; padding: 0; z-index: 9999;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); backdrop-filter: blur(10px); transition: all 0.3s ease;">
-    
-    <!-- Header com botão de toggle -->
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; 
-                background: rgba(0,0,0,0.05); border-radius: 7px 7px 0 0; cursor: pointer; border-bottom: 2px solid #333;"
-         onclick="toggleLegend()">
-        <h4 style="margin: 0; font-size: 15px; font-weight: bold;">♿ Legenda - Regiões (RGI)</h4>
-        <span id="legend-toggle" style="font-size: 20px; font-weight: bold; user-select: none;">+</span>
+# Título do mapa
+titulo_html = '''
+<div style="position: fixed; 
+            top: 10px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            z-index: 9999; 
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+            padding: 12px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.3);">
+    <h2 style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 0.5px;">
+        📍 Geração de Resíduos Sólidos por Região Geográfica Imediata - SC
+    </h2>
+    <div style="font-size: 11px; margin-top: 4px; opacity: 0.9;">
+        Santa Catarina • 295 Municípios • 24 RGIs • Censo IBGE 2022
     </div>
-    
-    <!-- Conteúdo recolhível (inicia fechado) -->
-    <div id="legend-content" style="display: none; padding: 15px; max-height: 50vh; overflow-y: auto;">
-        <div style="font-size: 12px; line-height: 1.6;">
-            {''.join(legenda_items)}
+</div>
+'''
+m.get_root().html.add_child(folium.Element(titulo_html))
+
+# Seta de Norte (rosa dos ventos) - Mais ao topo
+norte_html = '''
+<div style="position: fixed; 
+            top: 70px; 
+            right: 20px; 
+            z-index: 9998;
+            background: rgba(255,255,255,0.95);
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 2px solid #333;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;">
+    <div style="position: relative; width: 50px; height: 50px;">
+        <!-- Triângulo Norte (vermelho) -->
+        <div style="position: absolute; 
+                    top: 0; 
+                    left: 50%; 
+                    transform: translateX(-50%);
+                    width: 0; 
+                    height: 0; 
+                    border-left: 10px solid transparent;
+                    border-right: 10px solid transparent;
+                    border-bottom: 25px solid #d32f2f;">
         </div>
-        <div style="margin: 15px 0 8px 0; padding-top: 10px; border-top: 1px solid #ddd;">
-            <div style="padding: 4px; background: #e3f2fd; margin: 3px 0; border-left: 3px solid #034e7b;">
-                <strong>🔵 Domésticos</strong>
-            </div>
-            <div style="padding: 4px; background: #fff3e0; margin: 3px 0; border-left: 3px solid #e65100;">
-                <strong>🟡 Recicláveis</strong>
-            </div>
+        <!-- Triângulo Sul (branco) -->
+        <div style="position: absolute; 
+                    bottom: 0; 
+                    left: 50%; 
+                    transform: translateX(-50%);
+                    width: 0; 
+                    height: 0; 
+                    border-left: 10px solid transparent;
+                    border-right: 10px solid transparent;
+                    border-top: 25px solid #666;">
         </div>
-        <div style="margin-top: 10px; font-size: 10px; text-align: center; color: #666;">
-            ✓ Regiões Geográficas Imediatas (IBGE)<br>
-            📍 {len(muni)} municípios | {len(regioes)} RGIs
+        <!-- Letra N -->
+        <div style="position: absolute; 
+                    top: -12px; 
+                    left: 50%; 
+                    transform: translateX(-50%);
+                    font-weight: bold; 
+                    font-size: 14px; 
+                    color: #000;
+                    text-shadow: 0 0 3px white;">
+            N
         </div>
     </div>
 </div>
-
-<script>
-function toggleLegend() {{
-    const content = document.getElementById('legend-content');
-    const toggle = document.getElementById('legend-toggle');
-    const panel = document.getElementById('legend-panel');
-    
-    if (content.style.display === 'none') {{
-        content.style.display = 'block';
-        toggle.textContent = '−';
-        panel.style.width = '320px';
-    }} else {{
-        content.style.display = 'none';
-        toggle.textContent = '+';
-        panel.style.width = 'auto';
-    }}
-}}
-</script>
 '''
-m.get_root().html.add_child(folium.Element(legenda_html))
+m.get_root().html.add_child(folium.Element(norte_html))
+
+# Adicionar labels (nomes) no centro de cada região
+print("   ▶ Adicionando labels das regiões...")
+for _, regiao in regioes.iterrows():
+    try:
+        # Pegar todos os municípios da região
+        muni_regiao = muni[muni['CD_RGI'] == regiao['CD_RGI']]
+        
+        # Dissolver em uma única geometria para encontrar o centroide da região
+        regiao_geom = muni_regiao.dissolve().geometry.iloc[0]
+        
+        # Calcular centroide (em EPSG:3857 para precisão)
+        regiao_3857 = gpd.GeoDataFrame([{'geometry': regiao_geom}], crs=4326).to_crs(3857)
+        centroid_3857 = regiao_3857.geometry.centroid.iloc[0]
+        centroid_4326 = gpd.GeoDataFrame([{'geometry': centroid_3857}], crs=3857).to_crs(4326).geometry.iloc[0]
+        
+        # Cor da região
+        cor = cores_regioes[regiao['CD_RGI']]
+        
+        # Criar DivIcon com o nome da região
+        folium.Marker(
+            location=[centroid_4326.y, centroid_4326.x],
+            icon=folium.DivIcon(html=f'''
+                <div style="
+                    font-family: Arial, sans-serif;
+                    font-size: 13px;
+                    font-weight: bold;
+                    color: #ffffff;
+                    text-align: center;
+                    text-shadow: 
+                        -1px -1px 2px rgba(0,0,0,0.8),
+                        1px -1px 2px rgba(0,0,0,0.8),
+                        -1px 1px 2px rgba(0,0,0,0.8),
+                        1px 1px 2px rgba(0,0,0,0.8),
+                        0 0 4px rgba(0,0,0,0.9);
+                    white-space: nowrap;
+                    pointer-events: none;
+                ">
+                    {regiao['NM_RGI']}
+                </div>
+            ''')
+        ).add_to(m)
+    except Exception as e:
+        warnings.warn(f"Erro ao adicionar label para {regiao['NM_RGI']}: {e}")
 
 # Calcular estatísticas gerais para o painel
 total_pop = muni['populacao'].sum()
@@ -277,9 +357,9 @@ top_regiao_1 = regioes_stats.iloc[0]['NM_RGI'] if len(regioes_stats) > 0 else 'N
 top_regiao_2 = regioes_stats.iloc[1]['NM_RGI'] if len(regioes_stats) > 1 else 'N/A'
 top_regiao_3 = regioes_stats.iloc[2]['NM_RGI'] if len(regioes_stats) > 2 else 'N/A'
 
-# Painel de estatísticas no lado esquerdo acima da legenda (recolhível + semi-transparente)
+# Painel de estatísticas no lado direito (recolhível + semi-transparente) - Mais abaixo
 stats_panel_html = f'''
-<div id="stats-panel" style="position: fixed; top: 80px; left: 20px; width: 340px; 
+<div id="stats-panel" style="position: fixed; top: 150px; right: 20px; width: 340px; 
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
             border-radius: 12px; padding: 0; z-index: 9998; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
             font-family: Arial, sans-serif; color: white; backdrop-filter: blur(10px); transition: all 0.3s ease;">
@@ -371,44 +451,29 @@ m.get_root().html.add_child(folium.Element(stats_panel_html))
 mobile_css = '''
 <style>
 /* Estilos para painéis recolhíveis */
-#stats-panel, #legend-panel {
+#stats-panel {
     transition: all 0.3s ease;
 }
 
 /* Hover nos headers para indicar que são clicáveis */
-#stats-panel > div:first-child:hover,
-#legend-panel > div:first-child:hover {
+#stats-panel > div:first-child:hover {
     background: rgba(0,0,0,0.15) !important;
 }
 
 @media (max-width: 768px) {
     .leaflet-control-minimap { display: none; }
     
-    /* Legenda de regiões - mobile */
-    #legend-panel {
-        bottom: 10px !important;
-        left: 10px !important;
-        right: 10px !important;
-        width: auto !important;
-        max-width: 95vw !important;
-    }
+    /* Esconder título e rosa dos ventos no mobile */
+    div[style*="top: 10px"][style*="left: 50%"] { display: none !important; }
+    div[style*="top: 70px"][style*="right: 20px"] { display: none !important; }
     
-    #legend-content {
-        max-height: 35vh !important;
-        font-size: 11px !important;
-    }
-    
-    #legend-panel h4 {
-        font-size: 13px !important;
-    }
-    
-    /* Painel de estatísticas - mobile */
+    /* Painel de estatísticas - mobile (lado direito) */
     #stats-panel {
         top: 60px !important;
-        left: 10px !important;
         right: 10px !important;
-        width: auto !important;
-        max-width: 95vw !important;
+        left: auto !important;
+        width: 85vw !important;
+        max-width: 340px !important;
     }
     
     #stats-panel h3 {
@@ -437,7 +502,7 @@ mobile_css = '''
 }
 
 /* Animação suave para abrir/fechar */
-#stats-content, #legend-content {
+#stats-content {
     overflow: hidden;
     transition: all 0.3s ease;
 }
