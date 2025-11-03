@@ -189,26 +189,55 @@ for _, regiao in regioes.iterrows():
     legenda_items.append(f"<div style='margin: 3px 0;'><span style='display: inline-block; width: 16px; height: 16px; background: {cor}; border: 1px solid #333; margin-right: 6px;'></span>{regiao['NM_RGI']}</div>")
 
 legenda_html = f'''
-<div style="position: fixed; bottom: 50px; right: 50px; width: 320px; background: white; 
-            border: 3px solid #333; border-radius: 10px; padding: 15px; z-index: 9999;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); max-height: 60vh; overflow-y: auto;">
-    <h4 style="margin: 0 0 10px 0; border-bottom: 2px solid #333;">♿ Legenda - Regiões (RGI)</h4>
-    <div style="font-size: 12px; line-height: 1.6;">
-        {''.join(legenda_items)}
+<div id="legend-panel" style="position: fixed; bottom: 50px; right: 50px; width: 320px; background: rgba(255, 255, 255, 0.95); 
+            border: 3px solid #333; border-radius: 10px; padding: 0; z-index: 9999;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); backdrop-filter: blur(10px); transition: all 0.3s ease;">
+    
+    <!-- Header com botão de toggle -->
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; 
+                background: rgba(0,0,0,0.05); border-radius: 7px 7px 0 0; cursor: pointer; border-bottom: 2px solid #333;"
+         onclick="toggleLegend()">
+        <h4 style="margin: 0; font-size: 15px; font-weight: bold;">♿ Legenda - Regiões (RGI)</h4>
+        <span id="legend-toggle" style="font-size: 20px; font-weight: bold; user-select: none;">−</span>
     </div>
-    <div style="margin: 15px 0 8px 0; padding-top: 10px; border-top: 1px solid #ddd;">
-        <div style="padding: 4px; background: #e3f2fd; margin: 3px 0; border-left: 3px solid #034e7b;">
-            <strong>🔵 Domésticos</strong>
+    
+    <!-- Conteúdo recolhível -->
+    <div id="legend-content" style="padding: 15px; max-height: 50vh; overflow-y: auto;">
+        <div style="font-size: 12px; line-height: 1.6;">
+            {''.join(legenda_items)}
         </div>
-        <div style="padding: 4px; background: #fff3e0; margin: 3px 0; border-left: 3px solid #e65100;">
-            <strong>🟡 Recicláveis</strong>
+        <div style="margin: 15px 0 8px 0; padding-top: 10px; border-top: 1px solid #ddd;">
+            <div style="padding: 4px; background: #e3f2fd; margin: 3px 0; border-left: 3px solid #034e7b;">
+                <strong>🔵 Domésticos</strong>
+            </div>
+            <div style="padding: 4px; background: #fff3e0; margin: 3px 0; border-left: 3px solid #e65100;">
+                <strong>🟡 Recicláveis</strong>
+            </div>
         </div>
-    </div>
-    <div style="margin-top: 10px; font-size: 10px; text-align: center; color: #666;">
-        ✓ Regiões Geográficas Imediatas (IBGE)<br>
-        📍 {len(muni)} municípios | {len(regioes)} RGIs
+        <div style="margin-top: 10px; font-size: 10px; text-align: center; color: #666;">
+            ✓ Regiões Geográficas Imediatas (IBGE)<br>
+            📍 {len(muni)} municípios | {len(regioes)} RGIs
+        </div>
     </div>
 </div>
+
+<script>
+function toggleLegend() {{
+    const content = document.getElementById('legend-content');
+    const toggle = document.getElementById('legend-toggle');
+    const panel = document.getElementById('legend-panel');
+    
+    if (content.style.display === 'none') {{
+        content.style.display = 'block';
+        toggle.textContent = '−';
+        panel.style.width = '320px';
+    }} else {{
+        content.style.display = 'none';
+        toggle.textContent = '+';
+        panel.style.width = 'auto';
+    }}
+}}
+</script>
 '''
 m.get_root().html.add_child(folium.Element(legenda_html))
 
@@ -231,83 +260,129 @@ top_regiao_1 = regioes_stats.iloc[0]['NM_RGI'] if len(regioes_stats) > 0 else 'N
 top_regiao_2 = regioes_stats.iloc[1]['NM_RGI'] if len(regioes_stats) > 1 else 'N/A'
 top_regiao_3 = regioes_stats.iloc[2]['NM_RGI'] if len(regioes_stats) > 2 else 'N/A'
 
-# Painel de estatísticas no canto superior direito
+# Painel de estatísticas no canto superior direito (recolhível + semi-transparente)
 stats_panel_html = f'''
-<div style="position: fixed; top: 80px; right: 10px; width: 340px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+<div id="stats-panel" style="position: fixed; top: 80px; right: 10px; width: 340px; 
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
             border-radius: 12px; padding: 0; z-index: 9998; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            font-family: Arial, sans-serif; color: white;" id="stats-panel">
+            font-family: Arial, sans-serif; color: white; backdrop-filter: blur(10px); transition: all 0.3s ease;">
     
-    <!-- Header -->
-    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px 12px 0 0; border-bottom: 2px solid rgba(255,255,255,0.3);">
-        <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;">
+    <!-- Header com botão de toggle -->
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; 
+                background: rgba(0,0,0,0.2); border-radius: 12px 12px 0 0; border-bottom: 2px solid rgba(255,255,255,0.3);
+                cursor: pointer;"
+         onclick="toggleStats()">
+        <h3 style="margin: 0; font-size: 18px; font-weight: bold;">
             📊 Estatísticas - Santa Catarina
         </h3>
+        <span id="stats-toggle" style="font-size: 24px; font-weight: bold; user-select: none;">−</span>
     </div>
     
-    <!-- Stats Grid -->
-    <div style="padding: 15px;">
-        <!-- Card 1: População -->
-        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
-                    padding: 12px; margin-bottom: 10px; border-left: 4px solid #4caf50;">
-            <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">👥 POPULAÇÃO TOTAL</div>
-            <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_pop)}</div>
-            <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">habitantes em {len(muni)} municípios</div>
-        </div>
-        
-        <!-- Card 2: Resíduos Domésticos -->
-        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
-                    padding: 12px; margin-bottom: 10px; border-left: 4px solid #034e7b;">
-            <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">🔵 RESÍDUOS DOMÉSTICOS</div>
-            <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_dom)} t/ano</div>
-            <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">
-                📊 Média: {fmt_num(media_dom_mun)} t/ano por município
+    <!-- Conteúdo recolhível -->
+    <div id="stats-content">
+        <!-- Stats Grid -->
+        <div style="padding: 15px;">
+            <!-- Card 1: População -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                        padding: 12px; margin-bottom: 10px; border-left: 4px solid #4caf50;">
+                <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">👥 POPULAÇÃO TOTAL</div>
+                <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_pop)}</div>
+                <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">habitantes em {len(muni)} municípios</div>
+            </div>
+            
+            <!-- Card 2: Resíduos Domésticos -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                        padding: 12px; margin-bottom: 10px; border-left: 4px solid #034e7b;">
+                <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">🔵 RESÍDUOS DOMÉSTICOS</div>
+                <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_dom)} t/ano</div>
+                <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">
+                    📊 Média: {fmt_num(media_dom_mun)} t/ano por município
+                </div>
+            </div>
+            
+            <!-- Card 3: Resíduos Recicláveis -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                        padding: 12px; margin-bottom: 10px; border-left: 4px solid #e65100;">
+                <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">🟡 RESÍDUOS RECICLÁVEIS</div>
+                <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_rec)} t/ano</div>
+                <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">
+                    📊 Média: {fmt_num(media_rec_mun)} t/ano por município
+                </div>
+            </div>
+            
+            <!-- Card 4: Top 3 Regiões -->
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
+                        padding: 12px; border-left: 4px solid #ffd92f;">
+                <div style="font-size: 11px; opacity: 0.9; margin-bottom: 6px;">🏆 TOP 3 REGIÕES (RGI)</div>
+                <div style="font-size: 11px; line-height: 1.6;">
+                    <div style="padding: 3px 0;">🥇 {top_regiao_1}</div>
+                    <div style="padding: 3px 0;">🥈 {top_regiao_2}</div>
+                    <div style="padding: 3px 0;">🥉 {top_regiao_3}</div>
+                </div>
             </div>
         </div>
         
-        <!-- Card 3: Resíduos Recicláveis -->
-        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
-                    padding: 12px; margin-bottom: 10px; border-left: 4px solid #e65100;">
-            <div style="font-size: 11px; opacity: 0.9; margin-bottom: 4px;">🟡 RESÍDUOS RECICLÁVEIS</div>
-            <div style="font-size: 24px; font-weight: bold; line-height: 1.2;">{fmt_num(total_rec)} t/ano</div>
-            <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">
-                📊 Média: {fmt_num(media_rec_mun)} t/ano por município
-            </div>
+        <!-- Footer -->
+        <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 0 0 12px 12px; 
+                    text-align: center; font-size: 9px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.2);">
+            ✓ Dados: IBGE Censo 2022 | Taxa: 0,95 kg/hab/dia
         </div>
-        
-        <!-- Card 4: Top 3 Regiões -->
-        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
-                    padding: 12px; border-left: 4px solid #ffd92f;">
-            <div style="font-size: 11px; opacity: 0.9; margin-bottom: 6px;">🏆 TOP 3 REGIÕES (RGI)</div>
-            <div style="font-size: 11px; line-height: 1.6;">
-                <div style="padding: 3px 0;">🥇 {top_regiao_1}</div>
-                <div style="padding: 3px 0;">🥈 {top_regiao_2}</div>
-                <div style="padding: 3px 0;">🥉 {top_regiao_3}</div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Footer -->
-    <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 0 0 12px 12px; 
-                text-align: center; font-size: 9px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.2);">
-        ✓ Dados: IBGE Censo 2022 | Taxa: 0,95 kg/hab/dia
     </div>
 </div>
+
+<script>
+function toggleStats() {{
+    const content = document.getElementById('stats-content');
+    const toggle = document.getElementById('stats-toggle');
+    const panel = document.getElementById('stats-panel');
+    
+    if (content.style.display === 'none') {{
+        content.style.display = 'block';
+        toggle.textContent = '−';
+        panel.style.width = '340px';
+    }} else {{
+        content.style.display = 'none';
+        toggle.textContent = '+';
+        panel.style.width = 'auto';
+    }}
+}}
+</script>
 '''
 m.get_root().html.add_child(folium.Element(stats_panel_html))
 
-# CSS responsivo para mobile
+# CSS responsivo para mobile e painéis recolhíveis
 mobile_css = '''
 <style>
+/* Estilos para painéis recolhíveis */
+#stats-panel, #legend-panel {
+    transition: all 0.3s ease;
+}
+
+/* Hover nos headers para indicar que são clicáveis */
+#stats-panel > div:first-child:hover,
+#legend-panel > div:first-child:hover {
+    background: rgba(0,0,0,0.15) !important;
+}
+
 @media (max-width: 768px) {
     .leaflet-control-minimap { display: none; }
     
     /* Legenda de regiões */
-    div[style*="position: fixed"][style*="bottom: 50px"] {
+    #legend-panel {
         bottom: 10px !important;
         right: 10px !important;
-        width: 85vw !important;
-        max-height: 40vh !important;
+        left: 10px !important;
+        width: auto !important;
+        max-width: 95vw !important;
+    }
+    
+    #legend-content {
+        max-height: 35vh !important;
         font-size: 11px !important;
+    }
+    
+    #legend-panel h4 {
+        font-size: 13px !important;
     }
     
     /* Painel de estatísticas */
@@ -323,16 +398,16 @@ mobile_css = '''
         font-size: 14px !important;
     }
     
-    #stats-panel > div:nth-child(2) {
+    #stats-content > div:first-child {
         padding: 10px !important;
     }
     
-    #stats-panel > div:nth-child(2) > div {
+    #stats-content > div:first-child > div {
         padding: 8px !important;
         margin-bottom: 8px !important;
     }
     
-    #stats-panel > div:nth-child(2) > div > div:nth-child(2) {
+    #stats-content > div:first-child > div > div:nth-child(2) {
         font-size: 20px !important;
     }
 }
@@ -340,8 +415,14 @@ mobile_css = '''
 /* Ajuste para desktop - evitar sobreposição */
 @media (min-width: 769px) {
     .leaflet-control-container .leaflet-top.leaflet-right {
-        top: 420px !important;
+        top: 450px !important;
     }
+}
+
+/* Animação suave para abrir/fechar */
+#stats-content, #legend-content {
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 </style>
 '''
