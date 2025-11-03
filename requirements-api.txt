@@ -15,7 +15,8 @@ pydantic-settings==2.1.0
 geopandas==0.14.1
 shapely==2.0.2
 pyproj==3.6.1
-# Fiona removido - usar alternativa sem GDAL
+pyogrio==0.9.0  # backend de IO para GeoPandas sem depender de GDAL do sistema
+# Fiona removido - usando pyogrio como engine
 
 # Data Processing
 pandas==2.2.0

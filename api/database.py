@@ -11,6 +11,13 @@ from functools import lru_cache
 import warnings
 warnings.filterwarnings('ignore')
 
+# Forçar engine pyogrio quando disponível (evita dependência do GDAL/Fiona no deploy)
+try:
+    # GeoPandas 0.14+ possui opção global para engine de IO
+    gpd.options.io_engine = "pyogrio"  # type: ignore[attr-defined]
+except Exception:
+    pass
+
 from api.config import GPKG_PATH, TAXA_PER_CAPITA_KG_DIA, DIAS_POR_ANO, DATA_DIR
 
 
@@ -28,9 +35,10 @@ class DatabaseManager:
         Mantém em cache para requisições subsequentes
         """
         if self._gdf is None:
-            print(f"📂 Carregando GeoPackage: {self.gpkg_path}")
-            self._gdf = gpd.read_file(self.gpkg_path)
-            print(f"✅ Carregado: {len(self._gdf)} setores censitários")
+            print(f"Carregando GeoPackage: {self.gpkg_path}")
+            # Usar engine pyogrio para evitar GDAL/Fiona
+            self._gdf = gpd.read_file(self.gpkg_path, engine="pyogrio")
+            print(f"Carregado: {len(self._gdf)} setores censitários")
         return self._gdf
     
     def calcular_residuos(self, populacao: int) -> Dict[str, float]:
@@ -221,9 +229,10 @@ class BaciasManager:
     def bacias_gdf(self) -> Optional[gpd.GeoDataFrame]:
         """Carrega GeoDataFrame de bacias (lazy loading)"""
         if self._bacias_gdf is None and self.bacias_path.exists():
-            print(f"📂 Carregando bacias: {self.bacias_path}")
-            self._bacias_gdf = gpd.read_file(self.bacias_path)
-            print(f"✅ Carregado: {len(self._bacias_gdf)} bacias")
+            print(f"Carregando bacias: {self.bacias_path}")
+            # Usar engine pyogrio para evitar GDAL/Fiona
+            self._bacias_gdf = gpd.read_file(self.bacias_path, engine="pyogrio")
+            print(f"Carregado: {len(self._bacias_gdf)} bacias")
         return self._bacias_gdf
     
     def get_bacias_list(self) -> List[Dict]:
