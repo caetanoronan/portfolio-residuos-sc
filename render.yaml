@@ -9,10 +9,10 @@ services:
     region: oregon  # us-west
     plan: free
     branch: main
-    buildCommand: pip install --upgrade pip && pip install -r requirements-api.txt
+  buildCommand: pip install --upgrade pip && pip install --only-binary=:all: -r requirements-api.txt
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.13.0
+        value: 3.11.9
       - key: PORT
         value: 8000
