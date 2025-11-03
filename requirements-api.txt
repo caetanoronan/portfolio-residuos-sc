@@ -11,12 +11,11 @@ python-multipart==0.0.6
 pydantic==2.5.0
 pydantic-settings==2.1.0
 
-# Geoespacial (versões compatíveis com Render.com)
-geopandas>=0.14.0
-shapely>=2.0.0
-fiona>=1.9.0
-pyproj>=3.6.0
-# GDAL será instalado automaticamente como dependência do fiona
+# Geoespacial (versões wheel pre-compiladas)
+geopandas==0.14.1
+shapely==2.0.2
+pyproj==3.6.1
+# Fiona removido - usar alternativa sem GDAL
 
 # Data Processing
 pandas==2.2.0
