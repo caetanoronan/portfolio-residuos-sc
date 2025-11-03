@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resíduos SC • App</title>
+  <meta name="description" content="Dashboard estático dos resíduos sólidos em Santa Catarina (Censo 2022)">
+  <link rel="preconnect" href="https://cdn.plot.ly" />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="https://unpkg.com/tabulator-tables@5.6.2/dist/css/tabulator.min.css">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Resíduos Sólidos • Santa Catarina</h1>
+    <p class="subtitle">Censo 2022 • Visualização estática (sem servidor)</p>
+  </header>
+
+  <main class="container">
+    <section class="kpis" aria-label="Indicadores">
+      <div class="kpi"><div class="kpi-title">Municípios</div><div id="kpi-municipios" class="kpi-value">—</div></div>
+      <div class="kpi"><div class="kpi-title">População</div><div id="kpi-populacao" class="kpi-value">—</div></div>
+      <div class="kpi"><div class="kpi-title">Resíduos (t/ano)</div><div id="kpi-residuos" class="kpi-value">—</div></div>
+      <div class="kpi"><div class="kpi-title">Taxa per capita</div><div id="kpi-taxa" class="kpi-value">—</div></div>
+    </section>
+
+    <section class="charts" aria-label="Gráficos">
+      <div class="chart-card">
+        <h2>Resíduos por Bacia (t/ano)</h2>
+        <div id="chart-bacias" class="chart"></div>
+      </div>
+      <div class="chart-card">
+        <h2>Top 10 Municípios por Resíduos (t/ano)</h2>
+        <div id="chart-top-mun" class="chart"></div>
+      </div>
+    </section>
+
+    <section class="table-section" aria-label="Tabela de municípios">
+      <div class="table-header">
+        <h2>Municípios</h2>
+        <input id="search" type="search" placeholder="Buscar município..." aria-label="Buscar município" />
+      </div>
+      <div id="tabela-municipios"></div>
+    </section>
+
+    <section class="map-section" aria-label="Mapa interativo">
+      <h2>Mapa Interativo</h2>
+      <p class="note">Mapa completo com camadas geoespaciais (carregado de docs/ para performance).</p>
+      <div class="map-embed">
+        <iframe title="Mapa de Resíduos por Bacias" src="../mapa_bacias_hidrograficas.html" loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <section class="api-links" aria-label="API estática">
+      <h2>API Estática</h2>
+      <ul>
+        <li><a href="../api/v1/stats.json" target="_blank" rel="noopener">/api/v1/stats.json</a></li>
+        <li><a href="../api/v1/municipios.json" target="_blank" rel="noopener">/api/v1/municipios.json</a></li>
+        <li><a href="../api/v1/bacias.json" target="_blank" rel="noopener">/api/v1/bacias.json</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Dados: Censo 2022 (IBGE) • Metodologia: 0,95 kg/hab/dia • Desenvolvido com GitHub Pages</p>
+  </footer>
+
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <script src="https://unpkg.com/tabulator-tables@5.6.2/dist/js/tabulator.min.js"></script>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
