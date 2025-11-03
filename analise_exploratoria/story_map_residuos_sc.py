@@ -403,21 +403,24 @@ def main():
     media_dom_mun = muni['domestico_t_ano'].mean()
     media_rec_mun = muni['reciclavel_t_ano'].mean()
     
-    # Painel de estatísticas no canto superior direito (mais abaixo para não sobrepor rosa dos ventos)
+    # Painel de estatísticas no canto superior direito (colapsável, inicia fechado)
     stats_panel_html = f'''
-    <div style="position: fixed; top: 150px; right: 10px; width: 340px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    <div id="stats-panel" style="position: fixed; top: 150px; right: 10px; width: auto; background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
                 border-radius: 12px; padding: 0; z-index: 9998; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-                font-family: Arial, sans-serif; color: white;" id="stats-panel">
+                font-family: Arial, sans-serif; color: white; backdrop-filter: blur(10px); transition: all 0.3s ease;">
         
-        <!-- Header -->
-        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px 12px 0 0; border-bottom: 2px solid rgba(255,255,255,0.3);">
-            <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;">
+        <!-- Header clicável -->
+        <div onclick="toggleStats()" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; 
+                    background: rgba(0,0,0,0.2); border-radius: 12px 12px 0 0; border-bottom: 2px solid rgba(255,255,255,0.3);
+                    cursor: pointer;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: bold;">
                 📊 Estatísticas - Santa Catarina
             </h3>
+            <span id="stats-toggle" style="font-size: 24px; font-weight: bold; user-select: none;">+</span>
         </div>
         
-        <!-- Stats Grid -->
-        <div style="padding: 15px;">
+        <!-- Stats Grid (inicialmente oculto) -->
+        <div id="stats-content" style="display: none; padding: 15px; width: 340px;">
             <!-- Card 1: População -->
             <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 8px; 
                         padding: 12px; margin-bottom: 10px; border-left: 4px solid #4caf50;">
@@ -458,12 +461,30 @@ def main():
             </div>
         </div>
         
-        <!-- Footer -->
-        <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 0 0 12px 12px; 
-                    text-align: center; font-size: 9px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.2);">
-            ✓ Dados: IBGE Censo 2022 | Taxa: 0,95 kg/hab/dia
+            <!-- Footer -->
+            <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 0 0 12px 12px; 
+                        text-align: center; font-size: 9px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.2);">
+                ✓ Dados: IBGE Censo 2022 | Taxa: 0,95 kg/hab/dia
+            </div>
         </div>
     </div>
+<script>
+function toggleStats() {{
+    const content = document.getElementById('stats-content');
+    const toggle = document.getElementById('stats-toggle');
+    const panel = document.getElementById('stats-panel');
+    
+    if (content.style.display === 'none') {{
+        content.style.display = 'block';
+        toggle.textContent = '−';
+        panel.style.width = 'auto';
+    }} else {{
+        content.style.display = 'none';
+        toggle.textContent = '+';
+        panel.style.width = 'auto';
+    }}
+}}
+</script>
     '''
     m.get_root().html.add_child(folium.Element(stats_panel_html))
 
@@ -479,9 +500,25 @@ def main():
     # Inserção correta na raiz HTML
     m.get_root().html.add_child(folium.Element(legend_html))
 
-    # CSS responsivo para mobile
+    # CSS responsivo para mobile e painel colapsável
     mobile_css = """
     <style>
+    /* Estilos para painel colapsável */
+    #stats-panel {
+        transition: all 0.3s ease;
+    }
+
+    /* Hover no header para indicar que é clicável */
+    #stats-panel > div:first-child:hover {
+        background: rgba(0,0,0,0.3) !important;
+    }
+
+    /* Animação suave para abrir/fechar */
+    #stats-content {
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
     @media (max-width: 768px) { 
         .leaflet-control-minimap { display: none; }
         
