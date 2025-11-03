@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy API Resíduos SC - Guia Interativo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            margin-bottom: 40px;
+            border-left: 4px solid #1976d2;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: -20px;
+            top: 0;
+            background: #1976d2;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .step h2 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .step p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .copy-btn:hover {
+            background: #45a049;
+        }
+
+        .copy-btn.copied {
+            background: #2196F3;
+        }
+
+        .platform-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .platform-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .platform-card:hover {
+            border-color: #1976d2;
+            box-shadow: 0 5px 20px rgba(25, 118, 210, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .platform-card.recommended {
+            border-color: #4CAF50;
+            background: #f1f8e9;
+        }
+
+        .platform-card h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .platform-card .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+        }
+
+        .checklist {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checklist-item:hover {
+            background: #e3f2fd;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .checklist-item.checked {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            color: #1565c0;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            color: #e65100;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            color: #2e7d32;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 10px 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 30px;
+            text-align: center;
+            color: #777;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .step {
+                padding-left: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Deploy API Resíduos SC</h1>
+            <p>Guia Interativo - Do código à nuvem em minutos</p>
+        </div>
+
+        <div class="content">
+            <!-- Progresso -->
+            <div class="progress-container">
+                <h3>Progresso do Deploy</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <p id="progressText">0% completo</p>
+            </div>
+
+            <!-- Passo 1: Escolha a Plataforma -->
+            <div class="step" data-step="1">
+                <h2>Escolha a Plataforma de Deploy</h2>
+                <p>Recomendamos Render.com pela simplicidade e tier gratuito generoso.</p>
+
+                <div class="platform-cards">
+                    <div class="platform-card recommended" onclick="selectPlatform('render')">
+                        <span class="badge">RECOMENDADO</span>
+                        <h3>Render.com</h3>
+                        <p>✅ 750h/mês grátis</p>
+                        <p>✅ Deploy automático via Git</p>
+                        <p>✅ HTTPS incluído</p>
+                        <p>✅ Muito fácil configurar</p>
+                        <p>⚠️ Cold start (~30s)</p>
+                    </div>
+
+                    <div class="platform-card" onclick="selectPlatform('railway')">
+                        <h3>Railway.app</h3>
+                        <p>✅ $5 crédito grátis/mês</p>
+                        <p>✅ Deploy rápido</p>
+                        <p>✅ Sem cold start</p>
+                        <p>⚠️ Requer cartão</p>
+                    </div>
+
+                    <div class="platform-card" onclick="selectPlatform('flyio')">
+                        <h3>Fly.io</h3>
+                        <p>✅ Tier gratuito generoso</p>
+                        <p>✅ Global edge network</p>
+                        <p>✅ Docker-based</p>
+                        <p>⚠️ CLI obrigatório</p>
+                    </div>
+                </div>
+
+                <div id="platformDetails"></div>
+            </div>
+
+            <!-- Passo 2: Preparar Repositório -->
+            <div class="step" data-step="2">
+                <h2>Preparar Repositório Git</h2>
+                <p>Certifique-se de que todos os arquivos estão commitados.</p>
+
+                <div class="checklist">
+                    <h3>✓ Checklist de Arquivos</h3>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <input type="checkbox" id="check1">
+                        <label for="check1">api/ (diretório com código da API)</label>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <input type="checkbox" id="check2">
+                        <label for="check2">requirements-api.txt (dependências)</label>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <input type="checkbox" id="check3">
+                        <label for="check3">render.yaml (configuração Render)</label>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <input type="checkbox" id="check4">
+                        <label for="check4">Procfile (comando de startup)</label>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <input type="checkbox" id="check5">
+                        <label for="check5">.python-version (versão Python)</label>
+                    </div>
+                    <div class="checklist-item" onclick="toggleCheck(this)">
+                        <input type="checkbox" id="check6">
+                        <label for="check6">analise_exploratoria/SC_setores_CD2022.gpkg (dados)</label>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre># Verificar status
+git status
+
+# Adicionar todos os arquivos
+git add .
+
+# Commit
+git commit -m "Feat: API REST completa com autenticação opcional e deploy config"
+
+# Push para GitHub
+git push origin main</pre>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Importante:</strong> O arquivo .gpkg tem 50MB. Certifique-se de que está no .gitignore se exceder limite do GitHub (100MB).
+                </div>
+            </div>
+
+            <!-- Passo 3: Deploy no Render -->
+            <div class="step" data-step="3">
+                <h2>Deploy no Render.com</h2>
+                
+                <div class="alert alert-info">
+                    <strong>📌 Pré-requisito:</strong> Conta no Render.com conectada ao GitHub
+                </div>
+
+                <h3>3.1 Criar Web Service</h3>
+                <ol style="margin-left: 20px; margin-top: 15px;">
+                    <li>Acesse <a href="https://dashboard.render.com" target="_blank">dashboard.render.com</a></li>
+                    <li>Clique em <strong>"New +"</strong> → <strong>"Web Service"</strong></li>
+                    <li>Conecte seu repositório GitHub: <code>portfolio-residuos-sc</code></li>
+                    <li>Configure conforme abaixo:</li>
+                </ol>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar Configs</button>
+                    <pre>Name: api-residuos-sc
+Region: Oregon (US West)
+Branch: main
+Runtime: Python 3
+Build Command: pip install -r requirements-api.txt
+Start Command: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+Instance Type: Free</pre>
+                </div>
+
+                <h3 style="margin-top: 25px;">3.2 Variáveis de Ambiente (Opcional)</h3>
+                <p>Se quiser habilitar autenticação:</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>API_KEYS_ENABLED=true
+API_KEYS=sua-chave-secreta-123,outra-chave-456
+ENVIRONMENT=production
+CACHE_ENABLED=true
+LOG_LEVEL=INFO</pre>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>✅ Pronto!</strong> O Render fará o deploy automaticamente. Aguarde 3-5 minutos.
+                </div>
+
+                <a href="https://dashboard.render.com/new" target="_blank" class="btn btn-primary">
+                    Ir para Render.com
+                </a>
+            </div>
+
+            <!-- Passo 4: Testar API -->
+            <div class="step" data-step="4">
+                <h2>Testar API em Produção</h2>
+                <p>Após deploy, sua API estará disponível em: <code>https://api-residuos-sc.onrender.com</code></p>
+
+                <h3>Testes Essenciais:</h3>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre># 1. Health check
+curl https://api-residuos-sc.onrender.com/health
+
+# 2. Listar municípios
+curl https://api-residuos-sc.onrender.com/api/v1/municipios?limit=5
+
+# 3. Florianópolis detalhes
+curl https://api-residuos-sc.onrender.com/api/v1/municipios/4205407
+
+# 4. Swagger UI (no navegador)
+# https://api-residuos-sc.onrender.com/docs</pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>💡 Dica:</strong> Use o Swagger UI para testar interativamente todos os endpoints!
+                </div>
+
+                <a href="https://api-residuos-sc.onrender.com/docs" target="_blank" class="btn btn-success" id="swaggerBtn" style="display: none;">
+                    Abrir Swagger UI
+                </a>
+            </div>
+
+            <!-- Passo 5: Monitoramento -->
+            <div class="step" data-step="5">
+                <h2>Configurar Monitoramento (UptimeRobot)</h2>
+                <p>Monitore se sua API está sempre online.</p>
+
+                <h3>Configuração UptimeRobot (Gratuito):</h3>
+                <ol style="margin-left: 20px; margin-top: 15px;">
+                    <li>Crie conta em <a href="https://uptimerobot.com" target="_blank">uptimerobot.com</a></li>
+                    <li>Adicione novo monitor (HTTP(s))</li>
+                    <li>URL: <code>https://api-residuos-sc.onrender.com/health</code></li>
+                    <li>Intervalo: 5 minutos (plano free)</li>
+                    <li>Alertas: Email quando API ficar offline</li>
+                </ol>
+
+                <div class="alert alert-success">
+                    <strong>✅ Benefícios:</strong> O UptimeRobot fará requisições regulares, evitando cold starts no Render!
+                </div>
+
+                <a href="https://uptimerobot.com/signUp" target="_blank" class="btn btn-primary">
+                    Criar conta UptimeRobot
+                </a>
+            </div>
+
+            <!-- Passo 6: Atualizar Apresentação -->
+            <div class="step" data-step="6">
+                <h2>Atualizar Links na Apresentação</h2>
+                <p>Substitua localhost pela URL pública em <code>apresentacao.html</code>.</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre># Buscar e substituir:
+http://localhost:8000 → https://api-residuos-sc.onrender.com
+
+# Adicionar link no tab "Demo":
+&lt;a href="https://api-residuos-sc.onrender.com/docs" target="_blank"&gt;
+    🚀 Acessar API ao Vivo
+&lt;/a&gt;</pre>
+                </div>
+            </div>
+
+            <!-- Finalização -->
+            <div class="alert alert-success" style="margin-top: 40px; padding: 30px;">
+                <h2 style="color: #2e7d32; margin-bottom: 15px;">🎉 Parabéns! API em Produção!</h2>
+                <p style="font-size: 1.1em;">Sua API REST está agora acessível publicamente e pronta para uso.</p>
+                <p><strong>URL Pública:</strong> <code>https://api-residuos-sc.onrender.com</code></p>
+                <p><strong>Documentação:</strong> <code>https://api-residuos-sc.onrender.com/docs</code></p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>API Resíduos SC</strong> - Análise Geoespacial de Resíduos Sólidos</p>
+            <p>Desenvolvido por Ronan Armando Caetano | UFSC 2025</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                Desenvolvido com GitHub Copilot (IA) 🤖
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let checkedItems = 0;
+        const totalItems = 6;
+
+        function toggleCheck(element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                element.classList.add('checked');
+                checkedItems++;
+            } else {
+                element.classList.remove('checked');
+                checkedItems--;
+            }
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = (checkedItems / totalItems) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = Math.round(progress) + '% completo';
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copiado! ✓';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copiar';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function selectPlatform(platform) {
+            const details = document.getElementById('platformDetails');
+            
+            if (platform === 'render') {
+                details.innerHTML = `
+                    <div class="alert alert-success" style="margin-top: 20px;">
+                        <h3>✅ Render.com Selecionado!</h3>
+                        <p>Excelente escolha! Vamos usar o Render.com pelo seu tier gratuito generoso e simplicidade.</p>
+                        <p><strong>Próximo passo:</strong> Continue para o Passo 2 abaixo.</p>
+                    </div>
+                `;
+            } else if (platform === 'railway') {
+                details.innerHTML = `
+                    <div class="alert alert-info" style="margin-top: 20px;">
+                        <h3>Railway.app</h3>
+                        <p>Railway é ótimo, mas requer cartão de crédito. Consulte DEPLOY_GUIDE.md para instruções específicas.</p>
+                    </div>
+                `;
+            } else if (platform === 'flyio') {
+                details.innerHTML = `
+                    <div class="alert alert-info" style="margin-top: 20px;">
+                        <h3>Fly.io</h3>
+                        <p>Fly.io é poderoso mas requer CLI. Consulte DEPLOY_GUIDE.md para instruções específicas.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Simular atualização do link do Swagger
+        setTimeout(() => {
+            document.getElementById('swaggerBtn').style.display = 'inline-block';
+        }, 1000);
+    </script>
+</body>
+</html>
