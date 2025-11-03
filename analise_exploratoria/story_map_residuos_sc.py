@@ -316,6 +316,86 @@ def main():
     Fullscreen(position='topright').add_to(m)
     MiniMap(toggle_display=True, position='bottomright').add_to(m)
 
+    # Título do mapa
+    titulo_html = '''
+    <div style="position: fixed; 
+                top: 10px; 
+                left: 50%; 
+                transform: translateX(-50%);
+                z-index: 9999; 
+                background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+                padding: 12px 30px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                font-family: Arial, sans-serif;
+                color: white;
+                text-align: center;
+                border: 2px solid rgba(255,255,255,0.3);">
+        <h2 style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 0.5px;">
+            📍 Geração de Resíduos Sólidos por Porte Municipal - SC
+        </h2>
+        <div style="font-size: 11px; margin-top: 4px; opacity: 0.9;">
+            Santa Catarina • 295 Municípios • 3 Categorias de Porte • Censo IBGE 2022
+        </div>
+    </div>
+    '''
+    m.get_root().html.add_child(folium.Element(titulo_html))
+
+    # Seta de Norte (rosa dos ventos)
+    norte_html = '''
+    <div style="position: fixed; 
+                top: 70px; 
+                right: 20px; 
+                z-index: 9998;
+                background: rgba(255,255,255,0.95);
+                padding: 10px;
+                border-radius: 50%;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                border: 2px solid #333;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;">
+        <div style="position: relative; width: 50px; height: 50px;">
+            <!-- Triângulo Norte (vermelho) -->
+            <div style="position: absolute; 
+                        top: 0; 
+                        left: 50%; 
+                        transform: translateX(-50%);
+                        width: 0; 
+                        height: 0; 
+                        border-left: 10px solid transparent;
+                        border-right: 10px solid transparent;
+                        border-bottom: 25px solid #d32f2f;">
+            </div>
+            <!-- Triângulo Sul (cinza) -->
+            <div style="position: absolute; 
+                        bottom: 0; 
+                        left: 50%; 
+                        transform: translateX(-50%);
+                        width: 0; 
+                        height: 0; 
+                        border-left: 10px solid transparent;
+                        border-right: 10px solid transparent;
+                        border-top: 25px solid #666;">
+            </div>
+            <!-- Letra N -->
+            <div style="position: absolute; 
+                        top: -12px; 
+                        left: 50%; 
+                        transform: translateX(-50%);
+                        font-weight: bold; 
+                        font-size: 14px; 
+                        color: #000;
+                        text-shadow: 0 0 3px white;">
+                N
+            </div>
+        </div>
+    </div>
+    '''
+    m.get_root().html.add_child(folium.Element(norte_html))
+
     # Calcular estatísticas gerais para o painel
     total_pop = muni['populacao'].sum()
     total_dom = muni['domestico_t_ano'].sum()
@@ -323,9 +403,9 @@ def main():
     media_dom_mun = muni['domestico_t_ano'].mean()
     media_rec_mun = muni['reciclavel_t_ano'].mean()
     
-    # Painel de estatísticas no canto superior direito
+    # Painel de estatísticas no canto superior direito (mais abaixo para não sobrepor rosa dos ventos)
     stats_panel_html = f'''
-    <div style="position: fixed; top: 80px; right: 10px; width: 340px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    <div style="position: fixed; top: 150px; right: 10px; width: 340px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 border-radius: 12px; padding: 0; z-index: 9998; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
                 font-family: Arial, sans-serif; color: white;" id="stats-panel">
         
@@ -404,6 +484,10 @@ def main():
     <style>
     @media (max-width: 768px) { 
         .leaflet-control-minimap { display: none; }
+        
+        /* Esconder título e rosa dos ventos no mobile */
+        div[style*="top: 10px"][style*="left: 50%"] { display: none !important; }
+        div[style*="top: 70px"][style*="right: 20px"] { display: none !important; }
         
         /* Painel de estatísticas */
         #stats-panel {
