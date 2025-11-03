@@ -85,7 +85,24 @@ muni = muni_3857.to_crs(4326)
 
 print("\n5) Construindo mapa Folium...")
 center = [muni.geometry.centroid.y.mean(), muni.geometry.centroid.x.mean()]
-m = folium.Map(location=center, zoom_start=7, tiles='CartoDB positron')
+
+# Calcular bounds de SC para limitar visualização
+bounds = muni.total_bounds  # [minx, miny, maxx, maxy]
+sw = [bounds[1], bounds[0]]  # southwest corner [lat, lon]
+ne = [bounds[3], bounds[2]]  # northeast corner [lat, lon]
+
+m = folium.Map(
+    location=center, 
+    zoom_start=7,
+    tiles='CartoDB positron',
+    min_zoom=6,        # Zoom mínimo (não permite afastar muito)
+    max_zoom=13,       # Zoom máximo (não permite aproximar muito)
+    max_bounds=True,   # Restringe pan aos limites
+    max_bounds_viscosity=0.5  # Suavidade ao atingir limites
+)
+
+# Definir limites geográficos (bounds) de SC
+m.fit_bounds([sw, ne])
 
 # Adicionar plugins
 Fullscreen(position='topleft').add_to(m)
@@ -189,7 +206,7 @@ for _, regiao in regioes.iterrows():
     legenda_items.append(f"<div style='margin: 3px 0;'><span style='display: inline-block; width: 16px; height: 16px; background: {cor}; border: 1px solid #333; margin-right: 6px;'></span>{regiao['NM_RGI']}</div>")
 
 legenda_html = f'''
-<div id="legend-panel" style="position: fixed; bottom: 50px; right: 50px; width: 320px; background: rgba(255, 255, 255, 0.95); 
+<div id="legend-panel" style="position: fixed; bottom: 20px; left: 20px; width: 320px; background: rgba(255, 255, 255, 0.95); 
             border: 3px solid #333; border-radius: 10px; padding: 0; z-index: 9999;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3); backdrop-filter: blur(10px); transition: all 0.3s ease;">
     
@@ -198,11 +215,11 @@ legenda_html = f'''
                 background: rgba(0,0,0,0.05); border-radius: 7px 7px 0 0; cursor: pointer; border-bottom: 2px solid #333;"
          onclick="toggleLegend()">
         <h4 style="margin: 0; font-size: 15px; font-weight: bold;">♿ Legenda - Regiões (RGI)</h4>
-        <span id="legend-toggle" style="font-size: 20px; font-weight: bold; user-select: none;">−</span>
+        <span id="legend-toggle" style="font-size: 20px; font-weight: bold; user-select: none;">+</span>
     </div>
     
-    <!-- Conteúdo recolhível -->
-    <div id="legend-content" style="padding: 15px; max-height: 50vh; overflow-y: auto;">
+    <!-- Conteúdo recolhível (inicia fechado) -->
+    <div id="legend-content" style="display: none; padding: 15px; max-height: 50vh; overflow-y: auto;">
         <div style="font-size: 12px; line-height: 1.6;">
             {''.join(legenda_items)}
         </div>
@@ -260,9 +277,9 @@ top_regiao_1 = regioes_stats.iloc[0]['NM_RGI'] if len(regioes_stats) > 0 else 'N
 top_regiao_2 = regioes_stats.iloc[1]['NM_RGI'] if len(regioes_stats) > 1 else 'N/A'
 top_regiao_3 = regioes_stats.iloc[2]['NM_RGI'] if len(regioes_stats) > 2 else 'N/A'
 
-# Painel de estatísticas no canto superior direito (recolhível + semi-transparente)
+# Painel de estatísticas no lado esquerdo acima da legenda (recolhível + semi-transparente)
 stats_panel_html = f'''
-<div id="stats-panel" style="position: fixed; top: 80px; right: 10px; width: 340px; 
+<div id="stats-panel" style="position: fixed; top: 80px; left: 20px; width: 340px; 
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
             border-radius: 12px; padding: 0; z-index: 9998; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
             font-family: Arial, sans-serif; color: white; backdrop-filter: blur(10px); transition: all 0.3s ease;">
@@ -275,11 +292,11 @@ stats_panel_html = f'''
         <h3 style="margin: 0; font-size: 18px; font-weight: bold;">
             📊 Estatísticas - Santa Catarina
         </h3>
-        <span id="stats-toggle" style="font-size: 24px; font-weight: bold; user-select: none;">−</span>
+        <span id="stats-toggle" style="font-size: 24px; font-weight: bold; user-select: none;">+</span>
     </div>
     
-    <!-- Conteúdo recolhível -->
-    <div id="stats-content">
+    <!-- Conteúdo recolhível (inicia fechado) -->
+    <div id="stats-content" style="display: none;">
         <!-- Stats Grid -->
         <div style="padding: 15px;">
             <!-- Card 1: População -->
@@ -367,11 +384,11 @@ mobile_css = '''
 @media (max-width: 768px) {
     .leaflet-control-minimap { display: none; }
     
-    /* Legenda de regiões */
+    /* Legenda de regiões - mobile */
     #legend-panel {
         bottom: 10px !important;
-        right: 10px !important;
         left: 10px !important;
+        right: 10px !important;
         width: auto !important;
         max-width: 95vw !important;
     }
@@ -385,11 +402,11 @@ mobile_css = '''
         font-size: 13px !important;
     }
     
-    /* Painel de estatísticas */
+    /* Painel de estatísticas - mobile */
     #stats-panel {
         top: 60px !important;
-        right: 5px !important;
-        left: 5px !important;
+        left: 10px !important;
+        right: 10px !important;
         width: auto !important;
         max-width: 95vw !important;
     }
